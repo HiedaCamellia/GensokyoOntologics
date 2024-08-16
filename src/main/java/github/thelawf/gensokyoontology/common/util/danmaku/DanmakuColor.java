@@ -1,8 +1,8 @@
 package github.thelawf.gensokyoontology.common.util.danmaku;
 
 import github.thelawf.gensokyoontology.GensokyoOntology;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.network.chat.Component;
 
 public enum DanmakuColor {
     RED,
@@ -16,7 +16,7 @@ public enum DanmakuColor {
     PINK,
     NONE;
 
-    public ITextComponent toTextComponent() {
+    public Component toTextComponent() {
         return GensokyoOntology.withTranslation("gui.", ".danmaku_color." + this.name().toLowerCase());
     }
 

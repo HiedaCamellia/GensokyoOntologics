@@ -1,6 +1,6 @@
 package github.thelawf.gensokyoontology.common.block.nature;
 
-import net.minecraft.block.*;
+import net.minecraft.world.level.block.*;
 
 public class SakuraTrapDoor extends TrapDoorBlock {
     public SakuraTrapDoor() {

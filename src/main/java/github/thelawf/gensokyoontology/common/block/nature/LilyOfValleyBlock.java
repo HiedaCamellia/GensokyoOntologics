@@ -1,14 +1,14 @@
 package github.thelawf.gensokyoontology.common.block.nature;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FlowerBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.FlowerBlock;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class LilyOfValleyBlock extends FlowerBlock {
@@ -18,9 +18,9 @@ public class LilyOfValleyBlock extends FlowerBlock {
 
     @Override
     @SuppressWarnings("deprecation")
-    public void onEntityCollision(@NotNull BlockState state, @NotNull World worldIn, @NotNull BlockPos pos, @NotNull Entity entityIn) {
+    public void onEntityCollision(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, @NotNull Entity entityIn) {
         super.onEntityCollision(state, worldIn, pos, entityIn);
-        if (!worldIn.isRemote && entityIn instanceof LivingEntity) {
+        if (worldIn.isClientSide && entityIn instanceof LivingEntity) {
             LivingEntity living = (LivingEntity) entityIn;
             living.addPotionEffect(new EffectInstance(Effects.POISON, 2 * 50));
         }

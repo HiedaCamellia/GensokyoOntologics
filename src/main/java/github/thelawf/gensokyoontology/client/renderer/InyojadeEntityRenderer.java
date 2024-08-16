@@ -1,7 +1,7 @@
 package github.thelawf.gensokyoontology.client.renderer;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import github.thelawf.gensokyoontology.common.entity.monster.InyoJadeMonsterEntity;
+import github.thelawf.gensokyoontology.common.entity.monster.InyoJadeMonster;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.math.vector.Vector3f;
 
 @Deprecated
-public class InyojadeEntityRenderer extends SpriteRenderer<InyoJadeMonsterEntity> {
+public class InyojadeEntityRenderer extends SpriteRenderer<InyoJadeMonster> {
 
     private final ItemRenderer itemRenderer;
 
@@ -21,7 +21,7 @@ public class InyojadeEntityRenderer extends SpriteRenderer<InyoJadeMonsterEntity
     }
 
     @Override
-    public void render(InyoJadeMonsterEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+    public void render(InyoJadeMonster entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         float scale = 1.0f;
         matrixStackIn.push();
         matrixStackIn.rotate(this.renderManager.getCameraOrientation());

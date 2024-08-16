@@ -3,16 +3,14 @@ package github.thelawf.gensokyoontology.common.item.script;
 import github.thelawf.gensokyoontology.GensokyoOntology;
 import github.thelawf.gensokyoontology.common.nbt.GSKONBTUtil;
 import github.thelawf.gensokyoontology.core.init.itemtab.GSKOItemTab;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,36 +23,36 @@ public abstract class ScriptReadOnlyItem extends Item {
     public static final String STRING_HIGHLIGHT = "§b";  /// 天蓝色 ///
     public static final String EXCEPTION_HIGHLIGHT = "§c";  /// 红色 ///
     public static final String RESET_HIGHLIGHT = "§r";    /// 重置 ///
-    public static final ITextComponent FILED_TYPE_TIP = GensokyoOntology.withTranslation("tooltip.",".script_builder.field_type");
-    public static final ITextComponent FILED_NAME_TIP = GensokyoOntology.withTranslation("tooltip.",".script_builder.field_name");
-    public static final ITextComponent FILED_VALUE_TIP = GensokyoOntology.withTranslation("tooltip.",".script_builder.field_value");
+    public static final Component FILED_TYPE_TIP = GensokyoOntology.withTranslation("tooltip.",".script_builder.field_type");
+    public static final Component FILED_NAME_TIP = GensokyoOntology.withTranslation("tooltip.",".script_builder.field_name");
+    public static final Component FILED_VALUE_TIP = GensokyoOntology.withTranslation("tooltip.",".script_builder.field_value");
     public ScriptReadOnlyItem() {
-        super(new Properties().group(GSKOItemTab.GSKO_ITEM_TAB));
+        super(new Properties());
     }
 
     @Override
     @NotNull
-    public ActionResult<ItemStack> onItemRightClick(@NotNull World worldIn, @NotNull PlayerEntity playerIn, @NotNull Hand handIn) {
-        addReadOnlyData(worldIn, playerIn, playerIn.getHeldItem(handIn));
-        return super.onItemRightClick(worldIn, playerIn, handIn);
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+        addReadOnlyData(level, player, player.getUseItem());
+        return super.use(level, player, usedHand);
     }
 
-    public abstract void addReadOnlyData(World world, PlayerEntity player, ItemStack stack);
+    public abstract void addReadOnlyData(Level world, Player player, ItemStack stack);
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         if (stack.getTag() != null) {
-            CompoundNBT nbt = stack.getTag();
+            CompoundTag nbt = stack.getTag();
             tooltip.add(FILED_TYPE_TIP);
-            tooltip.add(new StringTextComponent(TYPE_HIGHLIGHT + nbt.getString("type")));
+            tooltip.add(Component.literal(TYPE_HIGHLIGHT + nbt.getString("type")));
             tooltip.add(FILED_NAME_TIP);
-            tooltip.add(new StringTextComponent(NAME_HIGHLIGHT + nbt.getString("name")));
+            tooltip.add(Component.literal(NAME_HIGHLIGHT + nbt.getString("name")));
             tooltip.add(FILED_VALUE_TIP);
             if (GSKONBTUtil.containsPrimitiveType(nbt)) {
-                tooltip.add(new StringTextComponent(VALUE_HIGHLIGHT + GSKONBTUtil.getFromValue(nbt).getString()));
+                tooltip.add(Component.literal(VALUE_HIGHLIGHT + GSKONBTUtil.getFromValue(nbt).getString()));
             }
             else if (GSKONBTUtil.containsAllowedType(nbt)) {
-                GSKONBTUtil.getMemberValues(nbt).forEach(s -> tooltip.add(new StringTextComponent(s)));
+                GSKONBTUtil.getMemberValues(nbt).forEach(s -> tooltip.add(Component.literal(s)));
             }
         }
     }

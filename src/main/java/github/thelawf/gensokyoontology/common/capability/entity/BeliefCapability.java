@@ -7,7 +7,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.List;
 
-public class BeliefCapability implements INBTSerializable<CompoundNBT> {
+public class BeliefCapability implements INBTSerializable<CompoundTag> {
     private final List<Pair<BeliefType, Integer>> believes;
     public static BeliefCapability INSTANCE;
 
@@ -16,10 +16,10 @@ public class BeliefCapability implements INBTSerializable<CompoundNBT> {
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
+    public CompoundTag serializeNBT() {
         ListNBT beliefList = new ListNBT();
         ListNBT valueList = new ListNBT();
-        CompoundNBT nbt = new CompoundNBT();
+        CompoundTag nbt = new CompoundTag();
         believes.forEach(pair -> beliefList.add(StringNBT.valueOf(pair.getFirst().toString())));
         believes.forEach(pair -> valueList.add(IntNBT.valueOf(pair.getSecond())));
         nbt.put("believes", beliefList);
@@ -28,7 +28,7 @@ public class BeliefCapability implements INBTSerializable<CompoundNBT> {
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         ListNBT beliefList = new ListNBT();
         ListNBT valueList = new ListNBT();
 

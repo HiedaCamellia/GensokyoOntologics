@@ -1,7 +1,7 @@
 package github.thelawf.gensokyoontology.common.block.nature;
 
-import net.minecraft.block.*;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.*;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;

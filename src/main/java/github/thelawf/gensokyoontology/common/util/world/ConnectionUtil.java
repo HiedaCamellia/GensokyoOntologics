@@ -3,8 +3,8 @@ package github.thelawf.gensokyoontology.common.util.world;
 
 import com.mojang.datafixers.util.Pair;
 import github.thelawf.gensokyoontology.common.util.math.GSKOMathUtil;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -58,12 +58,12 @@ public class ConnectionUtil {
      *
      * @return 方块位置(x, y, z)和三维向量(roll, yaw, pitch)的一对儿
      */
-    public static Pair<Vector3d, Vector3d> getPosAndRot(Vector3d startPos, Vector3d intersection, Vector3d endPos, float time) {
-        Vector3d segPos = GSKOMathUtil.bezier2(startPos, intersection, endPos, time);
-        return new Pair<>(segPos, new Vector3d(1, 1, 1));
+    public static Pair<Vec3, Vec3> getPosAndRot(Vec3 startPos, Vec3 intersection, Vec3 endPos, float time) {
+        Vec3 segPos = GSKOMathUtil.bezier2(startPos, intersection, endPos, time);
+        return new Pair<>(segPos, new Vec3(1, 1, 1));
     }
 
-    public static void connectRail(Vector3d startPos, Vector3d intersection, Vector3d endPos, float time) {
-        Pair<Vector3d, Vector3d> pair = getPosAndRot(startPos, intersection, endPos, time);
+    public static void connectRail(Vec3 startPos, Vec3 intersection, Vec3 endPos, float time) {
+        Pair<Vec3, Vec3> pair = getPosAndRot(startPos, intersection, endPos, time);
     }
 }

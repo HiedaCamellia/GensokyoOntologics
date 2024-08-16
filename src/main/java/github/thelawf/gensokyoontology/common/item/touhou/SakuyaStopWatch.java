@@ -4,15 +4,15 @@ import github.thelawf.gensokyoontology.GensokyoOntology;
 import github.thelawf.gensokyoontology.api.util.IRayTraceReader;
 import github.thelawf.gensokyoontology.core.init.ItemRegistry;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.UseAction;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.UseAction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,11 +31,11 @@ public class SakuyaStopWatch extends Item implements IRayTraceReader{
 
     @Override
     @NotNull
-    public ActionResult<ItemStack> onItemRightClick(@NotNull World worldIn, PlayerEntity playerIn, @NotNull Hand handIn) {
+    public ActionResult<ItemStack> onItemRightClick(@NotNull Level worldIn, Player playerIn, @NotNull Hand handIn) {
         ItemStack stack = playerIn.getHeldItem(handIn);
 
         if (stack.getTag() != null && stack.hasTag()) {
-            stack.setTag(new CompoundNBT());
+            stack.setTag(new CompoundTag());
             totalTicks = 0;
 
             if (playerIn.isCreative()) return super.onItemRightClick(worldIn, playerIn, handIn);
@@ -43,7 +43,7 @@ public class SakuyaStopWatch extends Item implements IRayTraceReader{
             return ActionResult.resultPass(stack);
         }
 
-        CompoundNBT nbt = new CompoundNBT();
+        CompoundTag nbt = new CompoundTag();
         nbt.putBoolean("pause_start", true);
         stack.setTag(nbt);
         totalTicks = pauseTicks + playerIn.ticksExisted;
@@ -63,7 +63,7 @@ public class SakuyaStopWatch extends Item implements IRayTraceReader{
     }
 
     @Override
-    public void addInformation(@NotNull ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, @NotNull ITooltipFlag flagIn) {
+    public void addInformation(@NotNull ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, @NotNull ITooltipFlag flagIn) {
         tooltip.add(GensokyoOntology.withTranslation("tooltip.", ".sakuya_stop_watch"));
         super.addInformation(stack, worldIn, tooltip, flagIn);
     }

@@ -4,18 +4,18 @@ import com.mojang.datafixers.util.Pair;
 import github.thelawf.gensokyoontology.common.tileentity.SorceryExtractorTileEntity;
 import github.thelawf.gensokyoontology.common.util.client.GSKOGUIUtil;
 import github.thelawf.gensokyoontology.core.init.ContainerRegistry;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IWorldPosCallable;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.util.ILevelPosCallable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -42,17 +42,17 @@ public class SorceryExtractorContainer extends Container {
     public static final Logger LOGGER = LogManager.getLogger();
     public static final List<List<ItemStack>> RECIPES = GSKOGUIUtil.makeRecipes();
 
-    private final IWorldPosCallable POS_CALLABLE = IWorldPosCallable.DUMMY;
+    private final ILevelPosCallable POS_CALLABLE = ILevelPosCallable.DUMMY;
     private final TileEntity tileEntity;
 
     private final IInventory ingredientInventory = new Inventory(5);
     private final IInventory resultInventory = new Inventory(1);
 
-    public SorceryExtractorContainer(int windowId, World world, BlockPos blockPos, PlayerInventory playerInventory) {
+    public SorceryExtractorContainer(int windowId, Level world, BlockPos blockPos, Inventory playerInventory) {
         super(ContainerRegistry.SORCERY_EXTRACTOR_CONTAINER.get(), windowId);
         this.playerInventory = new InvWrapper(playerInventory);
         this.tileEntity = world.getTileEntity(blockPos);
-        addPlayerInventorySlots(28, 128);
+        addInventorySlots(28, 128);
 
         // addSlot(new Slot(this.ingredientInventory, 0, 71, 4));
         // addSlot(new Slot(this.ingredientInventory, 1, 26, 48));
@@ -71,7 +71,7 @@ public class SorceryExtractorContainer extends Container {
     }
 
 
-    private static SorceryExtractorTileEntity getTileEntity(@NotNull PlayerInventory inv, @NotNull PacketBuffer buf) {
+    private static SorceryExtractorTileEntity getTileEntity(@NotNull Inventory inv, @NotNull PacketBuffer buf) {
         final TileEntity te = inv.player.world.getTileEntity(buf.readBlockPos());
         if (te instanceof SorceryExtractorTileEntity) {
             return (SorceryExtractorTileEntity) te;
@@ -80,13 +80,13 @@ public class SorceryExtractorContainer extends Container {
     }
 
     @Override
-    public void onContainerClosed(@NotNull PlayerEntity playerIn) {
+    public void onContainerClosed(@NotNull Player playerIn) {
         super.onContainerClosed(playerIn);
         this.clearContainer(playerIn, playerIn.world, this.ingredientInventory);
     }
 
     @Override
-    public boolean canInteractWith(@NotNull PlayerEntity playerIn) {
+    public boolean canInteractWith(@NotNull Player playerIn) {
         return true;
     }
 
@@ -99,7 +99,7 @@ public class SorceryExtractorContainer extends Container {
     private void addContainerSlot(IItemHandler itemHandler, int index, int xPos, int yPos) {
         addSlot(new SlotItemHandler(itemHandler, index, xPos, yPos){
             @Override
-            public ItemStack onTake(PlayerEntity playerEntity, ItemStack stack) {
+            public ItemStack onTake(Player playerEntity, ItemStack stack) {
                 if (this.getSlotIndex() == 4) for (int i = 0; i < 4; i++) this.getItemHandler().extractItem(i, 1, false);
                 else this.getItemHandler().extractItem(4, 1, false);
                 return super.onTake(playerEntity, stack);
@@ -130,7 +130,7 @@ public class SorceryExtractorContainer extends Container {
             }
 
             @Override
-            public ItemStack onTake(PlayerEntity thePlayer, ItemStack stack) {
+            public ItemStack onTake(Player thePlayer, ItemStack stack) {
                 SorceryExtractorContainer.this.resultInventory.setInventorySlotContents(0, ItemStack.EMPTY);
                 return super.onTake(thePlayer, stack);
             }
@@ -149,7 +149,7 @@ public class SorceryExtractorContainer extends Container {
         addSlot(new Slot(inventory, index, xPos, yPos) {
             @Override
             @NotNull
-            public ItemStack onTake(@NotNull PlayerEntity thePlayer, @NotNull ItemStack stack) {
+            public ItemStack onTake(@NotNull Player thePlayer, @NotNull ItemStack stack) {
                 for (int i = 0; i < 4; i++) {
                     SorceryExtractorContainer.this.ingredientInventory.decrStackSize(i, stack.getCount());
                 }
@@ -202,7 +202,7 @@ public class SorceryExtractorContainer extends Container {
         }
     }
 
-    private void addPlayerInventorySlots(int xStart, int yStart) {
+    private void addInventorySlots(int xStart, int yStart) {
         addSlotBox(playerInventory, 9, xStart, yStart, 9, 3, 18, 18);
 
         yStart += 58;
@@ -223,7 +223,7 @@ public class SorceryExtractorContainer extends Container {
 
     @Override
     @NotNull
-    public ItemStack transferStackInSlot(@NotNull PlayerEntity playerIn, int index) {
+    public ItemStack transferStackInSlot(@NotNull Player playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.inventorySlots.get(index);
         if (slot != null && slot.getHasStack()) {

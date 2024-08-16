@@ -4,21 +4,21 @@ import github.thelawf.gensokyoontology.common.util.GSKODamageSource;
 import github.thelawf.gensokyoontology.common.util.danmaku.*;
 import github.thelawf.gensokyoontology.core.SerializerRegistry;
 import github.thelawf.gensokyoontology.core.init.EntityRegistry;
-import net.minecraft.entity.*;
-import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ThrowableEntity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ThrowableEntity;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.vector.Vector2f;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -48,30 +48,30 @@ public abstract class AbstractDanmakuEntity extends ThrowableEntity implements I
     public static final DataParameter<Integer> DATA_LIFESPAN = EntityDataManager.createKey(
             AbstractDanmakuEntity.class, DataSerializers.VARINT);
 
-    // public static final DataParameter<CompoundNBT> DATA_SPELL = EntityDataManager.createKey(
+    // public static final DataParameter<CompoundTag> DATA_SPELL = EntityDataManager.createKey(
     //         AbstractDanmakuEntity.class, DataSerializers.COMPOUND_NBT);
 
     protected SpellData spellData;
     public TransformFunction function;
-    public CompoundNBT compoundNBT = new CompoundNBT();
+    public CompoundTag compoundNBT = new CompoundTag();
 
-    protected AbstractDanmakuEntity(EntityType<? extends ThrowableEntity> type, World worldIn) {
+    protected AbstractDanmakuEntity(EntityType<? extends ThrowableEntity> type, Level worldIn) {
         super(type, worldIn);
     }
 
-    public AbstractDanmakuEntity(EntityType<? extends ThrowableEntity> type, LivingEntity throwerIn, World world, SpellData spellData) {
+    public AbstractDanmakuEntity(EntityType<? extends ThrowableEntity> type, LivingEntity throwerIn, Level world, SpellData spellData) {
         this(type, world);
         this.spellData = spellData;
         this.damage = spellData.danmakuType.damage;
-        this.setWorld(world);
+        this.setLevel(world);
         // this.setSpellData(spellData);
     }
 
-    public AbstractDanmakuEntity(EntityType<? extends ThrowableEntity> type, LivingEntity throwerIn, World worldIn, DanmakuType danmakuTypeIn, DanmakuColor danmakuColorIn) {
+    public AbstractDanmakuEntity(EntityType<? extends ThrowableEntity> type, LivingEntity throwerIn, Level worldIn, DanmakuType danmakuTypeIn, DanmakuColor danmakuColorIn) {
         super(type, worldIn);
         this.damage = danmakuTypeIn.damage;
         this.danmakuColor = danmakuColorIn.ordinal();
-        this.setWorld(worldIn);
+        this.setLevel(worldIn);
         this.setDanmakuColor(danmakuColorIn);
         this.setShooter(throwerIn);
     }
@@ -99,7 +99,7 @@ public abstract class AbstractDanmakuEntity extends ThrowableEntity implements I
     }
 
     @Override
-    protected void readAdditional(@NotNull CompoundNBT compound) {
+    protected void readAdditional(@NotNull CompoundTag compound) {
         super.readAdditional(compound);
         if (compound.contains("damage")) {
             this.damage = compound.getFloat("damage");
@@ -120,7 +120,7 @@ public abstract class AbstractDanmakuEntity extends ThrowableEntity implements I
     }
 
     @Override
-    protected void writeAdditional(@NotNull CompoundNBT compound) {
+    protected void writeAdditional(@NotNull CompoundTag compound) {
         super.writeAdditional(compound);
         compound.putFloat("damage", this.damage);
         compound.putInt("color", this.danmakuColor);
@@ -166,9 +166,9 @@ public abstract class AbstractDanmakuEntity extends ThrowableEntity implements I
 
     @Override
     protected void onEntityHit(@NotNull EntityRayTraceResult result) {
-        if (this.getShooter() instanceof MonsterEntity || this.getShooter() instanceof IAngerable) {
-            if (result.getEntity() instanceof PlayerEntity) {
-                PlayerEntity player = (PlayerEntity) result.getEntity();
+        if (this.getShooter() instanceof Monster || this.getShooter() instanceof IAngerable) {
+            if (result.getEntity() instanceof Player) {
+                Player player = (Player) result.getEntity();
                 if (this instanceof FakeLunarEntity) {
                     player.attackEntityFrom(GSKODamageSource.DANMAKU, 12f);
                     // player.applyKnockback(0.1f, 0.05, 0.05);
@@ -197,7 +197,7 @@ public abstract class AbstractDanmakuEntity extends ThrowableEntity implements I
         }
 
         LivingEntity entityHit = (LivingEntity) result.getEntity();
-        if (!(entityHit instanceof PlayerEntity)) {
+        if (!(entityHit instanceof Player)) {
             entityHit.attackEntityFrom(GSKODamageSource.DANMAKU, this.damage);
             this.remove();
         }

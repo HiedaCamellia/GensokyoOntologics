@@ -12,12 +12,12 @@ import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.jetbrains.annotations.NotNull;
 
 public class SpaceFissureRenderer extends TileEntityRenderer<GapTileEntity> {
-    public static final ResourceLocation SPACE_FISSURE_TEX = new ResourceLocation(
+    public static final ResourceLocation SPACE_FISSURE_TEX = ResourceLocation.parse(
             GensokyoOntology.MODID, "tileentity/space_fissure_block");
 
     public SpaceFissureRenderer(TileEntityRendererDispatcher rendererDispatcherIn) {

@@ -2,8 +2,8 @@ package github.thelawf.gensokyoontology.common.network;
 
 import github.thelawf.gensokyoontology.GensokyoOntology;
 import github.thelawf.gensokyoontology.common.network.packet.*;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.ServerPlayer;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -39,8 +39,8 @@ public class GSKONetworking {
         // CHANNEL.messageBuilder(CInvokeFunctionPacket.class, next()).encoder(CInvokeFunctionPacket::toBytes).decoder(CInvokeFunctionPacket::fromBytes).consumer(CInvokeFunctionPacket::handle).add();
     }
 
-    public static void sendToClientPlayer(Object message, PlayerEntity player) {
-        CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), message);
+    public static void sendToClientPlayer(Object message, Player player) {
+        CHANNEL.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), message);
     }
 
 }

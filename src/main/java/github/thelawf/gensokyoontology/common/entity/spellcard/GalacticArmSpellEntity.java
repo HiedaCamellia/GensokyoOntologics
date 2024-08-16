@@ -6,14 +6,14 @@ import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuType;
 import github.thelawf.gensokyoontology.common.util.math.GSKOMathUtil;
 import github.thelawf.gensokyoontology.core.init.EntityRegistry;
 import github.thelawf.gensokyoontology.core.init.ItemRegistry;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector2f;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,7 +30,7 @@ public class GalacticArmSpellEntity extends SpellCardEntity{
     private final float[] as = {2,3,5,7,9,11,14,18,23,25};
     private final float[] bs = {1,1.2F,2.5F,4,5,5.5F,7.2F,8,10.3F,12};
 
-    public GalacticArmSpellEntity(World worldIn, LivingEntity living) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public GalacticArmSpellEntity(Level worldIn, LivingEntity living) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         super(EntityRegistry.GALACTIC_ARM_SPELL_ENTITY.get(), worldIn, living);
         list = newDanmakuList(() -> new SmallStarShotEntity((LivingEntity) this.getOwner(), this.world, DanmakuType.STAR_SHOT_SMALL, DanmakuColor.BLUE),
                 SmallStarShotEntity.class, COUNT);
@@ -40,7 +40,7 @@ public class GalacticArmSpellEntity extends SpellCardEntity{
         }
     }
 
-    public GalacticArmSpellEntity(EntityType<? extends SpellCardEntity> entityTypeIn, World worldIn) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public GalacticArmSpellEntity(EntityType<? extends SpellCardEntity> entityTypeIn, Level worldIn) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         super(entityTypeIn, worldIn);
         list = newDanmakuList(() -> new SmallStarShotEntity((LivingEntity) this.getOwner(), this.world, DanmakuType.STAR_SHOT_SMALL, DanmakuColor.BLUE),
                 SmallStarShotEntity.class, COUNT);
@@ -55,21 +55,21 @@ public class GalacticArmSpellEntity extends SpellCardEntity{
     public void tick() {
         super.tick();
         if (!world.isRemote) {
-            ServerWorld serverWorld = (ServerWorld) world;
+            ServerLevel serverLevel = (ServerLevel) world;
             try {
                 tryShoot();
             } catch (InvocationTargetException | NoSuchMethodException | InstantiationException |
                      IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
-            // trySetDanmaku(serverWorld);
+            // trySetDanmaku(serverLevel);
         }
     }
 
     private void tryShoot() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
 
         float speed = 0.06F;
-        Vector3d startPos = this.getPositionVec().add(1, 0, 0);
+        Vec3 startPos = this.getPositionVec().add(1, 0, 0);
         List<UUID> ids = new ArrayList<>();
 
         if (ticksExisted % 200 == 0) {
@@ -88,12 +88,12 @@ public class GalacticArmSpellEntity extends SpellCardEntity{
                 SmallStarShotEntity entity = starLists.get(i).get(j);
                 double angle = ((world.getGameTime() + j) * 0.1) % (Math.PI * 2);
 
-                Vector3d nextPos = new Vector3d(startPos.x + a * MathHelper.cos((float) angle), startPos.y,
+                Vec3 nextPos = new Vec3(startPos.x + a * MathHelper.cos((float) angle), startPos.y,
                         startPos.z + b * MathHelper.sin((float) angle));
                 double motionX = -a * MathHelper.sin((float) angle) * speed;
                 double motionZ = b * MathHelper.cos((float) angle) * speed;
 
-                setDanmakuInit(entity, startPos, new Vector2f(this.rotationYaw, this.rotationPitch));
+                setDanmakuInit(entity, startPos, new Vec2(this.rotationYaw, this.rotationPitch));
                 entity.setPosition(nextPos.x, nextPos.y, nextPos.z);
                 entity.setMotion(motionX, 0, motionZ);
                 list.set(j, entity);
@@ -109,25 +109,25 @@ public class GalacticArmSpellEntity extends SpellCardEntity{
         }
     }
 
-    private void trySetDanmaku(ServerWorld serverWorld) {
+    private void trySetDanmaku(ServerLevel serverLevel) {
         float speed = 0.06F;
-        Vector3d startPos = this.getPositionVec().add(1, 0, 0);
+        Vec3 startPos = this.getPositionVec().add(1, 0, 0);
 
         for (int i = 0; i < as.length; i++) {
             float a = as[i];
             float b = bs[i];
 
             for (int j = 0; j < idList.get(i).size(); j++) {
-                SmallStarShotEntity entity = (SmallStarShotEntity) serverWorld.getEntityByUuid(idList.get(i).get(j));
+                SmallStarShotEntity entity = (SmallStarShotEntity) serverLevel.getEntityByUuid(idList.get(i).get(j));
                 double angle = ((world.getGameTime() + j) * 0.1) % (Math.PI * 2);
 
-                Vector3d nextPos = new Vector3d(startPos.x + a * MathHelper.cos((float) angle), startPos.y,
+                Vec3 nextPos = new Vec3(startPos.x + a * MathHelper.cos((float) angle), startPos.y,
                         startPos.z + b * MathHelper.sin((float) angle));
                 double motionX = -a * MathHelper.sin((float) angle) * speed;
                 double motionZ = b * MathHelper.cos((float) angle) * speed;
 
                 if (entity != null) {
-                    setDanmakuInit(entity, startPos, new Vector2f(this.rotationYaw, this.rotationPitch));
+                    setDanmakuInit(entity, startPos, new Vec2(this.rotationYaw, this.rotationPitch));
                     entity.setMotion(motionX, 0, motionZ);
                 }
             }

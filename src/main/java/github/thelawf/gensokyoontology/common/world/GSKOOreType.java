@@ -1,7 +1,7 @@
 package github.thelawf.gensokyoontology.common.world;
 
 import github.thelawf.gensokyoontology.core.init.BlockRegistry;
-import net.minecraft.block.Block;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.util.Lazy;
 
 public enum GSKOOreType {

@@ -4,24 +4,24 @@ import github.thelawf.gensokyoontology.common.entity.projectile.AbstractDanmakuE
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuColor;
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuPool;
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuType;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IRendersAsItem;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.IRendersAsItem;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.math.vector.Vector2f;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,7 +42,7 @@ public abstract class SpellCardEntity extends Entity implements IRendersAsItem {
     /**
      * 初始化设置弹幕的射击方位为X轴正方向，即游戏中的东方
      */
-    protected Vector3d shootAngle = new Vector3d(Vector3f.XP);
+    protected Vec3 shootAngle = new Vec3(Vector3f.XP);
 
     public static final DataParameter<Integer> DATA_LIFESPAN = EntityDataManager.createKey(
             SpellCardEntity.class, DataSerializers.VARINT);
@@ -50,21 +50,21 @@ public abstract class SpellCardEntity extends Entity implements IRendersAsItem {
     public static final DataParameter<Optional<UUID>> DATA_OWNER_UUID = EntityDataManager.createKey(
             SpellCardEntity.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 
-    public SpellCardEntity(EntityType<? extends SpellCardEntity> entityTypeIn, World worldIn, LivingEntity living) {
+    public SpellCardEntity(EntityType<? extends SpellCardEntity> entityTypeIn, Level worldIn, LivingEntity living) {
         this(entityTypeIn, worldIn);
         // this.setPosition(living.getPosX(), living.getPosY(), living.getPosZ());
         this.setLocationAndAngles(living.getPosX(), living.getPosY(), living.getPosZ(), living.rotationYaw, living.rotationPitch);
         this.setOwner(living);
     }
 
-    public SpellCardEntity(EntityType<? extends SpellCardEntity> entityTypeIn, World worldIn, PlayerEntity player) {
+    public SpellCardEntity(EntityType<? extends SpellCardEntity> entityTypeIn, Level worldIn, Player player) {
         this(entityTypeIn, worldIn);
         // this.setPosition(player.getPosX(), player.getPosY(), player.getPosZ());
         this.setLocationAndAngles(player.getPosX(),player.getPosY(), player.getPosZ(), player.rotationYaw, player.rotationPitch);
         this.setOwner(worldIn.getPlayerByUuid(player.getUniqueID()));
     }
 
-    public SpellCardEntity(EntityType<? extends SpellCardEntity> entityTypeIn, World worldIn) {
+    public SpellCardEntity(EntityType<? extends SpellCardEntity> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
     }
 
@@ -74,7 +74,7 @@ public abstract class SpellCardEntity extends Entity implements IRendersAsItem {
         this.dataManager.register(DATA_OWNER_UUID, Optional.empty());
     }
 
-    protected void readAdditional(@NotNull CompoundNBT compound) {
+    protected void readAdditional(@NotNull CompoundTag compound) {
         if (compound.contains("Lifespan")) {
             this.lifeSpan = compound.getInt("Lifespan");
         }
@@ -89,7 +89,7 @@ public abstract class SpellCardEntity extends Entity implements IRendersAsItem {
         }
     }
 
-    protected void writeAdditional(CompoundNBT compound) {
+    protected void writeAdditional(CompoundTag compound) {
         compound.putInt("Lifespan", this.lifeSpan);
         if (this.owner != null) {
             compound.putUniqueId("Owner", this.owner);
@@ -113,11 +113,11 @@ public abstract class SpellCardEntity extends Entity implements IRendersAsItem {
 
     @Nullable
     public Entity getOwner() {
-        if (this.world instanceof ServerWorld) {
-            ServerWorld serverWorld = (ServerWorld) this.world;
+        if (this.world instanceof ServerLevel) {
+            ServerLevel serverLevel = (ServerLevel) this.world;
             Optional<UUID> optionalUUID = this.getDataManager().get(DATA_OWNER_UUID);
             if (optionalUUID.isPresent()) {
-                return serverWorld.getEntityByUuid(optionalUUID.get());
+                return serverLevel.getEntityByUuid(optionalUUID.get());
             }
         }
         return null;
@@ -170,7 +170,7 @@ public abstract class SpellCardEntity extends Entity implements IRendersAsItem {
      * @param danmaku      弹幕形参
      * @param initPosition 弹幕的初始化位置
      */
-    protected <D extends AbstractDanmakuEntity> void setDanmakuInit(D danmaku, Vector3d initPosition) {
+    protected <D extends AbstractDanmakuEntity> void setDanmakuInit(D danmaku, Vec3 initPosition) {
         danmaku.setNoGravity(true);
         danmaku.setLocationAndAngles(initPosition.x, initPosition.y, initPosition.z, this.rotationYaw, this.rotationPitch);
     }
@@ -184,21 +184,21 @@ public abstract class SpellCardEntity extends Entity implements IRendersAsItem {
      * @param initPosition 弹幕的初始化位置，应该为全局坐标系
      * @param initRotation 弹幕的旋转
      */
-    protected <D extends AbstractDanmakuEntity> void setDanmakuInit(D danmaku, Vector3d initPosition, Vector2f initRotation) {
+    protected <D extends AbstractDanmakuEntity> void setDanmakuInit(D danmaku, Vec3 initPosition, Vec2 initRotation) {
         danmaku.setNoGravity(true);
         danmaku.setLocationAndAngles(initPosition.x, initPosition.y, initPosition.z, initRotation.x, initRotation.y);
     }
 
-    protected <D extends AbstractDanmakuEntity> void setDanmakuInit(D danmaku, Vector3d initPosition, double rotationYaw, double rotationPitch) {
-        setDanmakuInit(danmaku, initPosition, new Vector2f((float) rotationYaw, (float) rotationPitch));
+    protected <D extends AbstractDanmakuEntity> void setDanmakuInit(D danmaku, Vec3 initPosition, double rotationYaw, double rotationPitch) {
+        setDanmakuInit(danmaku, initPosition, new Vec2((float) rotationYaw, (float) rotationPitch));
     }
 
-    protected <D extends AbstractDanmakuEntity> void setDanmakuInit(D danmaku, Vector3d initPosition, float rotationYaw, float rotationPitch, boolean noGravity) {
+    protected <D extends AbstractDanmakuEntity> void setDanmakuInit(D danmaku, Vec3 initPosition, float rotationYaw, float rotationPitch, boolean noGravity) {
         danmaku.setNoGravity(noGravity);
-        setDanmakuInit(danmaku, initPosition, new Vector2f(rotationYaw, rotationPitch));
+        setDanmakuInit(danmaku, initPosition, new Vec2(rotationYaw, rotationPitch));
     }
 
-    protected <D extends AbstractDanmakuEntity> void setDanmakuInit(D danmaku, Vector3d initPosition, Vector2f initRotation, boolean noGravity) {
+    protected <D extends AbstractDanmakuEntity> void setDanmakuInit(D danmaku, Vec3 initPosition, Vec2 initRotation, boolean noGravity) {
         danmaku.setNoGravity(noGravity);
         setDanmakuInit(danmaku, initPosition,initRotation);
     }
@@ -214,10 +214,10 @@ public abstract class SpellCardEntity extends Entity implements IRendersAsItem {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
-    public void onTick(World world, Entity entity, int ticksIn) {
+    public void onTick(Level world, Entity entity, int ticksIn) {
     }
 
-    public void onScriptTick(World world, Entity owner, int ticksIn){
+    public void onScriptTick(Level world, Entity owner, int ticksIn){
 
     }
 
@@ -242,7 +242,7 @@ public abstract class SpellCardEntity extends Entity implements IRendersAsItem {
     protected <D extends AbstractDanmakuEntity> Map<Integer, D> newDanmakuMap (D danmaku, Class<D> danmakuClass, int count) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Map<Integer, D> danmakuMap = new HashMap<>();
         for (int i = 0; i < count; i++) {
-            Constructor<D> constructor = danmakuClass.getDeclaredConstructor(LivingEntity.class, World.class, DanmakuType.class, DanmakuColor.class);
+            Constructor<D> constructor = danmakuClass.getDeclaredConstructor(LivingEntity.class, Level.class, DanmakuType.class, DanmakuColor.class);
             D instance = constructor.newInstance(danmaku.getShooter(), danmaku.world,
                     danmaku.getDanmakuType(), danmaku.getDanmakuColor());
             danmakuMap.put(instance.getEntityId(), instance);
@@ -251,7 +251,7 @@ public abstract class SpellCardEntity extends Entity implements IRendersAsItem {
     }
 
     protected <D extends AbstractDanmakuEntity> D newDanmaku (D danmaku, Class<D> danmakuClass) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        Constructor<D> constructor = danmakuClass.getDeclaredConstructor(LivingEntity.class, World.class, DanmakuType.class, DanmakuColor.class);
+        Constructor<D> constructor = danmakuClass.getDeclaredConstructor(LivingEntity.class, Level.class, DanmakuType.class, DanmakuColor.class);
         return constructor.newInstance(danmaku.getShooter(), danmaku.world,
                 danmaku.getDanmakuType(), danmaku.getDanmakuColor());
     }
@@ -259,14 +259,14 @@ public abstract class SpellCardEntity extends Entity implements IRendersAsItem {
     protected <D extends AbstractDanmakuEntity> DanmakuPool<D> newDanmakuPool(D danmaku, Class<D> danmakuClass, int count) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         DanmakuPool<D> danmakuPool = new DanmakuPool<>();
         for (int i = 0; i < count; i++) {
-            Constructor<D> constructor = danmakuClass.getDeclaredConstructor(LivingEntity.class, World.class, DanmakuType.class, DanmakuColor.class);
+            Constructor<D> constructor = danmakuClass.getDeclaredConstructor(LivingEntity.class, Level.class, DanmakuType.class, DanmakuColor.class);
             danmakuPool.add(constructor.newInstance(danmaku.getShooter(), danmaku.world,
                     danmaku.getDanmakuType(), danmaku.getDanmakuColor()));
         }
         return danmakuPool;
     }
 
-    public <D extends AbstractDanmakuEntity> D acquire(Deque<D> deque, Vector3d positionVec, Vector2f rotationVec) {
+    public <D extends AbstractDanmakuEntity> D acquire(Deque<D> deque, Vec3 positionVec, Vec2 rotationVec) {
         D entity = deque.pollFirst();
         if (entity != null) {
             entity.setNoGravity(true);
@@ -277,16 +277,16 @@ public abstract class SpellCardEntity extends Entity implements IRendersAsItem {
         }
     }
 
-    protected CompoundNBT initColor(DanmakuColor colorIn) {
-        CompoundNBT nbt = new CompoundNBT();
+    protected CompoundTag initColor(DanmakuColor colorIn) {
+        CompoundTag nbt = new CompoundTag();
         nbt.putInt("color", colorIn.ordinal());
         return nbt;
     }
 
-    protected Vector2f lookVecToDegrees(Vector3d vector3d) {
+    protected Vec2 lookVecToDegrees(Vec3 vector3d) {
         float f1 = (float)Math.acos(vector3d.y);
         float f2 = (float)Math.atan2(vector3d.z, vector3d.x);
-        return new Vector2f(f1, f2);
+        return new Vec2(f1, f2);
     }
 
     @Override

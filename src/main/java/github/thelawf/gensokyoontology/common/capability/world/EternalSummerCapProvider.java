@@ -2,7 +2,7 @@ package github.thelawf.gensokyoontology.common.capability.world;
 
 import github.thelawf.gensokyoontology.common.capability.GSKOCapabilities;
 import github.thelawf.gensokyoontology.common.capability.entity.ExtraLifeCapability;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 // 2202532849087618747
-public class EternalSummerCapProvider implements ICapabilityProvider, INBTSerializable<CompoundNBT> {
+public class EternalSummerCapProvider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
     private EternalSummerCapability capability;
     private boolean isTriggered;
     public EternalSummerCapProvider(boolean isTriggered) {
@@ -31,12 +31,12 @@ public class EternalSummerCapProvider implements ICapabilityProvider, INBTSerial
         return this.capability;
     }
     @Override
-    public CompoundNBT serializeNBT() {
+    public CompoundTag serializeNBT() {
         return getOrCreateCapability().serializeNBT();
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         getOrCreateCapability().deserializeNBT(nbt);
     }
 }

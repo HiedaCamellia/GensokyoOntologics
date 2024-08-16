@@ -1,7 +1,7 @@
 package github.thelawf.gensokyoontology.common.capability.entity;
 
 import github.thelawf.gensokyoontology.common.capability.GSKOCapabilities;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
@@ -11,7 +11,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class SecularLifetimeProvider implements ICapabilityProvider, INBTSerializable<CompoundNBT> {
+public class SecularLifetimeProvider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
     private long lifetime;
     private SecularLifeCapability capability;
 
@@ -34,12 +34,12 @@ public class SecularLifetimeProvider implements ICapabilityProvider, INBTSeriali
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        return (CompoundNBT) GSKOCapabilities.SECULAR_LIFE.writeNBT(getOrCreate(), null);
+    public CompoundTag serializeNBT() {
+        return (CompoundTag) GSKOCapabilities.SECULAR_LIFE.writeNBT(getOrCreate(), null);
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         GSKOCapabilities.SECULAR_LIFE.readNBT(getOrCreate(), null, nbt);
     }
 }

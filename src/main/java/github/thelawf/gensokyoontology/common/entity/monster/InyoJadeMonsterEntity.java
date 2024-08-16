@@ -1,19 +1,19 @@
 package github.thelawf.gensokyoontology.common.entity.monster;
 
 import github.thelawf.gensokyoontology.core.init.ItemRegistry;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IRendersAsItem;
-import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.IRendersAsItem;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 @OnlyIn(value = Dist.CLIENT, _interface = IRendersAsItem.class)
-public class InyoJadeMonsterEntity extends MonsterEntity implements IRendersAsItem {
+public class InyoJadeMonster extends Monster implements IRendersAsItem {
 
-    public InyoJadeMonsterEntity(EntityType<? extends MonsterEntity> type, World worldIn) {
+    public InyoJadeMonster(EntityType<? extends Monster> type, Level worldIn) {
         super(type, worldIn);
     }
 

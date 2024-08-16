@@ -6,12 +6,12 @@ import com.mojang.brigadier.StringReader;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.*;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.entity.player.ServerPlayer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.BlockPos;
+
+
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityDispatcher;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -51,9 +51,9 @@ public class GSKOCommand {
     }
 
     private static int getBlockState(CommandSource source, BlockPos pos) {
-        ServerWorld serverWorld = source.getWorld();
-        source.sendFeedback(new TranslationTextComponent("cmd.gensokyoontology.get_block_states.info"),true);
-        source.sendFeedback(new StringTextComponent(serverWorld.getBlockState(pos).toString()), true);
+        ServerLevel serverLevel = source.level();
+        source.sendFeedback(Component.translatable("cmd.gensokyoontology.get_block_states.info"),true);
+        source.sendFeedback(Component.literal(serverLevel.getBlockState(pos).toString()), true);
         return 1;
     }
 
@@ -66,7 +66,7 @@ public class GSKOCommand {
     private static int listCapability(CommandSource source) {
         IdentityHashMap<String, Capability<?>> map = ObfuscationReflectionHelper.getPrivateValue(CapabilityManager.INSTANCE.getDeclaringClass(), CapabilityManager.INSTANCE, "providers");
         if (map != null) {
-            map.forEach((s, capability) -> source.sendFeedback(new StringTextComponent(s), true));
+            map.forEach((s, capability) -> source.sendFeedback(Component.literal(s), true));
         }
         return 1;
     }

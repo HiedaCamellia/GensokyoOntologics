@@ -11,8 +11,8 @@ import github.thelawf.gensokyoontology.common.tileentity.DanmakuTabelTileEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.entity.player.ServerPlayer;
+
 import net.minecraftforge.fml.network.NetworkHooks;
 
 public class GUICommand implements Command<CommandSource> {

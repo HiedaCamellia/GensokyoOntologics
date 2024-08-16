@@ -2,14 +2,14 @@ package github.thelawf.gensokyoontology.common.item.touhou;
 
 import github.thelawf.gensokyoontology.common.util.danmaku.TransformFunction;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.*;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -37,17 +37,17 @@ public class DanmakuTestItem extends ShootableItem {
     }
 
     @Override
-    public void addInformation(@NotNull ItemStack stack, @Nullable World worldIn, @NotNull List<ITextComponent> tooltip, @NotNull ITooltipFlag flagIn) {
+    public void addInformation(@NotNull ItemStack stack, @Nullable Level worldIn, @NotNull List<Component> tooltip, @NotNull ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
     }
 
     @Override
     @NotNull
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, @NotNull PlayerEntity playerIn, @NotNull Hand handIn) {
+    public ActionResult<ItemStack> onItemRightClick(Level worldIn, @NotNull Player playerIn, @NotNull Hand handIn) {
         // if (Screen.hasShiftDown()) {
         //     SHIFT右键该物品可切换弹幕风格
         // }
-        if (!worldIn.isRemote) {
+        if (worldIn.isClientSide) {
             // 在这里初始化TransformFunction.transform()，部分变量必须提供，详情请见{@link TransformFunction.java}
             TransformFunction func = TransformFunction.Builder.create()
                     .setPlayer(playerIn).setInitLocation(playerIn.getPositionVec())
@@ -55,7 +55,7 @@ public class DanmakuTestItem extends ShootableItem {
                     .setExecuteInterval(10).setResultantSpeed(0.75)
                     .setIncrement(Math.PI / 72)
                     .setShootVector(playerIn.getLookVec())
-                    .setWorld(worldIn);
+                    .setLevel(worldIn);
 //
             TransformFunction tff = TransformFunction.Builder.create();
 //
@@ -67,7 +67,7 @@ public class DanmakuTestItem extends ShootableItem {
         return super.onItemRightClick(worldIn, playerIn, handIn);
     }
 
-    public static void shootCircle(World worldIn, PlayerEntity playerIn, TransformFunction func) {
+    public static void shootCircle(Level worldIn, Player playerIn, TransformFunction func) {
         /* playerIn.getLookVec() 返回一个类似于百分比的向量数据，用以表示玩家偏向于该方向的占比：
 
              east:  1, 0, 0 -- Vector3f.XP
@@ -82,7 +82,7 @@ public class DanmakuTestItem extends ShootableItem {
             */
 
         // DanmakuShotEntity danmaku = new DanmakuShotEntity(playerIn, worldIn);
-        // Vector3d shootPos = func.getShootVector().rotateYaw((float)
+        // Vec3 shootPos = func.getShootVector().rotateYaw((float)
         //         (func.increment));
         // danmaku.setNoGravity(true);
 //

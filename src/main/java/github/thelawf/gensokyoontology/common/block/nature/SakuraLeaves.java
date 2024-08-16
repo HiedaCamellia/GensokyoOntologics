@@ -1,13 +1,13 @@
 package github.thelawf.gensokyoontology.common.block.nature;
 
 import github.thelawf.gensokyoontology.common.capability.GSKOCapabilities;
-import github.thelawf.gensokyoontology.data.world.GSKOWorldSavedData;
+import github.thelawf.gensokyoontology.data.world.GSKOLevelSavedData;
 import github.thelawf.gensokyoontology.data.world.GensokyoSeason;
-import net.minecraft.block.*;
+import net.minecraft.world.level.block.*;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
@@ -20,13 +20,13 @@ public class SakuraLeaves extends LeavesBlock {
     }
 
     @Override
-    public void randomTick(BlockState state, @NotNull ServerWorld worldIn, @NotNull BlockPos pos, @NotNull Random random) {
+    public void randomTick(BlockState state, @NotNull ServerLevel worldIn, @NotNull BlockPos pos, @NotNull Random random) {
         if (!state.get(PERSISTENT) && state.get(DISTANCE) == 7) {
             spawnDrops(state, worldIn, pos);
             worldIn.removeBlock(pos, false);
         }
-        GSKOWorldSavedData gskoWorldData = GSKOWorldSavedData.getInstance(worldIn);
-        if (gskoWorldData.getSeason() == GensokyoSeason.SPRING) {
+        GSKOLevelSavedData gskoLevelData = GSKOLevelSavedData.getInstance(worldIn);
+        if (gskoLevelData.getSeason() == GensokyoSeason.SPRING) {
             this.setDefaultState(this.getDefaultState().with(BLOOMED, true));
         }
         else {

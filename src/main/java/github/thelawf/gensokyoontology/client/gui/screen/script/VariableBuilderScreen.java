@@ -1,11 +1,11 @@
 package github.thelawf.gensokyoontology.client.gui.screen.script;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
 
 public class VariableBuilderScreen extends Screen {
-    public VariableBuilderScreen(ITextComponent titleIn) {
+    public VariableBuilderScreen(Component titleIn) {
         super(titleIn);
     }
 

@@ -9,34 +9,34 @@ import github.thelawf.gensokyoontology.common.util.GSKODamageSource;
 import github.thelawf.gensokyoontology.common.util.GSKOUtil;
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuColor;
 import github.thelawf.gensokyoontology.core.init.EntityRegistry;
-import net.minecraft.entity.EntityPredicate;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.EntityPredicate;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DreamSealEntity extends ScriptedDanmakuEntity implements IRayTraceReader {
     private int color;
-    public DreamSealEntity(World worldIn, LivingEntity shooter, DanmakuColor color) {
+    public DreamSealEntity(Level worldIn, LivingEntity shooter, DanmakuColor color) {
         super(EntityRegistry.DREAM_SEAL_ENTITY.get(), worldIn);
         this.setLifespan(300);
 
         this.setColor(color);
         this.setShooter(shooter);
-        this.setScript(new CompoundNBT());
+        this.setScript(new CompoundTag());
         this.setTarget(findTarget(world, shooter.getPositionVec(), createCubeBox(shooter.getPositionVec(), 20)));
     }
-    public DreamSealEntity(EntityType<? extends AbstractDanmakuEntity> entityTypeIn, World worldIn) {
+    public DreamSealEntity(EntityType<? extends AbstractDanmakuEntity> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
     }
 
@@ -46,13 +46,13 @@ public class DreamSealEntity extends ScriptedDanmakuEntity implements IRayTraceR
         super.tick();
         // if (ticksExisted <= 20) return;
         if (this.getShooter() != null && this.getTarget() != null) {
-            Vector3d aimedVec = this.getAimedVec(this.getShooter(), this.getTarget());
+            Vec3 aimedVec = this.getAimedVec(this.getShooter(), this.getTarget());
             float offset = 0.3f / this.getTarget().getEyeHeight();
             this.shoot(aimedVec.x, aimedVec.y - offset, aimedVec.z, 1.6f, 0f);
             GSKOUtil.log(this.getClass(), this.getTarget().getPositionVec());
         }
         // this.getShooter().flatMap(this::getTarget).ifPresent(target -> {
-        //     Vector3d direction = this.getAimedVec(target);
+        //     Vec3 direction = this.getAimedVec(target);
         //     this.setMotion(direction.normalize().scale(0.8f));
         // });
     }
@@ -60,11 +60,11 @@ public class DreamSealEntity extends ScriptedDanmakuEntity implements IRayTraceR
     private boolean isPlayer() {
         AtomicBoolean flag = new AtomicBoolean();
         if (this.getShooter() == null) return false;
-        return this.getShooter() instanceof PlayerEntity;
+        return this.getShooter() instanceof Player;
     }
 
-    public static LivingEntity findTarget(World world, Vector3d center, AxisAlignedBB box) {
-        EntityPredicate predicate = new EntityPredicate().setCustomPredicate(entity -> !(entity instanceof PlayerEntity));
+    public static LivingEntity findTarget(Level world, Vec3 center, AxisAlignedBB box) {
+        EntityPredicate predicate = new EntityPredicate().setCustomPredicate(entity -> !(entity instanceof Player));
         return world.getClosestEntity(LivingEntity.class, predicate, null,
                 center.x, center.y, center.z, box);
     }

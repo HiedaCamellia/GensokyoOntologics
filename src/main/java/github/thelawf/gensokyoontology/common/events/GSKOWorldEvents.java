@@ -19,38 +19,22 @@ import github.thelawf.gensokyoontology.core.init.BlockRegistry;
 import github.thelawf.gensokyoontology.core.init.EntityRegistry;
 import github.thelawf.gensokyoontology.core.init.ItemRegistry;
 import github.thelawf.gensokyoontology.core.init.StructureRegistry;
-import github.thelawf.gensokyoontology.data.world.GSKOWorldSavedData;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.MobSpawnInfo;
-import net.minecraft.world.chunk.IChunk;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.FlatChunkGenerator;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.IFeatureConfig;
-import net.minecraft.world.gen.feature.structure.Structure;
-import net.minecraft.world.gen.settings.DimensionStructuresSettings;
-import net.minecraft.world.gen.settings.StructureSeparationSettings;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityEvent;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
-import net.minecraftforge.event.world.ChunkEvent;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import github.thelawf.gensokyoontology.data.world.GSKOLevelSavedData;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.entity.EntityEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
 import org.apache.logging.log4j.LogManager;
 
 import java.lang.reflect.InvocationTargetException;
@@ -61,8 +45,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-@Mod.EventBusSubscriber(modid = GensokyoOntology.MODID)
-public class GSKOWorldEvents {
+@EventBusSubscriber(modid = GensokyoOntology.MODID)
+public class GSKOLevelEvents {
 
     @SubscribeEvent
     public static void onLivingSpawn(BiomeLoadingEvent event) {
@@ -82,7 +66,7 @@ public class GSKOWorldEvents {
         if (event.getEntity() == null) return;
         if (event.getEntity().getType() == EntityType.ITEM) {
             ItemEntity itemEntity = (ItemEntity) event.getEntity();
-            World world = event.getEntity().getEntityWorld();
+            Level world = event.getEntity().level();
             if (itemEntity.getItem().getItem() == ItemRegistry.SAKE_WORM.get() && itemEntity.ticksExisted > 100 &&
                     world.getBlockState(itemEntity.getPosition()).getBlock() == Blocks.WATER) {
                 world.setBlockState(itemEntity.getPosition(), BlockRegistry.SAKE_WINE_BLOCK.get().getDefaultState());
@@ -94,43 +78,43 @@ public class GSKOWorldEvents {
     @SubscribeEvent
     public static void trySpawnBoss(TickEvent.PlayerTickEvent event) {
         if (!event.player.world.isRemote) {
-            ServerWorld serverWorld = (ServerWorld) event.player.world;
-            PlayerEntity player = event.player;
-            LilyWhiteSpawner.spawn(serverWorld, player, player.getPosition(), player.ticksExisted, 0.01f);
+            ServerLevel serverLevel = (ServerLevel) event.player.world;
+            Player player = event.player;
+            LilyWhiteSpawner.spawn(serverLevel, player, player.getPosition(), player.ticksExisted, 0.01f);
         }
     }
 
     @SubscribeEvent
     public static void onChunkLoad(ChunkEvent.Load event) {
         IChunk chunk = event.getChunk();
-        if (chunk.getWorldForge() instanceof ServerWorld) {
-            ServerWorld serverWorld = (ServerWorld) chunk.getWorldForge();
-            if (serverWorld.getDimensionKey().equals(GSKODimensions.GENSOKYO)) {
-                Biome biome = serverWorld.getBiome(chunk.getPos().asBlockPos());
+        if (chunk.levelForge() instanceof ServerLevel) {
+            ServerLevel serverLevel = (ServerLevel) chunk.levelForge();
+            if (serverLevel.dimension().equals(GSKODimensions.GENSOKYO)) {
+                Biome biome = serverLevel.getBiome(chunk.getPos().asBlockPos());
                 final String modid = GensokyoOntology.MODID;
             }
         }
     }
 
     @SubscribeEvent
-    public static void addDimensionSpacing(final WorldEvent.Load event) {
-        if (event.getWorld() instanceof ServerWorld) {
-            ServerWorld serverWorld = (ServerWorld) event.getWorld();
+    public static void addDimensionSpacing(final LevelEvent.Load event) {
+        if (event.level() instanceof ServerLevel) {
+            ServerLevel serverLevel = (ServerLevel) event.level();
             Method GET_CODEC_METHOD = ObfuscationReflectionHelper.findMethod(ChunkGenerator.class, "func_230347_a_");
             try {
                 ResourceLocation location = Registry.CHUNK_GENERATOR_CODEC.getKey(
                         (Codec<? extends ChunkGenerator>) GET_CODEC_METHOD.invoke(
-                                serverWorld.getChunkProvider().getChunkGenerator()));
+                                serverLevel.getChunkProvider().getChunkGenerator()));
                 if (location != null && location.getNamespace().equals("terraforged")) {
                     return;
                 }
             } catch (IllegalAccessException | InvocationTargetException e) {
-                LogManager.getLogger().error("Was unable to check if " + serverWorld.getDimensionKey()
+                LogManager.getLogger().error("Was unable to check if " + serverLevel.dimension()
                         + " is using Terraforged's ChunkGenerator.");
             }
             // 放止建筑在超平坦世界生成
-            if (serverWorld.getChunkProvider().generator instanceof FlatChunkGenerator &&
-                    serverWorld.getDimensionKey().equals(World.OVERWORLD)) {
+            if (serverLevel.getChunkProvider().generator instanceof FlatChunkGenerator &&
+                    serverLevel.dimension().equals(Level.OVERWORLD)) {
                 return;
             }
 
@@ -141,7 +125,7 @@ public class GSKOWorldEvents {
             //   field_236191_b_       structureSettings       ImmutableMap<Structure<?>, StructureSeparationSettings>      存放建筑结构和建筑生成设置的不可变映射Map
             //   field_236268_b_            feature                           F extends Structure<FC>                            泛型：一切继承于建筑结构的类
             Map<Structure<?>, StructureSeparationSettings> tempMap = new HashMap<>(
-                    serverWorld.getChunkProvider().generator.func_235957_b_().func_236195_a_());
+                    serverLevel.getChunkProvider().generator.func_235957_b_().func_236195_a_());
 
             tempMap.putIfAbsent(StructureRegistry.ALICE_HOUSE.get(),
                     DimensionStructuresSettings.field_236191_b_.get(StructureRegistry.ALICE_HOUSE.get()));
@@ -167,7 +151,7 @@ public class GSKOWorldEvents {
             tempMap.putIfAbsent(StructureRegistry.HUMAN_VILLAGE.get(),
                     DimensionStructuresSettings.field_236191_b_.get(StructureRegistry.HUMAN_VILLAGE.get()));
 
-            serverWorld.getChunkProvider().generator.func_235957_b_().field_236193_d_ = tempMap;
+            serverLevel.getChunkProvider().generator.func_235957_b_().field_236193_d_ = tempMap;
         }
     }
 
@@ -179,7 +163,7 @@ public class GSKOWorldEvents {
 
     private static void onGapEntityTick(ItemEntity entity, BlockItem gapItem) {
         if (entity.getItem().getItem() == gapItem) {
-            World world = entity.getEntityWorld();
+            Level world = entity.level();
             Predicate<BlockPos> predicate = (pos) -> {
                 BlockPos.Mutable mutable = pos.toMutable();
                 return world.getBlockState(mutable).getBlock() == Blocks.WATER && world.getBlockState(mutable.north()).getBlock() == Blocks.WATER &&
@@ -192,27 +176,27 @@ public class GSKOWorldEvents {
     }
 
 
-    private static void spawnEntityIn(ServerWorld serverWorld, EntityClassification classification,
-                                      WorldEvent.PotentialSpawns event) {
+    private static void spawnEntityIn(ServerLevel serverLevel, EntityClassification classification,
+                                      LevelEvent.PotentialSpawns event) {
 
         List<ResourceLocation> biomeIds = Arrays.asList(
-                new ResourceLocation("minecraft:plains"),
-                new ResourceLocation("minecraft:desert"),
-                new ResourceLocation("minecraft:forest"),
-                new ResourceLocation("miencraft:taiga"),
-                new ResourceLocation("minecraft:mountains"),
-                new ResourceLocation("minecraft:snowy_tundra"),
-                new ResourceLocation("minecraft:snowy_mountains"),
-                new ResourceLocation("minecraft:jungle"),
-                new ResourceLocation("minecraft:birch_forest"),
-                new ResourceLocation("minecraft:savanna"),
-                new ResourceLocation("minecraft:savanna_plateau"),
-                new ResourceLocation("minecraft:dark_forest"),
-                new ResourceLocation("minecraft:bamboo_jungle"),
-                new ResourceLocation("minecraft:giant_spruce_taiga")
+                ResourceLocation.parse("minecraft:plains"),
+                ResourceLocation.parse("minecraft:desert"),
+                ResourceLocation.parse("minecraft:forest"),
+                ResourceLocation.parse("miencraft:taiga"),
+                ResourceLocation.parse("minecraft:mountains"),
+                ResourceLocation.parse("minecraft:snowy_tundra"),
+                ResourceLocation.parse("minecraft:snowy_mountains"),
+                ResourceLocation.parse("minecraft:jungle"),
+                ResourceLocation.parse("minecraft:birch_forest"),
+                ResourceLocation.parse("minecraft:savanna"),
+                ResourceLocation.parse("minecraft:savanna_plateau"),
+                ResourceLocation.parse("minecraft:dark_forest"),
+                ResourceLocation.parse("minecraft:bamboo_jungle"),
+                ResourceLocation.parse("minecraft:giant_spruce_taiga")
         );
 
-        serverWorld.getChunkProvider().getChunkGenerator().getBiomeProvider()
+        serverLevel.getChunkProvider().getChunkGenerator().getBiomeProvider()
                 .getBiomes().forEach(biome -> spawnEntityIn(biome, biomeIds, classification));
     }
 

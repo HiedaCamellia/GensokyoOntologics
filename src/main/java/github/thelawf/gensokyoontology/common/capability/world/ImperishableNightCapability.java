@@ -1,6 +1,6 @@
 package github.thelawf.gensokyoontology.common.capability.world;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 public class ImperishableNightCapability implements IImperishableNight {
 
@@ -33,15 +33,15 @@ public class ImperishableNightCapability implements IImperishableNight {
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT nbt = new CompoundNBT();
+    public CompoundTag serializeNBT() {
+        CompoundTag nbt = new CompoundTag();
         nbt.putInt("time", this.time);
         nbt.putBoolean("is_triggered", this.isTriggered);
         return nbt;
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         if (nbt.contains("time")) {
             this.time = nbt.getInt("time");
         }

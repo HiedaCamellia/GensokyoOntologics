@@ -1,9 +1,9 @@
 package github.thelawf.gensokyoontology.common.item;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.item.DyeColor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.material.Material;
+import net.minecraft.world.item.DyeColor;
 
 public class MagicDye extends Block {
     private final DyeColor color;

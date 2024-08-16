@@ -9,10 +9,10 @@ import net.minecraft.client.world.DimensionRenderInfo;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.impl.ExecuteCommand;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.entity.player.ServerPlayer;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.resources.ResourceLocation;
+
 import net.minecraft.world.DimensionType;
 
 public class DimensionCommand implements Command<CommandSource> {
@@ -43,8 +43,8 @@ public class DimensionCommand implements Command<CommandSource> {
 
         @Override
         public int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
-            ResourceLocation dimensionName = context.getSource().getWorld().getDimensionKey().getRegistryName();
-            context.getSource().sendFeedback(new TranslationTextComponent(dimensionName.toString()), true);
+            ResourceLocation dimensionName = context.getSource().level().dimension().getRegistryName();
+            context.getSource().sendFeedback(Component.translatable(dimensionName.toString()), true);
             return 0;
         }
     }

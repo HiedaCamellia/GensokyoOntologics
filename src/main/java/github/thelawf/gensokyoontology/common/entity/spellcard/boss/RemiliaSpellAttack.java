@@ -8,24 +8,24 @@ import github.thelawf.gensokyoontology.common.util.GSKOUtil;
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuUtil;
 import github.thelawf.gensokyoontology.common.util.math.GSKOMathUtil;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.entity.projectile.ProjectileHelper;
-import net.minecraft.util.math.vector.Vector2f;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.projectile.ProjectileEntity;
+import net.minecraft.world.entity.projectile.ProjectileHelper;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 
 import java.util.List;
 
 public class RemiliaSpellAttack {
 
-    public static List<Runnable> toSpells(World world, RemiliaScarletEntity remilia) {
+    public static List<Runnable> toSpells(Level world, RemiliaScarletEntity remilia) {
         return ImmutableList.of(() -> sphere(world, remilia));
     }
 
-    public static void sphere(World world, RemiliaScarletEntity remilia) {
-        List<Vector3d> shootVec = DanmakuUtil.spheroidPos(1, 20);
+    public static void sphere(Level world, RemiliaScarletEntity remilia) {
+        List<Vec3> shootVec = DanmakuUtil.spheroidPos(1, 20);
         shootVec.forEach(vector3d -> {
-            Vector3d vec = GSKOMathUtil.randomVec(-3, 3);
+            Vec3 vec = GSKOMathUtil.randomVec(-3, 3);
             LargeShotEntity largeShot = new LargeShotEntity(world);
             DanmakuUtil.initDanmaku(largeShot, remilia.getPositionVec().add(vector3d.x, 1.2, vector3d.z)
                     .add(vec.x, 0, vec.z), true);
@@ -37,16 +37,16 @@ public class RemiliaSpellAttack {
 
     public static void tickLaserSpiral(RemiliaScarletEntity remilia) {
         int count = 25;
-        Vector3d initRot = new Vector3d(1, 0, 0);
-        Vector3d position = remilia.getPositionVec();
+        Vec3 initRot = new Vec3(1, 0, 0);
+        Vec3 position = remilia.getPositionVec();
 
         for (int i = remilia.ticksExisted; i < remilia.ticksExisted + count; i++) {
             int unit = i - remilia.ticksExisted;
             // initRot = initRot.rotatePitch((float) Math.PI / 25 * unit);
             initRot = initRot.rotateYaw((float) Math.PI / count);
-            position = position.add(new Vector3d(0, 0.5, 0));
+            position = position.add(new Vec3(0, 0.5, 0));
 
-            Vector2f direction = GSKOMathUtil.toYawPitch(initRot);
+            Vec2 direction = GSKOMathUtil.toYawPitch(initRot);
             LaserSourceEntity laser = new LaserSourceEntity(remilia.world, remilia);
             laser.setLocationAndAngles(position.x, position.y, position.z, direction.x, direction.y);
             laser.init(500, 30, 100);

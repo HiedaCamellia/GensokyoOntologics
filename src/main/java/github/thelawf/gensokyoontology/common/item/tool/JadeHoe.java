@@ -1,8 +1,8 @@
 package github.thelawf.gensokyoontology.common.item.tool;
 
 import github.thelawf.gensokyoontology.common.item.touhou.GSKOItemTier;
-import net.minecraft.item.HoeItem;
-import net.minecraft.item.Item;
+import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.Item;
 
 public class JadeHoe extends HoeItem {
     public JadeHoe(Properties properties) {

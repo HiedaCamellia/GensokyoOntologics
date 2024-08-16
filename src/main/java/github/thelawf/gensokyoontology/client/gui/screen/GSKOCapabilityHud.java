@@ -6,13 +6,13 @@ import github.thelawf.gensokyoontology.GensokyoOntology;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class GSKOCapabilityHud extends AbstractGui {
     private final int width;
     private final int height;
     private final Minecraft minecraft;
-    private final ResourceLocation HUD = new ResourceLocation(GensokyoOntology.MODID, "textures/client/hud.png");
+    private final ResourceLocation HUD = ResourceLocation.parse(GensokyoOntology.MODID, "textures/client/hud.png");
     private MatrixStack matrixStack;
 
     public GSKOCapabilityHud(MatrixStack matrixStack) {

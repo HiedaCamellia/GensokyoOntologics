@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import github.thelawf.gensokyoontology.common.util.math.GSKOMathUtil;
 import github.thelawf.gensokyoontology.common.util.world.FeatureUtil;
 import github.thelawf.gensokyoontology.common.world.feature.config.MagicForestConfig;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;

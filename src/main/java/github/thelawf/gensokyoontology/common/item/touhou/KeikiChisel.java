@@ -4,17 +4,17 @@ import github.thelawf.gensokyoontology.api.util.IRayTraceReader;
 import github.thelawf.gensokyoontology.common.block.decoration.ClayAdobeBlock;
 import github.thelawf.gensokyoontology.common.tileentity.AdobeTileEntity;
 import github.thelawf.gensokyoontology.core.init.BlockRegistry;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemUseContext;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemUseContext;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.NotNull;
 
 public class KeikiChisel extends Item implements IRayTraceReader {
@@ -24,19 +24,19 @@ public class KeikiChisel extends Item implements IRayTraceReader {
 
     @NotNull
     @Override
-    public ActionResultType onItemUse(@NotNull ItemUseContext context) {
+    public InteractionResult useOn(UseOnContext context) {
         onAdobeCarved(context);
         return super.onItemUse(context);
     }
 
     public void onAdobeCarved(@NotNull ItemUseContext context) {
-        if (context.getWorld().getBlockState(context.getPos()).getBlock() == BlockRegistry.CLAY_ADOBE_BLOCK.get() &&
-                context.getWorld() instanceof ServerWorld && context.getPlayer() != null) {
-            ServerWorld serverWorld = (ServerWorld) context.getWorld();
+        if (context.level().getBlockState(context.getPos()).getBlock() == BlockRegistry.CLAY_ADOBE_BLOCK.get() &&
+                context.level() instanceof ServerLevel && context.getPlayer() != null) {
+            ServerLevel serverLevel = (ServerLevel) context.level();
             BlockPos pos = context.getPos();
-            ClayAdobeBlock adobe = (ClayAdobeBlock) serverWorld.getBlockState(pos).getBlock();
-            AdobeTileEntity tileEntity = adobe.getTileEntity(serverWorld, pos);
-            tileEntity.add(getIntersectedCurvature(context.getPlayer(), serverWorld, pos, tileEntity));
+            ClayAdobeBlock adobe = (ClayAdobeBlock) serverLevel.getBlockState(pos).getBlock();
+            AdobeTileEntity tileEntity = adobe.getTileEntity(serverLevel, pos);
+            tileEntity.add(getIntersectedCurvature(context.getPlayer(), serverLevel, pos, tileEntity));
         }
 
     }
@@ -45,12 +45,12 @@ public class KeikiChisel extends Item implements IRayTraceReader {
 
     }
 
-    public Vector3i getIntersectedCurvature(PlayerEntity player, ServerWorld serverWorld, BlockPos pos, AdobeTileEntity tileEntity) {
-        Vector3d start = player.getPositionVec();
-        Vector3d end = getLookEnd(start, player.getLookVec(), player.getEyeHeight(), 5);
+    public Vector3i getIntersectedCurvature(Player player, ServerLevel serverLevel, BlockPos pos, AdobeTileEntity tileEntity) {
+        Vec3 start = player.getPositionVec();
+        Vec3 end = getLookEnd(start, player.getLookVec(), player.getEyeHeight(), 5);
         AxisAlignedBB aabb = new AxisAlignedBB(pos);
-        Vector3d intersected = getIntersectedPos(start, end, aabb);
-        ChunkPos chunkPos = serverWorld.getChunk(pos).getPos();
+        Vec3 intersected = getIntersectedPos(start, end, aabb);
+        ChunkPos chunkPos = serverLevel.getChunk(pos).getPos();
         return new Vector3i(((int) intersected.x * 16) >> chunkPos.x, intersected.y * 16 - pos.getY(), ((int) intersected.z * 16) >> chunkPos.z);
     }
 }

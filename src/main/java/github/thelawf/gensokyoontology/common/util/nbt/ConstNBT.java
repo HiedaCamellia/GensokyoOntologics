@@ -2,16 +2,16 @@ package github.thelawf.gensokyoontology.common.util.nbt;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.StringNBT;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ConstNBT extends CompoundNBT{
+public class ConstNBT extends CompoundTag{
     public final StringNBT type;
     private final StringNBT name;
-    private final CompoundNBT value = new CompoundNBT();
+    private final CompoundTag value = new CompoundTag();
 
     public ConstNBT(String type, String name, INBT valueEntry) {
         this.type = StringNBT.valueOf(type);
@@ -25,7 +25,7 @@ public class ConstNBT extends CompoundNBT{
         return new ConstNBT(this.type.getString(), key, value);
     }
 
-    public CompoundNBT getValue() {
+    public CompoundTag getValue() {
         return this.value;
     }
 }

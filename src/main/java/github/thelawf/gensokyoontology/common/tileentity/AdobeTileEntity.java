@@ -2,26 +2,27 @@ package github.thelawf.gensokyoontology.common.tileentity;
 
 import com.google.common.collect.ImmutableList;
 import github.thelawf.gensokyoontology.core.init.TileEntityRegistry;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.IntArrayNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractList;
 import java.util.List;
 
-public class AdobeTileEntity extends TileEntity {
+public class AdobeTileEntity extends BlockEntity {
     private List<Vector3i> positionCarved;
     public AdobeTileEntity() {
         super(TileEntityRegistry.ADOBE_TILE_ENTITY.get());
     }
 
     @Override
-    public void read(@NotNull BlockState state, CompoundNBT nbt) {
+    public void read(@NotNull BlockState state, CompoundTag nbt) {
         if (nbt.get("PositionCarved") != null) {
             INBT iNBT = nbt.get("PositionCarved");
             if (iNBT instanceof ListNBT) {
@@ -34,7 +35,7 @@ public class AdobeTileEntity extends TileEntity {
 
     @NotNull
     @Override
-    public CompoundNBT write(@NotNull CompoundNBT compound) {
+    public CompoundTag write(@NotNull CompoundTag compound) {
         super.write(compound);
         ListNBT listNBT = new ListNBT();
         this.positionCarved.forEach(vector3i -> listNBT.add(new IntArrayNBT(ImmutableList.of(vector3i.getX(), vector3i.getY(), vector3i.getZ()))));

@@ -1,22 +1,22 @@
 package github.thelawf.gensokyoontology.common.entity.monster;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.SpawnReason;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.passive.TameableEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.ILevel;
+import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
@@ -40,7 +40,7 @@ public abstract class YoukaiEntity extends RetreatableEntity {
             YoukaiEntity.class, DataSerializers.BOOLEAN);
     public static final DataParameter<Integer> DATA_FAVORABILITY = EntityDataManager.createKey(YoukaiEntity.class, DataSerializers.VARINT);
 
-    protected YoukaiEntity(EntityType<? extends TameableEntity> type, World worldIn) {
+    protected YoukaiEntity(EntityType<? extends TameableEntity> type, Level worldIn) {
         super(type, worldIn);
     }
 
@@ -59,7 +59,7 @@ public abstract class YoukaiEntity extends RetreatableEntity {
     public void onDeath(@NotNull DamageSource cause) {
         // if (!this.isRetreated) {
         //     this.setHealth(this.getMaxHealth());
-        //     this.setOwnerId(cause.getTrueSource() instanceof PlayerEntity && cause.getTrueSource() == null ?
+        //     this.setOwnerId(cause.getTrueSource() instanceof Player && cause.getTrueSource() == null ?
         //             cause.getTrueSource().getUniqueID() : null);
         //     if (this.getOwnerId() != null) this.setRetreated(true);
         //     return;

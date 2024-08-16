@@ -9,12 +9,12 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.LivingRenderer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 public class LilyWhiteRenderer extends LivingRenderer<LilyWhiteEntity, LilyWhiteModel> {
 
-    public static final ResourceLocation LILY_WHITE_TEX = new ResourceLocation(
+    public static final ResourceLocation LILY_WHITE_TEX = ResourceLocation.parse(
             GensokyoOntology.MODID, "textures/entity/lily_white.png");
 
     public LilyWhiteRenderer(EntityRendererManager rendererManager) {

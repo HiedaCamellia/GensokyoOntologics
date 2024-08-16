@@ -7,25 +7,25 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.Component;
+
 import org.jetbrains.annotations.NotNull;
 
 public class GensokyoLoadingScreen extends Screen {
     private final int width;
     private final int height;
 
-    public static final ResourceLocation GSKO_LOADING_TEXTURE = new ResourceLocation(
+    public static final ResourceLocation GSKO_LOADING_TEXTURE = ResourceLocation.parse(
             GensokyoOntology.MODID, "textures/block/sakura_planks.png"
     );
 
-    public static final ResourceLocation INYO_JADE_TEXTURE = new ResourceLocation(
+    public static final ResourceLocation INYO_JADE_TEXTURE = ResourceLocation.parse(
             GensokyoOntology.MODID, "texture/item/inyo_jade"
     );
 
-    public GensokyoLoadingScreen(ITextComponent titleIn) {
+    public GensokyoLoadingScreen(Component titleIn) {
         super(titleIn);
         this.width = Minecraft.getInstance().getMainWindow().getScaledWidth();
         this.height = Minecraft.getInstance().getMainWindow().getScaledHeight();

@@ -5,18 +5,18 @@ import github.thelawf.gensokyoontology.common.tileentity.GapTileEntity;
 import github.thelawf.gensokyoontology.common.util.GSKOUtil;
 import github.thelawf.gensokyoontology.core.init.BlockRegistry;
 import net.minecraft.advancements.criterion.AbstractCriterionTrigger;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.command.impl.TeleportCommand;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.ServerPlayer;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+
+import net.minecraft.world.level.Level;
 import net.minecraft.world.gen.feature.structure.WoodlandMansionPieces;
 import net.minecraft.world.gen.feature.structure.WoodlandMansionStructure;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.util.ITeleporter;
 import net.minecraftforge.fluids.IFluidBlock;
 import org.apache.logging.log4j.LogManager;
@@ -24,12 +24,12 @@ import org.apache.logging.log4j.LogManager;
 import java.util.function.Function;
 
 public class TeleportHelper {
-    public static void teleport(ServerPlayerEntity player, ServerWorld destination, BlockPos pos) {
+    public static void teleport(ServerPlayer player, ServerLevel destination, BlockPos pos) {
 
         if (canTeleport(destination, pos)) {
             player.changeDimension(destination, new ITeleporter() {
                 @Override
-                public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld,
+                public Entity placeEntity(Entity entity, ServerLevel currentLevel, ServerLevel destLevel,
                                           float yaw, Function<Boolean, Entity> repositionEntity) {
                     BlockPos validPos = findValidPos(destination, pos).getSecond();
 
@@ -41,9 +41,9 @@ public class TeleportHelper {
         }
     }
 
-    public static void applyGapTeleport(ServerPlayerEntity player, ServerWorld destination, GapTileEntity gapTile) {
+    public static void applyGapTeleport(ServerPlayer player, ServerLevel destination, GapTileEntity gapTile) {
         BlockPos pos = gapTile.getDestinationPos();
-        // if (isInSameDimension(player.world.getDimensionKey(), destination.getDimensionKey())) {
+        // if (isInSameDimension(player.world.dimension(), destination.dimension())) {
         //     player.setPositionAndUpdate(pos.getX(), pos.getY(), pos.getZ());
         //     // player.connection.setPlayerLocation(pos.getX(), pos.getY(), pos.getZ(), player.rotationYaw, player.rotationPitch);
         //     gapTile.setCooldown(400);
@@ -52,7 +52,7 @@ public class TeleportHelper {
 
         player.changeDimension(destination, new ITeleporter() {
             @Override
-            public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
+            public Entity placeEntity(Entity entity, ServerLevel currentLevel, ServerLevel destLevel, float yaw, Function<Boolean, Entity> repositionEntity) {
                 entity = repositionEntity.apply(false);
                 entity.setPosition(pos.getX(), pos.getY(), pos.getZ());
                 player.connection.setPlayerLocation(pos.getX(), pos.getY(), pos.getZ(), player.rotationYaw, player.rotationPitch);
@@ -62,14 +62,14 @@ public class TeleportHelper {
         });
     }
 
-    public static void applyStructureTeleport(ServerWorld destination) {
+    public static void applyStructureTeleport(ServerLevel destination) {
 
     }
 
     /**
      * 获取目的地世界对应位置的方块状态，如果玩家位置是空气且玩家脚下的方块是固态方块则进行传送
      */
-    public static boolean canTeleport(ServerWorld destination, BlockPos pos) {
+    public static boolean canTeleport(ServerLevel destination, BlockPos pos) {
         if (destination == null)
             return false;
 
@@ -99,7 +99,7 @@ public class TeleportHelper {
         }
     }
 
-    private static boolean clearAndSetBlocks(ServerWorld destination, BlockPos pos) {
+    private static boolean clearAndSetBlocks(ServerLevel destination, BlockPos pos) {
         final BlockState air = Blocks.AIR.getDefaultState();
         final BlockState sakuraPlanks = BlockRegistry.SAKURA_PLANKS.get().getDefaultState();
         destination.setBlockState(pos, air);
@@ -117,7 +117,7 @@ public class TeleportHelper {
         return true;
     }
 
-    private static boolean clearBlocks(ServerWorld destination, BlockPos pos) {
+    private static boolean clearBlocks(ServerLevel destination, BlockPos pos) {
         final BlockState air = Blocks.AIR.getDefaultState();
         destination.setBlockState(pos, air);
 
@@ -132,12 +132,12 @@ public class TeleportHelper {
         return true;
     }
 
-    private static boolean isValidPos(ServerWorld destination, BlockPos pos) {
+    private static boolean isValidPos(ServerLevel destination, BlockPos pos) {
         LogManager.getLogger().info("Other Condition is: " + findValidPos(destination, pos).getFirst());
         return findValidPos(destination, pos).getFirst();
     }
 
-    private static Pair<Boolean, BlockPos> findValidPos(ServerWorld destination, BlockPos pos) {
+    private static Pair<Boolean, BlockPos> findValidPos(ServerLevel destination, BlockPos pos) {
         for (int i = 0; i < 255; i++) {
             BlockPos playerPos = new BlockPos(pos.getX(), i, pos.getZ());
             BlockPos standPos = new BlockPos(pos.down().getX(), i, pos.down().getZ());
@@ -151,7 +151,7 @@ public class TeleportHelper {
         return Pair.of(false, pos);
     }
 
-    private static boolean isInSameDimension(RegistryKey<World> departureWorld, RegistryKey<World> destination) {
-        return departureWorld == destination;
+    private static boolean isInSameDimension(RegistryKey<Level> departureLevel, RegistryKey<Level> destination) {
+        return departureLevel == destination;
     }
 }

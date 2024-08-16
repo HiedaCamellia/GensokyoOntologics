@@ -1,8 +1,7 @@
 package github.thelawf.gensokyoontology.api.client.xmmui.data;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.ItemStack;
 import org.dom4j.Element;
 
 public class XMMUIContainerData extends XMMUIWidgetData{

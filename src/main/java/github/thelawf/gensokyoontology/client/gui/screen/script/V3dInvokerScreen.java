@@ -9,11 +9,11 @@ import github.thelawf.gensokyoontology.common.nbt.script.V3dFunc;
 import github.thelawf.gensokyoontology.common.network.GSKONetworking;
 import github.thelawf.gensokyoontology.common.network.packet.CInvokeFunctionPacket;
 import github.thelawf.gensokyoontology.common.util.EnumUtil;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -21,11 +21,11 @@ import java.util.List;
 public class V3dInvokerScreen extends InvokerContainerScreen<V3dInvokerContainer> {
     private V3dFunc func;
     public static final String TYPE = "vector3d_invoker";
-    private CompoundNBT funcData = new CompoundNBT();
+    private CompoundTag funcData = new CompoundTag();
     private final List<WidgetConfig> CONFIGS;
-    public final ITextComponent PARAM_TEXT = withTranslation("gui","v3d_invoker.param");
+    public final Component PARAM_TEXT = withTranslation("gui","v3d_invoker.param");
     public static final ResourceLocation TEXTURE = GensokyoOntology.withRL("textures/gui/v3d_invoker_screen.png");
-    public V3dInvokerScreen(V3dInvokerContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
+    public V3dInvokerScreen(V3dInvokerContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         this.func = V3dFunc.ADD;
         this.xSize = 186;

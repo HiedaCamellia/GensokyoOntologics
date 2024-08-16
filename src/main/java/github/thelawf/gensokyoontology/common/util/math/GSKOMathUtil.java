@@ -5,15 +5,15 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.datafixers.util.Pair;
 import github.thelawf.gensokyoontology.common.util.math.function.CosineFunc;
 import github.thelawf.gensokyoontology.common.util.math.function.SineFunc;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector2f;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,29 +66,29 @@ public class GSKOMathUtil {
         return Math.pow(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2) + Math.pow(z1 + z2, 2), 0.5);
     }
 
-    public static ArrayList<Vector3d> getCirclePoints2D(Vector3d center,
+    public static ArrayList<Vec3> getCirclePoints2D(Vec3 center,
                                                         double radius, int count) {
 
-        ArrayList<Vector3d> coordinates = new ArrayList<>();
+        ArrayList<Vec3> coordinates = new ArrayList<>();
         double radians = (Math.PI / 180) * Math.round(360d / count);
         for (int i = 0; i < count; i++) {
             double x = center.getX() + radius * Math.sin(radians * i);
             double y = center.getY() + radius * Math.cos(radians * i);
-            Vector3d coordinate = new Vector3d(x, y, 0);
+            Vec3 coordinate = new Vec3(x, y, 0);
             coordinates.add(coordinate);
         }
         return coordinates;
     }
 
-    public static Vector3d getPointOnCircle(Vector3d center,
+    public static Vec3 getPointOnCircle(Vec3 center,
                                             double radius, double angle) {
-        return new Vector3d(
+        return new Vec3(
                 center.getX() + radius * Math.cos(Math.toDegrees(angle)),
                 0, center.getZ() + radius * Math.sin(Math.toDegrees(angle)));
     }
 
 
-    public static Vector3d bezier2(Vector3d start, Vector3d end, Vector3d p, float time) {
+    public static Vec3 bezier2(Vec3 start, Vec3 end, Vec3 p, float time) {
         return lerp(time, lerp(time, start, p), lerp(time, p, end));
     }
 
@@ -101,28 +101,28 @@ public class GSKOMathUtil {
      * @param time  步长
      * @return 在控制点的作用下，以起止点为基准的下一个点在曲线上的位置
      */
-    public static Vector3d bezier2(Vector3d start, Vector3d end, Vector3d p, double time) {
+    public static Vec3 bezier2(Vec3 start, Vec3 end, Vec3 p, double time) {
         if (time > 1 || time < 0)
             return null;
-        Vector3d v1 = start.scale(pow2(1 - time));
-        Vector3d v2 = p.scale(2 * time * (1 - time));
-        Vector3d v3 = end.scale(pow2(time));
+        Vec3 v1 = start.scale(pow2(1 - time));
+        Vec3 v2 = p.scale(2 * time * (1 - time));
+        Vec3 v3 = end.scale(pow2(time));
 
         return v1.add(v2.add(v3));
     }
 
-    public static Vector3d bezier3(Vector3d p1, Vector3d p2, Vector3d q1, Vector3d q2, float time) {
+    public static Vec3 bezier3(Vec3 p1, Vec3 p2, Vec3 q1, Vec3 q2, float time) {
         if (time > 1 || time < 0)
             return null;
-        Vector3d v1 = lerp(time, p1, q1);
-        Vector3d v2 = lerp(time, q1, q2);
-        Vector3d v3 = lerp(time, q2, p2);
-        Vector3d inner1 = lerp(time, v1, v2);
-        Vector3d inner2 = lerp(time, v2, v3);
+        Vec3 v1 = lerp(time, p1, q1);
+        Vec3 v2 = lerp(time, q1, q2);
+        Vec3 v3 = lerp(time, q2, p2);
+        Vec3 inner1 = lerp(time, v1, v2);
+        Vec3 inner2 = lerp(time, v2, v3);
         return lerp(time, inner1, inner2);
     }
 
-    public static Vector3d bezierDerivative(Vector3d p1, Vector3d p2, Vector3d q1, Vector3d q2, float t) {
+    public static Vec3 bezierDerivative(Vec3 p1, Vec3 p2, Vec3 q1, Vec3 q2, float t) {
         return p1.scale(-3 * t * t + 6 * t - 3)
                 .add(q1.scale(9 * t * t - 12 * t + 3))
                 .add(q2.scale(-9 * t * t + 6 * t))
@@ -130,7 +130,7 @@ public class GSKOMathUtil {
     }
 
 
-    public static Vector3d lerp(float progress, Vector3d start, Vector3d end) {
+    public static Vec3 lerp(float progress, Vec3 start, Vec3 end) {
         return start.add(end.subtract(start).scale(progress));
     }
 
@@ -172,8 +172,8 @@ public class GSKOMathUtil {
      * @param sc 球坐标的三维的向量，成员属性 x 为球坐标半径Radius，y 为球坐标天顶角theta，z为球坐标方位角phi
      * @return 返回空间直角坐标系的三维向量
      */
-    public static Vector3d toRectVec(Vector3d sc) {
-        return new Vector3d(sc.x * Math.sin(sc.y) * Math.cos(sc.z),
+    public static Vec3 toRectVec(Vec3 sc) {
+        return new Vec3(sc.x * Math.sin(sc.y) * Math.cos(sc.z),
                 sc.x * Math.sin(sc.y) * Math.sin(sc.z),
                 sc.x * Math.cos(sc.y));
     }
@@ -184,13 +184,13 @@ public class GSKOMathUtil {
      * @param rc 空间直角坐标系的三维向量
      * @return 返回球坐标系的三维向量
      */
-    public static Vector3d toSphereVec(Vector3d rc) {
+    public static Vec3 toSphereVec(Vec3 rc) {
         double r = GSKOMathUtil.toModulus3D(rc.x, rc.y, rc.z);
-        return new Vector3d(r, Math.acos(rc.z / r), Math.atan(rc.y / rc.x));
+        return new Vec3(r, Math.acos(rc.z / r), Math.atan(rc.y / rc.x));
     }
 
-    public static Vector3d toSphereVec(double x, double y, double z) {
-        return toSphereVec(new Vector3d(x, y, z));
+    public static Vec3 toSphereVec(double x, double y, double z) {
+        return toSphereVec(new Vec3(x, y, z));
     }
 
     /**
@@ -200,24 +200,24 @@ public class GSKOMathUtil {
      * @param thetaRotation 天顶角的旋转度数，取值为 0 ~ π
      * @return 旋转之后该圆周的每个新的点的平面直角坐标
      */
-    public static List<Vector3d> rotateCircle(List<Vector3d> circleDots, double thetaRotation, double phiRotation) {
-        List<Vector3d> nextCircleDots = new ArrayList<>();
-        for (Vector3d dotOnCircle : circleDots) {
+    public static List<Vec3> rotateCircle(List<Vec3> circleDots, double thetaRotation, double phiRotation) {
+        List<Vec3> nextCircleDots = new ArrayList<>();
+        for (Vec3 dotOnCircle : circleDots) {
 
-            Vector3d prevSphereVec = toSphereVec(dotOnCircle);
-            Vector3d nextSphereVec = new Vector3d(prevSphereVec.x, prevSphereVec.y + thetaRotation, prevSphereVec.z + phiRotation);
+            Vec3 prevSphereVec = toSphereVec(dotOnCircle);
+            Vec3 nextSphereVec = new Vec3(prevSphereVec.x, prevSphereVec.y + thetaRotation, prevSphereVec.z + phiRotation);
             nextCircleDots.add(toRectVec(nextSphereVec));
         }
         return nextCircleDots;
     }
 
-    public static Vector3d rotateCircleDot(Vector3d rectVec, double thetaRotation, double phiRotation) {
-        Vector3d sphereVec = toSphereVec(rectVec);
-        return new Vector3d(sphereVec.x, sphereVec.y + thetaRotation, sphereVec.z + phiRotation);
+    public static Vec3 rotateCircleDot(Vec3 rectVec, double thetaRotation, double phiRotation) {
+        Vec3 sphereVec = toSphereVec(rectVec);
+        return new Vec3(sphereVec.x, sphereVec.y + thetaRotation, sphereVec.z + phiRotation);
     }
 
-    public static Vector3d toLocalCoordinate(Vector3d newOriginIn, Vector3d globalIn) {
-        return new Vector3d(globalIn.getX() - newOriginIn.getX(),
+    public static Vec3 toLocalCoordinate(Vec3 newOriginIn, Vec3 globalIn) {
+        return new Vec3(globalIn.getX() - newOriginIn.getX(),
                 globalIn.getY() - newOriginIn.getY(),
                 globalIn.getZ() - newOriginIn.getZ());
 
@@ -247,36 +247,36 @@ public class GSKOMathUtil {
      * @param roll       斜边与y轴的夹角
      * @return 返回一个仅有可知的两边组成的平面向量坐标
      */
-    public static Vector3d toRollCoordinate(double hypotenuse, double roll) {
+    public static Vec3 toRollCoordinate(double hypotenuse, double roll) {
         double x = Math.sqrt(Math.pow(hypotenuse, 2) / Math.pow(Math.tan(roll), 2) + 1);
-        return new Vector3d(x, Math.tan(roll) * x, 0);
+        return new Vec3(x, Math.tan(roll) * x, 0);
     }
 
-    public static Vector3d toYawCoordinate(double hypotenuse, double yaw) {
+    public static Vec3 toYawCoordinate(double hypotenuse, double yaw) {
         double z = Math.sqrt(Math.pow(hypotenuse, 2) / Math.pow(Math.tan(yaw), 2) + 1);
-        return new Vector3d(Math.tan(yaw) * z, 0, z);
+        return new Vec3(Math.tan(yaw) * z, 0, z);
     }
 
-    public static Vector3d toPitchCoordinate(double hypotenuse, double pitch) {
+    public static Vec3 toPitchCoordinate(double hypotenuse, double pitch) {
         double y = Math.sqrt(Math.pow(hypotenuse, 2) / Math.pow(Math.tan(pitch), 2) + 1);
-        return new Vector3d(0, y, Math.tan(pitch) * y);
+        return new Vec3(0, y, Math.tan(pitch) * y);
     }
 
-    public static Vector3d vecCeil(Vector3d vec) {
-        return new Vector3d(
+    public static Vec3 vecCeil(Vec3 vec) {
+        return new Vec3(
                 Math.ceil(vec.getX()),
                 Math.ceil(vec.getY()),
                 Math.ceil(vec.getZ()));
     }
 
-    public static Vector3d vecFloor(Vector3d vec) {
-        return new Vector3d(
+    public static Vec3 vecFloor(Vec3 vec) {
+        return new Vec3(
                 Math.floor(vec.getX()),
                 Math.floor(vec.getY()),
                 Math.floor(vec.getZ()));
     }
 
-    public static Vector2f getEulerAngle(Vector3d vectorA, Vector3d vectorB) {
+    public static Vec2 getEulerAngle(Vec3 vectorA, Vec3 vectorB) {
         // 计算旋转矩阵的第一行
         double m11 = vectorA.x * vectorB.x + vectorA.y * vectorB.y;
         double m12 = vectorA.x * vectorB.y - vectorA.y * vectorB.x;
@@ -291,7 +291,7 @@ public class GSKOMathUtil {
         double yaw = Math.atan2(m12, m11);
         double pitch = Math.asin(m31);
 
-        return new Vector2f((float) yaw, (float) pitch);
+        return new Vec2((float) yaw, (float) pitch);
     }
 
     public static int randomRange(int min, int max) {
@@ -310,14 +310,14 @@ public class GSKOMathUtil {
         return min + (randomValue * (max - min));
     }
 
-    public static Vector3d randomVec(double min, double max) {
-        return new Vector3d(randomRange(min, max), randomRange(min, max), randomRange(min, max));
+    public static Vec3 randomVec(double min, double max) {
+        return new Vec3(randomRange(min, max), randomRange(min, max), randomRange(min, max));
     }
 
     /**
      * Random Spherical Range Algorithm, returns a pair of coordinates on the given surface of a sphere.
      */
-    public static Pair<Vector3d, Vector3d> rsr(Vector3d orientation, float yawRange, float pitchRange) {
+    public static Pair<Vec3, Vec3> rsr(Vec3 orientation, float yawRange, float pitchRange) {
         double yaw = toYawPitch(orientation).x;
         double pitch = toYawPitch(orientation).y;
         if (yaw < yawRange || yaw >= yawRange) {
@@ -342,21 +342,21 @@ public class GSKOMathUtil {
         return new Random().nextInt(total) < weight ? null : value;
     }
 
-    public static Vector2f toYawPitch(Vector3d vector3d) {
+    public static Vec2 toYawPitch(Vec3 vector3d) {
         double yaw = Math.atan2(-vector3d.x, vector3d.z);
         double pitch = Math.atan2(vector3d.y, Math.sqrt(vector3d.x * vector3d.x + vector3d.z * vector3d.z));
-        return new Vector2f((float) toDegree(yaw), (float) toDegree(pitch));
+        return new Vec2((float) toDegree(yaw), (float) toDegree(pitch));
     }
 
-    public static void rotateMatrixToLookVec(MatrixStack matrixStackIn, Vector3d rotationVec) {
+    public static void rotateMatrixToLookVec(MatrixStack matrixStackIn, Vec3 rotationVec) {
         float f5 = (float)Math.acos(rotationVec.y);
         float f6 = (float)Math.atan2(rotationVec.z, rotationVec.x);
         matrixStackIn.rotate(Vector3f.YP.rotationDegrees(((float)Math.PI / 2 - f6) * (180 / (float)Math.PI)));
         matrixStackIn.rotate(Vector3f.XP.rotationDegrees(f5 * (180 / (float)Math.PI)));
     }
 
-    public static Vector3d fromYawPitch(float yaw, float pitch) {
-        return new Vector3d(Math.cos(yaw) * Math.cos(pitch), Math.sin(yaw) * Math.sin(pitch), Math.sin(pitch));
+    public static Vec3 fromYawPitch(float yaw, float pitch) {
+        return new Vec3(Math.cos(yaw) * Math.cos(pitch), Math.sin(yaw) * Math.sin(pitch), Math.sin(pitch));
     }
 
     /**
@@ -395,11 +395,11 @@ public class GSKOMathUtil {
         return base * base * base;
     }
 
-    public static Vector3d rotatePitchYaw(Vector3d prev, float pitch, float yaw) {
+    public static Vec3 rotatePitchYaw(Vec3 prev, float pitch, float yaw) {
         CosineFunc cf = new CosineFunc(prev.x, 1,0);
         SineFunc sf = new SineFunc(1,1,0);
         double x = 0;
-        return new Vector3d(0,0,0);
+        return new Vec3(0,0,0);
     }
 
     /**
@@ -410,7 +410,7 @@ public class GSKOMathUtil {
      * @param start 起始点
      * @param end   终点
      */
-    public static void generateBlockOnBezierCurve(World world, Block block, BlockPos start, BlockPos end) {
+    public static void generateBlockOnBezierCurve(Level world, Block block, BlockPos start, BlockPos end) {
         // 获取起点和终点之间的距离
         double dist = start.distanceSq(end);
 
@@ -436,10 +436,10 @@ public class GSKOMathUtil {
         }
     }
 
-    public static ArrayList<Vector3d> getBlocksOnBezierCurve(BlockPos start, BlockPos end) {
+    public static ArrayList<Vec3> getBlocksOnBezierCurve(BlockPos start, BlockPos end) {
         // 获取起点和终点之间的距离
         double dist = start.distanceSq(end);
-        ArrayList<Vector3d> vecList = new ArrayList<>();
+        ArrayList<Vec3> vecList = new ArrayList<>();
 
         // 计算中点和控制点的坐标
         double mx = (start.getX() + end.getX()) / 2.0;
@@ -456,7 +456,7 @@ public class GSKOMathUtil {
             double y = Math.pow(1 - t, 2) * start.getY() + 2 * (1 - t) * t * my + Math.pow(t, 2) * end.getY();
             double z = Math.pow(1 - t, 2) * start.getZ() + 2 * (1 - t) * t * cz + Math.pow(t, 2) * end.getZ();
 
-            vecList.add(new Vector3d(x, y, z));
+            vecList.add(new Vec3(x, y, z));
         }
         return vecList;
     }
@@ -465,7 +465,7 @@ public class GSKOMathUtil {
         return new Quaternion(-quaternionIn.getX(), -quaternionIn.getY(), -quaternionIn.getZ(), quaternionIn.getW());
     }
 
-    public static Quaternion vecToQuaternion(Vector3d vector3d) {
+    public static Quaternion vecToQuaternion(Vec3 vector3d) {
         double yaw = Math.atan2(vector3d.z, vector3d.x);
         double pitch = Math.asin(vector3d.y);
 

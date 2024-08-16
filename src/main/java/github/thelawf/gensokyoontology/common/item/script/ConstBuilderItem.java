@@ -1,14 +1,14 @@
 package github.thelawf.gensokyoontology.common.item.script;
 
 import github.thelawf.gensokyoontology.common.container.script.CBContainer;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 
 public class ConstBuilderItem extends ScriptBuilderItem{
     @Override
-    public void openScriptEditGUI(World world, PlayerEntity player, ItemStack stack) {
+    public void openScriptEditGUI(Level world, Player player, ItemStack stack) {
         // minecraft.displayGuiScreen(new ConstBuilderScreen(title, stack));
         if (!world.isRemote) player.openContainer(CBContainer.create("const_builder"));
     }

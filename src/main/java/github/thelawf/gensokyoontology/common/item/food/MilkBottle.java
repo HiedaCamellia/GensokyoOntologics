@@ -1,9 +1,9 @@
 package github.thelawf.gensokyoontology.common.item.food;
 
-import net.minecraft.item.Food;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.Food;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemGroup;
+import net.minecraft.world.item.Items;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 

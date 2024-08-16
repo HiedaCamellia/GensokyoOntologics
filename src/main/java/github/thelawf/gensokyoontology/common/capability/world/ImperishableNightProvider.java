@@ -1,7 +1,7 @@
 package github.thelawf.gensokyoontology.common.capability.world;
 
 import github.thelawf.gensokyoontology.common.capability.GSKOCapabilities;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -10,7 +10,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ImperishableNightProvider implements ICapabilityProvider, INBTSerializable<CompoundNBT> {
+public class ImperishableNightProvider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
     private int time;
     private boolean isTriggered;
     private ImperishableNightCapability capability;
@@ -35,12 +35,12 @@ public class ImperishableNightProvider implements ICapabilityProvider, INBTSeria
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
+    public CompoundTag serializeNBT() {
         return getOrCreateCapability().serializeNBT();
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         getOrCreateCapability().deserializeNBT(nbt);
     }
 }

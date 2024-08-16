@@ -2,39 +2,39 @@ package github.thelawf.gensokyoontology.common.entity.projectile;
 
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuColor;
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuType;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.ThrowableEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.ThrowableEntity;
 import net.minecraft.nbt.*;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public abstract class ScriptedDanmakuEntity extends AbstractDanmakuEntity{
-    protected CompoundNBT scriptsNBT = new CompoundNBT();
+    protected CompoundTag scriptsNBT = new CompoundTag();
     protected Entity target;
-    public static final DataParameter<CompoundNBT> DATA_SCRIPT = EntityDataManager.createKey(
+    public static final DataParameter<CompoundTag> DATA_SCRIPT = EntityDataManager.createKey(
             ScriptedDanmakuEntity.class, DataSerializers.COMPOUND_NBT);
-    protected ScriptedDanmakuEntity(EntityType<? extends ThrowableEntity> type, World worldIn) {
+    protected ScriptedDanmakuEntity(EntityType<? extends ThrowableEntity> type, Level worldIn) {
         super(type, worldIn);
     }
 
-    public ScriptedDanmakuEntity(EntityType<? extends ThrowableEntity> type, LivingEntity throwerIn, World worldIn, DanmakuType danmakuType, CompoundNBT scriptIn) {
+    public ScriptedDanmakuEntity(EntityType<? extends ThrowableEntity> type, LivingEntity throwerIn, Level worldIn, DanmakuType danmakuType, CompoundTag scriptIn) {
         super(type, throwerIn, worldIn, danmakuType, getColorFrom(scriptIn));
         this.setDanmakuColor(getColorFrom(this.scriptsNBT));
         this.setScript(scriptIn);
         this.setColor(DanmakuColor.values()[scriptIn.getInt("color")]);
     }
 
-    public static DanmakuColor getColorFrom(CompoundNBT scriptsNBT) {
+    public static DanmakuColor getColorFrom(CompoundTag scriptsNBT) {
         if (scriptsNBT != null && scriptsNBT.contains("color")) {
             return DanmakuColor.values()[scriptsNBT.getInt("color")];
         }
@@ -48,11 +48,11 @@ public abstract class ScriptedDanmakuEntity extends AbstractDanmakuEntity{
         return new ListNBT();
     }
 
-    protected CompoundNBT wrapAsCompound(INBT inbt) {
-        if (inbt instanceof CompoundNBT) {
-            return  (CompoundNBT) inbt;
+    protected CompoundTag wrapAsCompound(INBT inbt) {
+        if (inbt instanceof CompoundTag) {
+            return  (CompoundTag) inbt;
         }
-        return new CompoundNBT();
+        return new CompoundTag();
     }
 
     protected List<Double> wrapAsDoubleFromList(ListNBT listNBT) {
@@ -63,7 +63,7 @@ public abstract class ScriptedDanmakuEntity extends AbstractDanmakuEntity{
         return list;
     }
 
-    protected ListNBT getBehaviors(CompoundNBT script) {
+    protected ListNBT getBehaviors(CompoundTag script) {
         if (script.getString("type").equals("keyTickBehavior")) {
             return wrapAsList(script.get("behaviors"));
         }
@@ -77,7 +77,7 @@ public abstract class ScriptedDanmakuEntity extends AbstractDanmakuEntity{
     }
 
     @Override
-    protected void readAdditional(@NotNull CompoundNBT compound) {
+    protected void readAdditional(@NotNull CompoundTag compound) {
         super.readAdditional(compound);
         this.scriptsNBT = compound.getCompound("script");
         this.dataManager.set(DATA_SCRIPT, this.scriptsNBT);
@@ -86,7 +86,7 @@ public abstract class ScriptedDanmakuEntity extends AbstractDanmakuEntity{
     }
 
     @Override
-    protected void writeAdditional(@NotNull CompoundNBT compound) {
+    protected void writeAdditional(@NotNull CompoundTag compound) {
         super.writeAdditional(compound);
         compound.put("script", this.scriptsNBT);
         compound.putInt("color", this.scriptsNBT.getInt("color"));
@@ -98,26 +98,26 @@ public abstract class ScriptedDanmakuEntity extends AbstractDanmakuEntity{
         this.onScriptTick();
     }
 
-    public void setScript(CompoundNBT scriptsNBT) {
+    public void setScript(CompoundTag scriptsNBT) {
         this.scriptsNBT = scriptsNBT;
         this.dataManager.set(DATA_SCRIPT, scriptsNBT);
     }
-    public CompoundNBT getScript() {
+    public CompoundTag getScript() {
         return this.dataManager.get(DATA_SCRIPT);
     }
 
     public Entity getTarget() {
         if (!this.world.isRemote) {
-            ServerWorld serverWorld = (ServerWorld) this.world;
-            return serverWorld.getEntityByUuid(this.scriptsNBT.getUniqueId("target"));
+            ServerLevel serverLevel = (ServerLevel) this.world;
+            return serverLevel.getEntityByUuid(this.scriptsNBT.getUniqueId("target"));
         }
         return null;
     }
 
-    public static Entity getTargetFrom(World world, CompoundNBT scriptsNBT) {
+    public static Entity getTargetFrom(Level world, CompoundTag scriptsNBT) {
         if (!world.isRemote) {
-            ServerWorld serverWorld = (ServerWorld) world;
-            return serverWorld.getEntityByUuid(scriptsNBT.getUniqueId("target"));
+            ServerLevel serverLevel = (ServerLevel) world;
+            return serverLevel.getEntityByUuid(scriptsNBT.getUniqueId("target"));
         }
         return null;
     }
@@ -133,7 +133,7 @@ public abstract class ScriptedDanmakuEntity extends AbstractDanmakuEntity{
     public void onScriptTick() {
         ListNBT list2 = getBehaviors(this.scriptsNBT);
         for (INBT inbt2 : list2) {
-            CompoundNBT behavior = wrapAsCompound(inbt2);
+            CompoundTag behavior = wrapAsCompound(inbt2);
             if (behavior.contains("shoot") && behavior.get("shoot") instanceof ListNBT) {
                 List<Double> paramList = wrapAsDoubleFromList((ListNBT) behavior.get("shoot"));
                 int keyTick = behavior.getInt("keyTick");
@@ -144,7 +144,7 @@ public abstract class ScriptedDanmakuEntity extends AbstractDanmakuEntity{
                 List<Double> paramList = wrapAsDoubleFromList((ListNBT) behavior.get("setMotion"));
                 int keyTick = behavior.getInt("keyTick");
                 if (paramList.size() != 3) return;
-                Vector3d motion = new Vector3d(paramList.get(0), paramList.get(1), paramList.get(2));
+                Vec3 motion = new Vec3(paramList.get(0), paramList.get(1), paramList.get(2));
                 if (this.ticksExisted == keyTick) this.setMotion(motion.normalize());
             }
         }

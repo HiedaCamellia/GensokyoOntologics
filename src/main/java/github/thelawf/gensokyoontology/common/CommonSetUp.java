@@ -16,24 +16,24 @@ import github.thelawf.gensokyoontology.common.world.surface.GSKOConfiguredSurfac
 import github.thelawf.gensokyoontology.core.PlacerRegistry;
 import github.thelawf.gensokyoontology.core.init.EntityRegistry;
 import github.thelawf.gensokyoontology.core.init.StructureRegistry;
-import net.minecraft.entity.EntitySpawnPlacementRegistry;
-import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.EntitySpawnPlacementRegistry;
+import net.minecraft.world.entity.passive.TameableEntity;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.Heightmap;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
-@Mod.EventBusSubscriber(modid = GensokyoOntology.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = GensokyoOntology.MODID, bus = EventBusSubscriber.Bus.FORGE)
 public class CommonSetUp {
 
     @SubscribeEvent
     public static void init(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             // Registry.register(Registry.CHUNK_GENERATOR_CODEC,
-            //         new ResourceLocation(GensokyoOntology.MODID, "chunkgen"),
+            //         ResourceLocation.parse(GensokyoOntology.MODID, "chunkgen"),
             //         GSKOChunkGenerator.CHUNK_GEN_CODEC);
 
             GSKOFeatures.registerOre();
@@ -50,7 +50,7 @@ public class CommonSetUp {
             PlacerRegistry.registerTrunkPlacer("branch_trunk_placer", BranchTrunkPlacer.CODEC);
 
             Registry.register(Registry.BIOME_PROVIDER_CODEC,
-                    new ResourceLocation(GensokyoOntology.MODID, "gensokyo"),
+                    ResourceLocation.parse(GensokyoOntology.MODID, "gensokyo"),
                     GSKOBiomesProvider.GSKO_BIOME_CODEC);
 
             EntitySpawnPlacementRegistry.register(EntityRegistry.FAIRY_ENTITY.get(),

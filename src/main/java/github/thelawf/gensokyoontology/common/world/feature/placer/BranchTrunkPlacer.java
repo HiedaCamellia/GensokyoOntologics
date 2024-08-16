@@ -6,9 +6,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import github.thelawf.gensokyoontology.common.util.world.FeatureUtil;
 import github.thelawf.gensokyoontology.common.world.feature.config.BranchesConfig;
 import github.thelawf.gensokyoontology.core.PlacerRegistry;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.gen.IWorldGenerationReader;
+import net.minecraft.world.gen.ILevelGenerationReader;
 import net.minecraft.world.gen.feature.BaseTreeFeatureConfig;
 import net.minecraft.world.gen.foliageplacer.FoliagePlacer;
 import net.minecraft.world.gen.trunkplacer.AbstractTrunkPlacer;
@@ -47,7 +47,7 @@ public class BranchTrunkPlacer extends AbstractTrunkPlacer {
     }
 
     @Override
-    public List<FoliagePlacer.Foliage> getFoliages(IWorldGenerationReader world, Random random, int height, BlockPos startPos, Set<BlockPos> trunkBlocks, MutableBoundingBox mutableBoundingBox, BaseTreeFeatureConfig baseTreeFeatureConfig) {
+    public List<FoliagePlacer.Foliage> getFoliages(ILevelGenerationReader world, Random random, int height, BlockPos startPos, Set<BlockPos> trunkBlocks, MutableBoundingBox mutableBoundingBox, BaseTreeFeatureConfig baseTreeFeatureConfig) {
         List<FoliagePlacer.Foliage> leafBlocks = Lists.newArrayList();
 
         for (int y = 0; y <= height; y++) { // Keep building upwards until we cannot, and then adjust height if we run into something
@@ -69,7 +69,7 @@ public class BranchTrunkPlacer extends AbstractTrunkPlacer {
     }
 
 
-    private static void buildBranch(IWorldGenerationReader world, BlockPos pos, Set<BlockPos> trunkBlocks, List<FoliagePlacer.Foliage> leafBlocks, int height, double length, double angle, double tilt, Random treeRNG, MutableBoundingBox mbb, BaseTreeFeatureConfig config, boolean perpendicularBranches) {
+    private static void buildBranch(ILevelGenerationReader world, BlockPos pos, Set<BlockPos> trunkBlocks, List<FoliagePlacer.Foliage> leafBlocks, int height, double length, double angle, double tilt, Random treeRNG, MutableBoundingBox mbb, BaseTreeFeatureConfig config, boolean perpendicularBranches) {
         BlockPos src = pos.up(height);
         BlockPos dest = FeatureUtil.translate(src, length, angle, tilt);
 
@@ -93,7 +93,7 @@ public class BranchTrunkPlacer extends AbstractTrunkPlacer {
         leafBlocks.add(new FoliagePlacer.Foliage(dest, 0, false));
     }
 
-    private static void drawBresenhamBranch(IWorldGenerationReader world, Random random, BlockPos from, BlockPos to, Set<BlockPos> state, MutableBoundingBox mbb, BaseTreeFeatureConfig config) {
+    private static void drawBresenhamBranch(ILevelGenerationReader world, Random random, BlockPos from, BlockPos to, Set<BlockPos> state, MutableBoundingBox mbb, BaseTreeFeatureConfig config) {
         for (BlockPos pixel : FeatureUtil.getBresenhamArrays(from, to)) {
             func_236911_a_(world, random, pixel, state, mbb, config);
         }

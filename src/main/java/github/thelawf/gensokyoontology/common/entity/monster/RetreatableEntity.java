@@ -3,15 +3,15 @@ package github.thelawf.gensokyoontology.common.entity.monster;
 import github.thelawf.gensokyoontology.common.capability.GSKOCapabilities;
 import github.thelawf.gensokyoontology.common.util.BeliefType;
 import github.thelawf.gensokyoontology.common.util.math.GSKOMathUtil;
-import net.minecraft.entity.*;
-import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector2f;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.passive.TameableEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.ILevel;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
@@ -19,13 +19,13 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class RetreatableEntity extends TameableEntity implements IAngerable {
-    protected RetreatableEntity(EntityType<? extends TameableEntity> type, World worldIn) {
+    protected RetreatableEntity(EntityType<? extends TameableEntity> type, Level worldIn) {
         super(type, worldIn);
     }
 
     @Nullable
     @Override
-    public AgeableEntity createChild(ServerWorld world, AgeableEntity mate) {
+    public AgeableMob createChild(ServerLevel world, AgeableMob mate) {
         return null;
     }
 
@@ -55,11 +55,11 @@ public abstract class RetreatableEntity extends TameableEntity implements IAnger
 
     }
 
-    public Vector3d getAimedVec(LivingEntity target) {
-        return new Vector3d(target.getPosX() - this.getPosX(), target.getPosY() - this.getPosY(), target.getPosZ() - this.getPosZ());
+    public Vec3 getAimedVec(LivingEntity target) {
+        return new Vec3(target.getPosX() - this.getPosX(), target.getPosY() - this.getPosY(), target.getPosZ() - this.getPosZ());
     }
 
-    public Vector2f getAimedAngle(LivingEntity target) {
+    public Vec2 getAimedAngle(LivingEntity target) {
         return GSKOMathUtil.toYawPitch(getAimedVec(target));
     }
 
@@ -90,7 +90,7 @@ public abstract class RetreatableEntity extends TameableEntity implements IAnger
         SPELL_CARD_ATTACK
     }
 
-    public static boolean canMonsterSpawn(EntityType<? extends RetreatableEntity> type, IWorld worldIn, SpawnReason reason, BlockPos pos, Random randomIn) {
+    public static boolean canMonsterSpawn(EntityType<? extends RetreatableEntity> type, ILevel worldIn, SpawnReason reason, BlockPos pos, Random randomIn) {
         return worldIn.getDifficulty() != Difficulty.PEACEFUL && canSpawnOn(type, worldIn, reason, pos, randomIn);
     }
 }

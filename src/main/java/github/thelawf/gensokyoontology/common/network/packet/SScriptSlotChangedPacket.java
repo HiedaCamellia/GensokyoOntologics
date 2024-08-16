@@ -1,15 +1,15 @@
 package github.thelawf.gensokyoontology.common.network.packet;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
 public class SScriptSlotChangedPacket {
-    private final CompoundNBT scripts;
+    private final CompoundTag scripts;
 
-    public SScriptSlotChangedPacket(CompoundNBT scripts) {
+    public SScriptSlotChangedPacket(CompoundTag scripts) {
         this.scripts = scripts;
     }
 

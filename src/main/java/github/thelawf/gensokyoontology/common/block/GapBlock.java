@@ -6,30 +6,30 @@ import github.thelawf.gensokyoontology.api.util.INBTWriter;
 import github.thelawf.gensokyoontology.common.tileentity.GapTileEntity;
 import github.thelawf.gensokyoontology.common.world.TeleportHelper;
 import github.thelawf.gensokyoontology.core.init.BlockRegistry;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.play.ServerPlayNetHandler;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.Component;
+
+
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -67,7 +67,7 @@ public class GapBlock extends Block implements INBTWriter {
     }
 
     @Override
-    public void randomTick(@NotNull BlockState state, @NotNull ServerWorld worldIn, @NotNull BlockPos pos, @NotNull Random random) {
+    public void randomTick(@NotNull BlockState state, @NotNull ServerLevel worldIn, @NotNull BlockPos pos, @NotNull Random random) {
         super.randomTick(state, worldIn, pos, random);
         // if (worldIn.getGameRules().getBoolean(GameRules.DO_MOB_SPAWNING) && random.nextInt(2000) < worldIn.getDifficulty().getId()) {
         //
@@ -75,16 +75,16 @@ public class GapBlock extends Block implements INBTWriter {
     }
 
     @Override
-    public void onBlockPlacedBy(@NotNull World worldIn, @NotNull BlockPos pos, @NotNull BlockState state, @Nullable LivingEntity placer, @NotNull ItemStack stack) {
+    public void onBlockPlacedBy(@NotNull Level worldIn, @NotNull BlockPos pos, @NotNull BlockState state, @Nullable LivingEntity placer, @NotNull ItemStack stack) {
         super.onBlockPlacedBy(worldIn, pos, state, placer, stack);
 
-        if (!(placer instanceof PlayerEntity)) return;
-        PlayerEntity player = (PlayerEntity) placer;
+        if (!(placer instanceof Player)) return;
+        Player player = (Player) placer;
 
         if (stack.getTag() != null) {
-            CompoundNBT nbt = stack.getTag();
+            CompoundTag nbt = stack.getTag();
             setBlockTileSecond(player, worldIn, pos, nbt);
-            stack.setTag(new CompoundNBT());
+            stack.setTag(new CompoundTag());
             stack.shrink(1);
             return;
         }
@@ -94,25 +94,25 @@ public class GapBlock extends Block implements INBTWriter {
 
     @Override
     @SuppressWarnings("deprecation")
-    public void onEntityCollision(@NotNull BlockState state, @NotNull World worldIn, @NotNull BlockPos pos, @NotNull Entity entityIn) {
+    public void onEntityCollision(@NotNull BlockState state, @NotNull Level worldIn, @NotNull BlockPos pos, @NotNull Entity entityIn) {
         super.onEntityCollision(state, worldIn, pos, entityIn);
 
-        if (!worldIn.isRemote && entityIn instanceof ServerPlayerEntity) {
-            ServerWorld serverWorld = (ServerWorld) worldIn;
-            ServerPlayerEntity serverPlayer = (ServerPlayerEntity) entityIn;
-            tryTeleport(serverWorld, serverPlayer, pos);
+        if (worldIn.isClientSide && entityIn instanceof ServerPlayer) {
+            ServerLevel serverLevel = (ServerLevel) worldIn;
+            ServerPlayer serverPlayer = (ServerPlayer) entityIn;
+            tryTeleport(serverLevel, serverPlayer, pos);
         }
     }
 
-    private void setBlockTileFirst(World worldIn, PlayerEntity player, BlockPos firstPos) {
-        CompoundNBT itemNBT = new CompoundNBT();
+    private void setBlockTileFirst(Level worldIn, Player player, BlockPos firstPos) {
+        CompoundTag itemNBT = new CompoundTag();
         itemNBT.putBoolean("is_first_placement", true);
         itemNBT.putLong("first_pos", firstPos.toLong());
 
-        if (!worldIn.isRemote) {
-            ServerWorld serverWorld = (ServerWorld) worldIn;
-            RegistryKey<World> departureWorld = serverWorld.getDimensionKey();
-            itemNBT.putString("departure_world", departureWorld.getLocation().toString());
+        if (worldIn.isClientSide) {
+            ServerLevel serverLevel = (ServerLevel) worldIn;
+            RegistryKey<Level> departureLevel = serverLevel.dimension();
+            itemNBT.putString("departure_world", departureLevel.getLocation().toString());
             itemNBT.putInt("pos_x", firstPos.getX());
             itemNBT.putInt("pos_y", firstPos.getY());
             itemNBT.putInt("pos_z", firstPos.getZ());
@@ -122,9 +122,9 @@ public class GapBlock extends Block implements INBTWriter {
             itemStack.grow(1);
 
             // player.sendMessage(GensokyoOntology.withTranslation("msg.", ".gap_block.set_first_gap"), player.getUniqueID());
-            // player.sendMessage(new StringTextComponent(firstPos.getCoordinatesAsString()), player.getUniqueID());
+            // player.sendMessage(Component.literal(firstPos.getCoordinatesAsString()), player.getUniqueID());
             // player.sendMessage(GensokyoOntology.withTranslation("msg.", ".gap_block.in_dimension"), player.getUniqueID());
-            // player.sendMessage(new TranslationTextComponent(departureWorld.getLocation().toString()), player.getUniqueID());
+            // player.sendMessage(Component.translatable(departureLevel.getLocation().toString()), player.getUniqueID());
         }
 
         worldIn.setBlockState(firstPos, BlockRegistry.GAP_BLOCK.get().getDefaultState());
@@ -137,77 +137,77 @@ public class GapBlock extends Block implements INBTWriter {
         }
     }
 
-    private void setBlockTileSecond(PlayerEntity player, World worldIn, BlockPos secondPos, @NotNull CompoundNBT itemNBT) {
+    private void setBlockTileSecond(Player player, Level worldIn, BlockPos secondPos, @NotNull CompoundTag itemNBT) {
         worldIn.setBlockState(secondPos, BlockRegistry.GAP_BLOCK.get().getDefaultState());
 
-        if (!worldIn.isRemote && worldIn.getTileEntity(secondPos) instanceof GapTileEntity) {
+        if (worldIn.isClientSide && worldIn.getTileEntity(secondPos) instanceof GapTileEntity) {
 
-            RegistryKey<World> departureKey = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(itemNBT.getString("departure_world")));
+            RegistryKey<Level> departureKey = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, ResourceLocation.parse(itemNBT.getString("departure_world")));
             if (worldIn.getServer() == null) return;
-            ServerWorld depatureWorld = worldIn.getServer().getWorld(departureKey);
-            if (depatureWorld == null) return;
+            ServerLevel depatureLevel = worldIn.getServer().level(departureKey);
+            if (depatureLevel == null) return;
 
-            ServerWorld arrivalWorld = (ServerWorld) worldIn;
-            RegistryKey<World> arrivalKey = arrivalWorld.getDimensionKey();
+            ServerLevel arrivalLevel = (ServerLevel) worldIn;
+            RegistryKey<Level> arrivalKey = arrivalLevel.dimension();
             BlockPos firstPos = new BlockPos(getNBTInt(itemNBT, "pos_x"), getNBTInt(itemNBT, "pos_y"), getNBTInt(itemNBT, "pos_z"));
 
-            GapTileEntity secondPlacedSukima = (GapTileEntity) arrivalWorld.getTileEntity(secondPos);
-            GapTileEntity firstPlacedSukima = (GapTileEntity) depatureWorld.getTileEntity(firstPos);
+            GapTileEntity secondPlacedSukima = (GapTileEntity) arrivalLevel.getTileEntity(secondPos);
+            GapTileEntity firstPlacedSukima = (GapTileEntity) depatureLevel.getTileEntity(firstPos);
 
             if (secondPlacedSukima != null) {
-                // player.sendMessage(new StringTextComponent("2nd Gap is Present"), player.getUniqueID());
+                // player.sendMessage(Component.literal("2nd Gap is Present"), player.getUniqueID());
                 secondPlacedSukima.setDestinationPos(firstPos);
-                secondPlacedSukima.setDestinationWorld(departureKey);
+                secondPlacedSukima.setDestinationLevel(departureKey);
                 secondPlacedSukima.markDirty();
 
             }
             if (firstPlacedSukima != null) {
-                // player.sendMessage(new StringTextComponent("1st Gap is Present"), player.getUniqueID());
+                // player.sendMessage(Component.literal("1st Gap is Present"), player.getUniqueID());
                 firstPlacedSukima.setDestinationPos(secondPos);
-                firstPlacedSukima.setDestinationWorld(arrivalKey);
+                firstPlacedSukima.setDestinationLevel(arrivalKey);
                 firstPlacedSukima.markDirty();
 
                 // player.sendMessage(GensokyoOntology.withTranslation("msg.", ".gap_block.set_second_gap"), player.getUniqueID());
-                // player.sendMessage(new StringTextComponent("§3" + firstPos.getCoordinatesAsString()), player.getUniqueID());
+                // player.sendMessage(Component.literal("§3" + firstPos.getCoordinatesAsString()), player.getUniqueID());
                 // player.sendMessage(GensokyoOntology.withTranslation("msg.", ".gap_block.in_dimension"), player.getUniqueID());
-                // player.sendMessage(new TranslationTextComponent("§a" + arrivalKey.getLocation()), player.getUniqueID());
+                // player.sendMessage(Component.translatable("§a" + arrivalKey.getLocation()), player.getUniqueID());
             }
         }
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable IBlockReader worldIn, @NotNull List<ITextComponent> tooltip, @NotNull ITooltipFlag flagIn) {
+    public void addInformation(ItemStack stack, @Nullable IBlockReader worldIn, @NotNull List<Component> tooltip, @NotNull ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
         if (stack.getTag() != null && stack.getTag().contains("first_pos")) {
-            CompoundNBT nbt = stack.getTag();
+            CompoundTag nbt = stack.getTag();
             if (nbt.contains("first_pos")) {
                 BlockPos pos = BlockPos.fromLong(nbt.getLong("first_pos"));
-                tooltip.add(new StringTextComponent("第一处隙间设置为: " + pos.getCoordinatesAsString()));
+                tooltip.add(Component.literal("第一处隙间设置为: " + pos.getCoordinatesAsString()));
             }
             if (nbt.contains("departure_world")) {
-                tooltip.add(new TranslationTextComponent(nbt.getString("departure_world")));
+                tooltip.add(Component.translatable(nbt.getString("departure_world")));
             }
         }
     }
 
-    public void tryTeleport(ServerWorld departureWorld, ServerPlayerEntity serverPlayer, BlockPos depaturePos) {
-        if (departureWorld.getTileEntity(depaturePos) instanceof GapTileEntity) {
-            GapTileEntity departureGap = getGapTile(departureWorld, depaturePos);
-            ServerWorld destinationWorld = departureWorld.getServer().getWorld(departureGap.getDestinationWorld());
+    public void tryTeleport(ServerLevel departureLevel, ServerPlayer serverPlayer, BlockPos depaturePos) {
+        if (departureLevel.getTileEntity(depaturePos) instanceof GapTileEntity) {
+            GapTileEntity departureGap = getGapTile(departureLevel, depaturePos);
+            ServerLevel destinationLevel = departureLevel.getServer().level(departureGap.getDestinationLevel());
 
             if (departureGap.getCooldown() > 1) return;
-            if (destinationWorld == null) {
+            if (destinationLevel == null) {
                 serverPlayer.sendStatusMessage(GensokyoOntology.withTranslation("msg.", ".gap_block.teleport_fail.destination_not_present"), true);
                 return;
             }
 
-            if (getGapTile(destinationWorld, departureGap.getDestinationPos()) == null) {
+            if (getGapTile(destinationLevel, departureGap.getDestinationPos()) == null) {
                 serverPlayer.sendStatusMessage(GensokyoOntology.withTranslation("msg.", ".gap_block.teleport_fail.arrival_gap_not_present"), true);
                 return;
             }
-            GapTileEntity arrivalGap = getGapTile(destinationWorld, departureGap.getDestinationPos());
+            GapTileEntity arrivalGap = getGapTile(destinationLevel, departureGap.getDestinationPos());
             arrivalGap.setCooldown(400);
-            TeleportHelper.applyGapTeleport(serverPlayer, destinationWorld, departureGap);
+            TeleportHelper.applyGapTeleport(serverPlayer, destinationLevel, departureGap);
 
             if (departureGap.getDestinationPos() == BlockPos.ZERO) {
                 serverPlayer.sendStatusMessage(GensokyoOntology.withTranslation("msg.", ".gap_block.teleport_fail.illegal_position"), true);
@@ -215,8 +215,8 @@ public class GapBlock extends Block implements INBTWriter {
         }
     }
 
-    public GapTileEntity getGapTile(ServerWorld serverWorld, BlockPos pos) {
-        return (GapTileEntity) serverWorld.getTileEntity(pos);
+    public GapTileEntity getGapTile(ServerLevel serverLevel, BlockPos pos) {
+        return (GapTileEntity) serverLevel.getTileEntity(pos);
     }
 
 }

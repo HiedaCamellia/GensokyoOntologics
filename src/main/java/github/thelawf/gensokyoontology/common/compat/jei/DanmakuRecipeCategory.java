@@ -13,8 +13,8 @@ import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.recipe.category.extensions.vanilla.crafting.ICraftingCategoryExtension;
 import mezz.jei.api.recipe.category.extensions.vanilla.crafting.ICustomCraftingCategoryExtension;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.Size2i;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +22,7 @@ import java.util.List;
 
 public class DanmakuRecipeCategory implements IRecipeCategory<DanmakuRecipe> {
 
-    public static final ResourceLocation UID = new ResourceLocation(GensokyoOntology.MODID, "danmaku_craft");
+    public static final ResourceLocation UID = ResourceLocation.parse(GensokyoOntology.MODID, "danmaku_craft");
     public static final ResourceLocation TEXTURE = DanmakuCraftingScreen.DANMAKU_CRAFTING_TEXTURE;
 
     private final IDrawable background;
@@ -34,7 +34,7 @@ public class DanmakuRecipeCategory implements IRecipeCategory<DanmakuRecipe> {
     public static final int width = 116;
     public static final int height = 54;
 
-    // private final ITextComponent localizedName;
+    // private final Component localizedName;
     // private final ICraftingGridHelper craftingGridHelper;
 
     public DanmakuRecipeCategory(IGuiHelper helper) {

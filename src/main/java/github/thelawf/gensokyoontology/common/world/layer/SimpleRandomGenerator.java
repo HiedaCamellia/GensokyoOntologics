@@ -1,6 +1,6 @@
 package github.thelawf.gensokyoontology.common.world.layer;
 
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 
 import java.util.ArrayList;
 import java.util.Random;

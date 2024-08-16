@@ -8,13 +8,13 @@ import github.thelawf.gensokyoontology.common.util.GSKOUtil;
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuColor;
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuType;
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class CircleShot extends DanmakuItem {
@@ -24,7 +24,7 @@ public class CircleShot extends DanmakuItem {
 
     @Override
     @NotNull
-    public ActionResult<ItemStack> onItemRightClick(@NotNull World worldIn, @NotNull PlayerEntity playerIn, @NotNull Hand handIn) {
+    public ActionResult<ItemStack> onItemRightClick(@NotNull Level worldIn, @NotNull Player playerIn, @NotNull Hand handIn) {
         final String typeName = String.valueOf(this.getItem().getRegistryName());
         final String modid = GensokyoOntology.MODID + ":";
         DanmakuColor danmakuColor = DanmakuColor.NONE;
@@ -43,7 +43,7 @@ public class CircleShot extends DanmakuItem {
                 break;
         }
 
-        CompoundNBT nbt = new CompoundNBT();
+        CompoundTag nbt = new CompoundTag();
         nbt.putInt("color", danmakuColor.ordinal());
 
         CircleShotEntity circleShot = new CircleShotEntity(playerIn, worldIn, nbt);

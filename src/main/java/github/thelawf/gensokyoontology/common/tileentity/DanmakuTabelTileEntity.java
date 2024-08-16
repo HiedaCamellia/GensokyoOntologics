@@ -7,26 +7,27 @@ import github.thelawf.gensokyoontology.core.init.ItemRegistry;
 import github.thelawf.gensokyoontology.core.init.TileEntityRegistry;
 import github.thelawf.gensokyoontology.data.recipe.DanmakuRecipe;
 import github.thelawf.gensokyoontology.data.recipe.SorceryExtractorRecipe;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.CraftingTableBlock;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.CraftingTableBlock;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.ServerPlayer;
 import net.minecraft.inventory.CraftResultInventory;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.ICraftingRecipe;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.play.server.SSetSlotPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -40,40 +41,40 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-public class DanmakuTabelTileEntity extends TileEntity implements ITickableTileEntity {
+public class DanmakuTabelTileEntity extends BlockEntity implements ITickableTileEntity {
     public DanmakuTabelTileEntity() {
         super(TileEntityRegistry.DANMAKU_TABLE_TILE.get());
     }
 
     private final ItemStackHandler itemHandler = createItemHandler();
     private final LazyOptional<IItemHandler> optionalHandler = LazyOptional.of(() -> itemHandler);
-    public static final TranslationTextComponent CONTAINER_NAME = new TranslationTextComponent("container." +
+    public static final Component CONTAINER_NAME = Component.translatable("container." +
             GensokyoOntology.MODID + ".danmaku_craft.title");
 
-    public static INamedContainerProvider createContainer(World worldIn, BlockPos posIn) {
+    public static INamedContainerProvider createContainer(Level worldIn, BlockPos posIn) {
         return new INamedContainerProvider() {
             @Override
-            public ITextComponent getDisplayName() {
+            public Component getDisplayName() {
                 return CONTAINER_NAME;
             }
 
             @Nullable
             @Override
-            public Container createMenu(int winwdowId, PlayerInventory playerInventory, PlayerEntity player) {
+            public Container createMenu(int winwdowId, Inventory playerInventory, Player player) {
                 return new DanmakuCraftingContainer(winwdowId, playerInventory);
             }
         };
     }
 
     @Override
-    public void read(@NotNull BlockState state, CompoundNBT nbt) {
+    public void read(@NotNull BlockState state, CompoundTag nbt) {
         itemHandler.deserializeNBT(nbt.getCompound("inv"));
         super.read(state, nbt);
     }
 
     @Override
     @NotNull
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundTag write(CompoundTag compound) {
         compound.put("inv", itemHandler.serializeNBT());
         return super.write(compound);
     }
@@ -137,7 +138,7 @@ public class DanmakuTabelTileEntity extends TileEntity implements ITickableTileE
         markDirty();
     }
 
-    private void craft(World world, CraftingInventory inventory, CraftResultInventory inventoryResult) {
+    private void craft(Level world, CraftingInventory inventory, CraftResultInventory inventoryResult) {
         if (!world.isRemote) {
             ItemStack itemstack = ItemStack.EMPTY;
             Optional<DanmakuRecipe> optional = world.getServer().getRecipeManager().getRecipe(RecipeRegistry.DANMAKU_RECIPE, inventory, world);

@@ -1,54 +1,54 @@
 package github.thelawf.gensokyoontology.api.util;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.BlockPos;
 
 import java.util.function.Predicate;
 
 public interface INBTWriter extends INBTReader {
     default void writeBoolean(ItemStack stack, String key, Boolean value) {
-        CompoundNBT nbt = new CompoundNBT();
+        CompoundTag nbt = new CompoundTag();
         nbt.putBoolean(key, value);
         stack.setTag(nbt);
     }
 
     default void writeString(ItemStack stack, String key, String value) {
-        CompoundNBT nbt = new CompoundNBT();
+        CompoundTag nbt = new CompoundTag();
         nbt.putString(key, value);
         stack.setTag(nbt);
     }
 
 
     default void writeBlockPos(ItemStack stack, String key, BlockPos pos) {
-        CompoundNBT nbt = new CompoundNBT();
+        CompoundTag nbt = new CompoundTag();
         nbt.putLong(key, pos.toLong());
         stack.setTag(nbt);
     }
 
     default void mergeBoolean(ItemStack stack, String key, Boolean value) {
-        CompoundNBT nbt = getOrCreateTag(stack);
-        CompoundNBT newNBT = new CompoundNBT();
+        CompoundTag nbt = getOrCreateTag(stack);
+        CompoundTag newNBT = new CompoundTag();
         newNBT.putBoolean(key, value);
         nbt.merge(newNBT);
         stack.setTag(nbt);
     }
 
     default void mergeString(ItemStack stack, String key, String value) {
-        CompoundNBT nbt = new CompoundNBT();
+        CompoundTag nbt = new CompoundTag();
         nbt.putString(key, value);
         stack.setTag(nbt);
     }
 
     default void mergeBlockPos(ItemStack stack, String key, BlockPos pos) {
-        CompoundNBT nbt = new CompoundNBT();
+        CompoundTag nbt = new CompoundTag();
         nbt.putLong(key, pos.toLong());
         stack.setTag(nbt);
 
     }
 
 
-    default CompoundNBT withBlockPos(CompoundNBT nbt, String xKey, String yKey, String zKey, BlockPos pos) {
+    default CompoundTag withBlockPos(CompoundTag nbt, String xKey, String yKey, String zKey, BlockPos pos) {
         nbt.putInt(xKey, pos.getX());
         nbt.putInt(yKey, pos.getY());
         nbt.putInt(zKey, pos.getZ());
@@ -56,8 +56,8 @@ public interface INBTWriter extends INBTReader {
     }
 
     default void mergeBlockPos(ItemStack stack, String xKey, String yKey, String zKey, BlockPos pos) {
-        CompoundNBT nbt = getOrCreateTag(stack);
-        CompoundNBT newNBT = new CompoundNBT();
+        CompoundTag nbt = getOrCreateTag(stack);
+        CompoundTag newNBT = new CompoundTag();
         newNBT.putInt(xKey, pos.getX());
         newNBT.putInt(yKey, pos.getY());
         newNBT.putInt(zKey, pos.getZ());
@@ -66,7 +66,7 @@ public interface INBTWriter extends INBTReader {
     }
 
     default void writeStringIf(Predicate<ItemStack> predicate, ItemStack stack, String key, String value) {
-        CompoundNBT nbt = new CompoundNBT();
+        CompoundTag nbt = new CompoundTag();
         if (predicate.test(stack)) {
             nbt.putString(key, value);
             stack.setTag(nbt);
@@ -74,7 +74,7 @@ public interface INBTWriter extends INBTReader {
     }
 
     default void writeBooleanIf(Predicate<ItemStack> predicate, ItemStack stack, String key, boolean value) {
-        CompoundNBT nbt = new CompoundNBT();
+        CompoundTag nbt = new CompoundTag();
         if (predicate.test(stack)) {
             nbt.putBoolean(key, value);
             stack.setTag(nbt);
@@ -82,7 +82,7 @@ public interface INBTWriter extends INBTReader {
     }
 
     default void writeBlockPosIf(Predicate<ItemStack> predicate, ItemStack stack, String key, BlockPos pos) {
-        CompoundNBT nbt = new CompoundNBT();
+        CompoundTag nbt = new CompoundTag();
         if (predicate.test(stack)) {
             nbt.putLong(key, pos.toLong());
             stack.setTag(nbt);
@@ -90,7 +90,7 @@ public interface INBTWriter extends INBTReader {
     }
 
     default void mergeStringIf(Predicate<ItemStack> predicate, ItemStack stack, String key, String value) {
-        CompoundNBT nbt = new CompoundNBT();
+        CompoundTag nbt = new CompoundTag();
         if (predicate.test(stack)) {
             nbt.putString(key, value);
             stack.setTag(nbt);
@@ -98,7 +98,7 @@ public interface INBTWriter extends INBTReader {
     }
 
     default void mergeBooleanIf(Predicate<ItemStack> predicate, ItemStack stack, String key, boolean value) {
-        CompoundNBT nbt = new CompoundNBT();
+        CompoundTag nbt = new CompoundTag();
         if (predicate.test(stack)) {
             nbt.putBoolean(key, value);
             stack.setTag(nbt);
@@ -106,7 +106,7 @@ public interface INBTWriter extends INBTReader {
     }
 
     default void mergeBlockPosIf(Predicate<ItemStack> predicate, ItemStack stack, String key, BlockPos pos) {
-        CompoundNBT nbt = new CompoundNBT();
+        CompoundTag nbt = new CompoundTag();
         if (predicate.test(stack)) {
             nbt.putLong(key, pos.toLong());
             stack.setTag(nbt);

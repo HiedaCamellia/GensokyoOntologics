@@ -3,10 +3,10 @@ package github.thelawf.gensokyoontology.data.recipe;
 import com.google.common.collect.Lists;
 import github.thelawf.gensokyoontology.core.RecipeRegistry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.RecipeManager;
+import net.minecraft.client.world.ClientLevel;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.util.NonNullList;
 
 import java.util.*;
@@ -21,7 +21,7 @@ public class GSKORecipeHandler {
     }
 
     public GSKORecipeHandler() {
-        ClientWorld world = Objects.requireNonNull(Minecraft.getInstance().world);
+        ClientLevel world = Objects.requireNonNull(Minecraft.getInstance().world);
         this.recipeManager = world.getRecipeManager();
     }
 

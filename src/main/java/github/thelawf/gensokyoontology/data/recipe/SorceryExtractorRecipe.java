@@ -5,13 +5,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import github.thelawf.gensokyoontology.core.RecipeRegistry;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import org.apache.logging.log4j.LogManager;
@@ -32,7 +32,7 @@ public class SorceryExtractorRecipe implements ISorceryExtractorRecipe {
     }
 
     @Override
-    public boolean matches(@NotNull IInventory inv, @NotNull World worldIn) {
+    public boolean matches(@NotNull IInventory inv, @NotNull Level worldIn) {
         int matches = 0;
         for (int i = 0; i < 4; i++) {
             if (i < this.inputs.size()) {

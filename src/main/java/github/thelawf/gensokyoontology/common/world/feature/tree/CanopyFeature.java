@@ -3,22 +3,22 @@ package github.thelawf.gensokyoontology.common.world.feature.tree;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.material.Material;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.shapes.BitSetVoxelShapePart;
 import net.minecraft.util.math.shapes.VoxelShapePart;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.world.ISeedReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldWriter;
+import net.minecraft.world.ILevel;
+import net.minecraft.world.ILevelWriter;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.gen.IWorldGenerationBaseReader;
-import net.minecraft.world.gen.IWorldGenerationReader;
+import net.minecraft.world.gen.ILevelGenerationBaseReader;
+import net.minecraft.world.gen.ILevelGenerationReader;
 import net.minecraft.world.gen.feature.BaseTreeFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.template.Template;
@@ -93,7 +93,7 @@ public class CanopyFeature extends Feature<BaseTreeFeatureConfig> {
     }
 
     //Mostly [VanillaCopy] of TreeFeature.place, edits noted
-    private boolean place(IWorldGenerationReader generationReader, Random rand, BlockPos positionIn, Set<BlockPos> p_225557_4_, Set<BlockPos> p_225557_5_, MutableBoundingBox boundingBoxIn, BaseTreeFeatureConfig configIn) {
+    private boolean place(ILevelGenerationReader generationReader, Random rand, BlockPos positionIn, Set<BlockPos> p_225557_4_, Set<BlockPos> p_225557_5_, MutableBoundingBox boundingBoxIn, BaseTreeFeatureConfig configIn) {
         int i = configIn.trunkPlacer.getHeight(rand);
         int j = configIn.foliagePlacer.func_230374_a_(rand, i, configIn);
         int k = i - j;
@@ -129,7 +129,7 @@ public class CanopyFeature extends Feature<BaseTreeFeatureConfig> {
     }
 
     //everything beyond this point is a [VanillaCopy] of TreeFeature
-    private int func_241521_a_(IWorldGenerationBaseReader p_241521_1_, int p_241521_2_, BlockPos p_241521_3_, BaseTreeFeatureConfig p_241521_4_) {
+    private int func_241521_a_(ILevelGenerationBaseReader p_241521_1_, int p_241521_2_, BlockPos p_241521_3_, BaseTreeFeatureConfig p_241521_4_) {
         BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
 
         for(int i = 0; i <= p_241521_2_ + 1; ++i) {
@@ -148,15 +148,15 @@ public class CanopyFeature extends Feature<BaseTreeFeatureConfig> {
         return p_241521_2_;
     }
 
-    protected void setBlockState(IWorldWriter world, BlockPos pos, BlockState state) {
+    protected void setBlockState(ILevelWriter world, BlockPos pos, BlockState state) {
         func_236408_b_(world, pos, state);
     }
 
-    public static void func_236408_b_(IWorldWriter p_236408_0_, BlockPos p_236408_1_, BlockState p_236408_2_) {
+    public static void func_236408_b_(ILevelWriter p_236408_0_, BlockPos p_236408_1_, BlockState p_236408_2_) {
         p_236408_0_.setBlockState(p_236408_1_, p_236408_2_, 19);
     }
 
-    private VoxelShapePart func_236403_a_(IWorld p_236403_1_, MutableBoundingBox p_236403_2_, Set<BlockPos> p_236403_3_, Set<BlockPos> p_236403_4_) {
+    private VoxelShapePart func_236403_a_(ILevel p_236403_1_, MutableBoundingBox p_236403_2_, Set<BlockPos> p_236403_3_, Set<BlockPos> p_236403_4_) {
         List<Set<BlockPos>> list = Lists.newArrayList();
         VoxelShapePart voxelshapepart = new BitSetVoxelShapePart(p_236403_2_.getXSize(), p_236403_2_.getYSize(), p_236403_2_.getZSize());
 

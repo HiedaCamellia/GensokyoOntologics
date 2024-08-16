@@ -1,8 +1,8 @@
 package github.thelawf.gensokyoontology.common.block.nature;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FenceBlock;
-import net.minecraft.block.SoundType;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.FenceBlock;
+import net.minecraft.world.level.block.SoundType;
 
 public class MapleFence extends FenceBlock {
     public MapleFence() {

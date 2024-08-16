@@ -3,15 +3,15 @@ package github.thelawf.gensokyoontology.common.entity.projectile;
 import github.thelawf.gensokyoontology.common.util.danmaku.SpellData;
 import github.thelawf.gensokyoontology.core.init.EntityRegistry;
 import github.thelawf.gensokyoontology.core.init.ItemRegistry;
-import net.minecraft.entity.*;
-import net.minecraft.entity.projectile.ThrowableEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.projectile.ThrowableEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(value = Dist.CLIENT, _interface = IRendersAsItem.class)
 public class DanmakuShotEntity extends AbstractDanmakuEntity {
@@ -20,11 +20,11 @@ public class DanmakuShotEntity extends AbstractDanmakuEntity {
 
     public static final DataParameter<Float> DAMAGE = EntityDataManager.createKey(DanmakuShotEntity.class, DataSerializers.FLOAT);
 
-    public DanmakuShotEntity(EntityType<? extends ThrowableEntity> type, World worldIn) {
+    public DanmakuShotEntity(EntityType<? extends ThrowableEntity> type, Level worldIn) {
         super(type, worldIn);
     }
 
-    public DanmakuShotEntity(LivingEntity throwerIn, World world, SpellData spellData) {
+    public DanmakuShotEntity(LivingEntity throwerIn, Level world, SpellData spellData) {
         super(EntityRegistry.DANMAKU_ENTITY.get(), throwerIn, world, spellData);
         // this.setSpellData(spellData);
     }

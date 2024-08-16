@@ -6,17 +6,17 @@ import github.thelawf.gensokyoontology.GensokyoOntology;
 import github.thelawf.gensokyoontology.common.tileentity.DisposableSpawnerTile;
 import github.thelawf.gensokyoontology.core.init.BlockRegistry;
 import github.thelawf.gensokyoontology.core.init.EntityRegistry;
-import net.minecraft.block.Blocks;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.ChestTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Mirror;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
 import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.IServerWorld;
+import net.minecraft.world.IServerLevel;
 import net.minecraft.world.gen.feature.structure.IStructurePieceType;
 import net.minecraft.world.gen.feature.structure.StructurePiece;
 import net.minecraft.world.gen.feature.structure.TemplateStructurePiece;
@@ -159,9 +159,9 @@ public class ScarletMansionPieces {
             this.loadTemplate(templateManager);
         }
 
-        public Piece(TemplateManager templateManager, CompoundNBT nbt) {
+        public Piece(TemplateManager templateManager, CompoundTag nbt) {
             super(TYPE, nbt);
-            this.templateName = new ResourceLocation(nbt.getString("Template"));
+            this.templateName = ResourceLocation.parse(nbt.getString("Template"));
             this.rotation = Rotation.NONE; // Rotation.valueOf(nbt.getString("Rot"));
             this.mirror = Mirror.NONE; // Mirror.valueOf(nbt.getString("Mi"));
             this.loadTemplate(templateManager);
@@ -181,14 +181,14 @@ public class ScarletMansionPieces {
 
 
         @Override
-        protected void readAdditional(@NotNull CompoundNBT tagCompound) {
+        protected void readAdditional(@NotNull CompoundTag tagCompound) {
             super.readAdditional(tagCompound);
             tagCompound.putString("Template", this.templateName.toString());
             tagCompound.putString("Rot", this.rotation.name());
         }
 
         @Override
-        protected void handleDataMarker(@NotNull String function, @NotNull BlockPos pos, @NotNull IServerWorld worldIn, @NotNull Random rand, @NotNull MutableBoundingBox sbb) {
+        protected void handleDataMarker(@NotNull String function, @NotNull BlockPos pos, @NotNull IServerLevel worldIn, @NotNull Random rand, @NotNull MutableBoundingBox sbb) {
             if ("chest".equals(function)) {
                 worldIn.setBlockState(pos, Blocks.CHEST.getDefaultState(), 2);
                 TileEntity tileentity = worldIn.getTileEntity(pos);

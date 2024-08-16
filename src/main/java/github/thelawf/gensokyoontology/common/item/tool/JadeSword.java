@@ -1,8 +1,8 @@
 package github.thelawf.gensokyoontology.common.item.tool;
 
 import github.thelawf.gensokyoontology.common.item.touhou.GSKOItemTier;
-import net.minecraft.item.Item;
-import net.minecraft.item.SwordItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SwordItem;
 
 public class JadeSword extends SwordItem {
     public JadeSword(Properties properties) {

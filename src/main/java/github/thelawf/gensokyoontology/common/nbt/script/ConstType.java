@@ -1,7 +1,7 @@
 package github.thelawf.gensokyoontology.common.nbt.script;
 
 import github.thelawf.gensokyoontology.GensokyoOntology;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 public enum ConstType {
     INT("int"),
@@ -20,7 +20,7 @@ public enum ConstType {
         return this.key;
     }
 
-    public ITextComponent toTextComponent() {
+    public Component toTextComponent() {
         return GensokyoOntology.withTranslation("gui.",".const_builder.button.constType." + getKey());
     }
 }

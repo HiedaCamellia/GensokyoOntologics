@@ -2,7 +2,7 @@ package github.thelawf.gensokyoontology.common.network.packet;
 
 import github.thelawf.gensokyoontology.client.renderer.world.ScarletSkyRenderer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
+import net.minecraft.client.world.ClientLevel;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 import org.apache.logging.log4j.LogManager;
@@ -30,8 +30,8 @@ public class ScarletMistPacket {
         if (context.get().getDirection().getReceptionSide().isClient()) {
             context.get().enqueueWork(() -> {
                 Minecraft minecraft = Minecraft.getInstance();
-                ClientWorld clientWorld = minecraft.world;
-                if (clientWorld != null && minecraft.player != null) {
+                ClientLevel clientLevel = minecraft.world;
+                if (clientLevel != null && minecraft.player != null) {
                     ScarletSkyRenderer renderer = new ScarletSkyRenderer();
                 }
                 LOGGER.info(this.color);

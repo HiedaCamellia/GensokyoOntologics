@@ -11,12 +11,12 @@ import github.thelawf.gensokyoontology.common.network.GSKONetworking;
 import github.thelawf.gensokyoontology.common.network.packet.CMergeScriptPacket;
 import github.thelawf.gensokyoontology.common.util.EnumUtil;
 import github.thelawf.gensokyoontology.core.init.ContainerRegistry;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -28,17 +28,17 @@ import java.util.List;
 // left input: 48, 48
 // right input: 48, 71
 public class BinaryOperationScreen extends ScriptContainerScreen<ScriptBuilderContainer> {
-    CompoundNBT optData = new CompoundNBT();
+    CompoundTag optData = new CompoundTag();
     public static final ResourceLocation TEXTURE = GensokyoOntology.withRL("textures/gui/binary_operation_screen.png");
     private BinaryOperation operation;
     public static String FIELD_TYPE = "binary_operation";
-    private TextFieldWidget leftInput;
-    private TextFieldWidget rightInput;
-    private final ITextComponent leftText = GensokyoOntology.withTranslation("gui.",".binary_operation.left.text");
-    private final ITextComponent rightText = GensokyoOntology.withTranslation("gui.",".binary_operation.right.text");
+    private EditBox leftInput;
+    private EditBox rightInput;
+    private final Component leftText = GensokyoOntology.withTranslation("gui.",".binary_operation.left.text");
+    private final Component rightText = GensokyoOntology.withTranslation("gui.",".binary_operation.right.text");
 
     private final List<WidgetConfig> WIDGETS;
-    public BinaryOperationScreen(ScriptBuilderContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
+    public BinaryOperationScreen(ScriptBuilderContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         this.playerInventoryTitleX = 10;
         this.playerInventoryTitleY = 88;
@@ -74,8 +74,8 @@ public class BinaryOperationScreen extends ScriptContainerScreen<ScriptBuilderCo
         int a = this.guiLeft;
         int b = this.guiTop;
 
-        this.leftInput = new TextFieldWidget(this.font, a + 43, b + 48, 90, 18, withText(""));
-        this.rightInput = new TextFieldWidget(this.font, a + 43, b + 71, 90, 18, withText(""));
+        this.leftInput = new EditBox(this.font, a + 43, b + 48, 90, 18, withText(""));
+        this.rightInput = new EditBox(this.font, a + 43, b + 71, 90, 18, withText(""));
         this.setRelativeToParent(WIDGETS, a, b);
     }
 
@@ -91,9 +91,9 @@ public class BinaryOperationScreen extends ScriptContainerScreen<ScriptBuilderCo
         if (!(this.minecraft.player.openContainer instanceof BinaryOperationContainer)) return;
         BinaryOperationContainer container = (BinaryOperationContainer) this.minecraft.player.openContainer;
 
-        CompoundNBT left = container.inventorySlots.get(0).getStack().getTag();
-        CompoundNBT right = container.inventorySlots.get(1).getStack().getTag();
-        CompoundNBT value = new CompoundNBT();
+        CompoundTag left = container.inventorySlots.get(0).getStack().getTag();
+        CompoundTag right = container.inventorySlots.get(1).getStack().getTag();
+        CompoundTag value = new CompoundTag();
 
         if (left != null) value.put("left", left);
         if (right != null) value.put("right", right);

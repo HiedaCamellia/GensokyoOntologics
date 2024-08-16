@@ -1,8 +1,8 @@
 package github.thelawf.gensokyoontology.common.block.nature;
 
-import net.minecraft.block.*;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
@@ -10,11 +10,11 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.tags.Tag;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.ILevelReader;
+import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraftforge.common.extensions.IForgeFluid;
 import net.minecraftforge.fluids.FluidAttributes;
 
@@ -29,7 +29,7 @@ public class HotSpringBlock extends FlowingFluidBlock implements IForgeFluid {
     }
 
     @Override
-    public boolean isEntityInside(FluidState state, IWorldReader world, BlockPos pos, Entity entity, double yToTest, Tag<Fluid> tag, boolean testingHead) {
+    public boolean isEntityInside(FluidState state, ILevelReader world, BlockPos pos, Entity entity, double yToTest, Tag<Fluid> tag, boolean testingHead) {
         if (entity instanceof LivingEntity) {
             LivingEntity living = (LivingEntity) entity;
             living.addPotionEffect(new EffectInstance(Effects.INSTANT_HEALTH, 2 * 10, 1));
@@ -44,7 +44,7 @@ public class HotSpringBlock extends FlowingFluidBlock implements IForgeFluid {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void animateTick(@Nonnull BlockState stateIn, @Nonnull World worldIn, @Nonnull BlockPos pos, @Nonnull Random rand) {
+    public void animateTick(@Nonnull BlockState stateIn, @Nonnull Level worldIn, @Nonnull BlockPos pos, @Nonnull Random rand) {
         // Direction direction
         double dx = (double) pos.getX() + 0.5D;
         double dy = (double) pos.getY() + 1.0D;

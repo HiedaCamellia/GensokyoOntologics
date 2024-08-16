@@ -9,12 +9,12 @@ import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.entity.model.VillagerModel;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 public class TsumiBukuroRenderer extends LivingRenderer<TsumiBukuroEntity, HumanNPCModel<TsumiBukuroEntity>> {
 
-    public static final ResourceLocation TSUMI_BUKURO_TEXTURE = new ResourceLocation(
+    public static final ResourceLocation TSUMI_BUKURO_TEXTURE = ResourceLocation.parse(
             GensokyoOntology.MODID, "textures/entity/tsumi_bukuro.png");
 
     public TsumiBukuroRenderer(EntityRendererManager rendererManager) {

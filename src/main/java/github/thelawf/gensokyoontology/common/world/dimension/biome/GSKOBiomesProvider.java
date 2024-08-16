@@ -5,10 +5,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import github.thelawf.gensokyoontology.GensokyoOntology;
 import github.thelawf.gensokyoontology.common.world.layer.GSKOLayerUtil;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryLookupCodec;
 import net.minecraft.world.biome.Biome;
@@ -102,7 +102,7 @@ public class GSKOBiomesProvider extends BiomeProvider {
     }
 
     public static void register() {
-        Registry.register(Registry.BIOME_PROVIDER_CODEC, new ResourceLocation(
+        Registry.register(Registry.BIOME_PROVIDER_CODEC, ResourceLocation.parse(
                 GensokyoOntology.MODID, "gsko_biome_provider"), GSKO_BIOME_CODEC);
     }
 

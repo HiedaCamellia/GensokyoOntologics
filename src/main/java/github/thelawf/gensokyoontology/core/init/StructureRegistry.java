@@ -4,12 +4,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import github.thelawf.gensokyoontology.GensokyoOntology;
 import github.thelawf.gensokyoontology.common.world.structure.*;
-import net.minecraft.util.registry.WorldGenRegistries;
+import net.minecraft.util.registry.LevelGenRegistries;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 import net.minecraft.world.gen.feature.structure.Structure;
 import net.minecraft.world.gen.settings.DimensionStructuresSettings;
 import net.minecraft.world.gen.settings.StructureSeparationSettings;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.DeferredRegister;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -23,24 +23,24 @@ public final class StructureRegistry {
     public static final DeferredRegister<Structure<?>> STRUCTURES = DeferredRegister.create(
             ForgeRegistries.STRUCTURE_FEATURES, GensokyoOntology.MODID);
 
-    public static final RegistryObject<Structure<NoFeatureConfig>> ALICE_HOUSE = STRUCTURES.register(
+    public static final DeferredRegister<Structure<NoFeatureConfig>> ALICE_HOUSE = STRUCTURES.register(
             "alice_house", () -> new AliceHouse(NoFeatureConfig.CODEC));
-    public static final RegistryObject<Structure<NoFeatureConfig>> SCARLET_DEVIL_MANSION = STRUCTURES.register(
+    public static final DeferredRegister<Structure<NoFeatureConfig>> SCARLET_DEVIL_MANSION = STRUCTURES.register(
             "scarlet_devil_mansion", () -> new ScarletDevilMansion(NoFeatureConfig.CODEC));
-    public static final RegistryObject<Structure<NoFeatureConfig>> MYSTIA_IZAKAYA = STRUCTURES.register(
+    public static final DeferredRegister<Structure<NoFeatureConfig>> MYSTIA_IZAKAYA = STRUCTURES.register(
             "mystia_izakaya", () -> new MystiaIzakayaStructure(NoFeatureConfig.CODEC));
-    public static final RegistryObject<Structure<NoFeatureConfig>> HAKUREI_SHRINE = STRUCTURES.register(
+    public static final DeferredRegister<Structure<NoFeatureConfig>> HAKUREI_SHRINE = STRUCTURES.register(
             "hakurei_shrine", () -> new HakureiShrineStructure(NoFeatureConfig.CODEC));
-    public static final RegistryObject<Structure<NoFeatureConfig>> CHIREIDEN = STRUCTURES.register(
+    public static final DeferredRegister<Structure<NoFeatureConfig>> CHIREIDEN = STRUCTURES.register(
             "chireiden", () -> new ChireidenStructure(NoFeatureConfig.CODEC));
-    public static final RegistryObject<Structure<NoFeatureConfig>> BEAST_PATHWAY = STRUCTURES.register(
+    public static final DeferredRegister<Structure<NoFeatureConfig>> BEAST_PATHWAY = STRUCTURES.register(
             "beast_pathway", () -> new BeastPathStructure(NoFeatureConfig.CODEC));
-    public static final RegistryObject<Structure<NoFeatureConfig>> CIRNO_ICE_HOUSE = STRUCTURES.register(
+    public static final DeferredRegister<Structure<NoFeatureConfig>> CIRNO_ICE_HOUSE = STRUCTURES.register(
             "cirno_ice_house", () -> new CirnoIceHouseStructure(NoFeatureConfig.CODEC));
-    public static final RegistryObject<Structure<NoFeatureConfig>> HUMAN_VILLAGE = STRUCTURES.register(
+    public static final DeferredRegister<Structure<NoFeatureConfig>> HUMAN_VILLAGE = STRUCTURES.register(
             "human_village", () -> new HumanVillageStructure(NoFeatureConfig.CODEC));
 
-    // public static final RegistryObject<Structure<NoFeatureConfig>> WATERFALL_NINE_HEAVEN = STRUCTURES.register(
+    // public static final DeferredRegister<Structure<NoFeatureConfig>> WATERFALL_NINE_HEAVEN = STRUCTURES.register(
     //         "water_of_nine_heaven", () -> new WaterfallNineHeavenStructure(NoFeatureConfig.CODEC));
 
     // StructureSeparationSettings 里面的几个参数为：距离，分布和随机值
@@ -114,9 +114,9 @@ public final class StructureRegistry {
          * However, while it does propagate the spacing to some correct dimensions from this map,
          * it seems it doesn't always work for code made dimensions as they read from this list beforehand.
          * <br>
-         * Instead, we will use the WorldEvent.Load event in StructureTutorialMain to add the structure
+         * Instead, we will use the LevelEvent.Load event in StructureTutorialMain to add the structure
          * spacing from this list into that dimension or to do dimension blacklisting properly.
-         * We also use our entry in DimensionStructuresSettings.DEFAULTS in WorldEvent.Load as well.
+         * We also use our entry in DimensionStructuresSettings.DEFAULTS in LevelEvent.Load as well.
          * <br>
          * DEFAULTS requires AccessTransformer  (See resources/META-INF/accesstransformer.cfg)
          */
@@ -135,7 +135,7 @@ public final class StructureRegistry {
          * func_236195_a_() -> getStructureMap()
          * 用于获取 Map<Structure<?>, StructureSeparationSettings> 这个类型的映射图
          */
-        WorldGenRegistries.NOISE_SETTINGS.getEntries().forEach(settings -> {
+        LevelGenRegistries.NOISE_SETTINGS.getEntries().forEach(settings -> {
 
             Map<Structure<?>, StructureSeparationSettings> structureMap = settings.getValue().getStructures().func_236195_a_();
 

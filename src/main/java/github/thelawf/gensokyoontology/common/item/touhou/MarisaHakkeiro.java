@@ -6,23 +6,23 @@ import github.thelawf.gensokyoontology.common.entity.misc.MasterSparkEntity;
 import github.thelawf.gensokyoontology.core.init.ItemRegistry;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.UseAction;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.UseAction;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.network.chat.Component;
+
 import net.minecraft.world.Explosion;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.provider.NetherBiomeProvider;
 import net.minecraft.world.gen.NoiseChunkGenerator;
@@ -50,7 +50,7 @@ public class MarisaHakkeiro extends Item implements IRayTraceReader {
      */
     @Override
     @NotNull
-    public ActionResult<ItemStack> onItemRightClick(@NotNull World worldIn, PlayerEntity playerIn, @NotNull Hand handIn) {
+    public ActionResult<ItemStack> onItemRightClick(@NotNull Level worldIn, Player playerIn, @NotNull Hand handIn) {
 
         if (playerIn.getCooldownTracker().hasCooldown(this))
             return ActionResult.resultPass(playerIn.getHeldItem(handIn));
@@ -87,9 +87,9 @@ public class MarisaHakkeiro extends Item implements IRayTraceReader {
 
         // 设置起爆点，从玩家看向的视角延伸8格为第一个爆炸的起爆位置。获取方式是先获取玩家的视角位置，
         // 然后通过向量加法和向量数乘法，在这个位置的基础上再加上20倍的玩家视角向量
-        Vector3d explodeStartPos = playerIn.getEyePosition(1.0F).add(
+        Vec3 explodeStartPos = playerIn.getEyePosition(1.0F).add(
                 playerIn.getLookVec().scale(8));
-        Vector3d playerPos = playerIn.getPositionVec();
+        Vec3 playerPos = playerIn.getPositionVec();
 
         // 循环引发50次爆炸，每次爆炸前先获取距离 explodeStartPos i格外的向量位置，
         // 通过同样的向量加法和数乘法确定下一个引爆的位置
@@ -98,9 +98,9 @@ public class MarisaHakkeiro extends Item implements IRayTraceReader {
         masterSpark.setLocationAndAngles(playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(),
                 toYawPitch(playerIn.getLookVec()).x, toYawPitch(playerIn.getLookVec()).y);
        //  worldIn.addEntity(masterSpark);
-        if (!worldIn.isRemote) {
+        if (worldIn.isClientSide) {
             for (int i = 0; i < 50; i++) {
-                Vector3d explodePos = explodeStartPos.add(playerIn.getLookVec().scale(i));
+                Vec3 explodePos = explodeStartPos.add(playerIn.getLookVec().scale(i));
                 worldIn.createExplosion(playerIn, explodePos.getX(), explodePos.getY(),
                         explodePos.getZ(), 5.0f, false, Explosion.Mode.BREAK);
             }
@@ -115,7 +115,7 @@ public class MarisaHakkeiro extends Item implements IRayTraceReader {
             }
 //
             entities.forEach(e -> {
-                if (e instanceof MonsterEntity) {
+                if (e instanceof Monster) {
                     e.attackEntityFrom(DamageSource.causePlayerDamage(playerIn), 30f);
                 }
             });
@@ -148,11 +148,11 @@ public class MarisaHakkeiro extends Item implements IRayTraceReader {
 
 
     @Override
-    public void addInformation(@NotNull ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, @NotNull ITooltipFlag flagIn) {
-        tooltip.add(new TranslationTextComponent("tooltip." + GensokyoOntology.MODID +
+    public void addInformation(@NotNull ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, @NotNull ITooltipFlag flagIn) {
+        tooltip.add(Component.translatable("tooltip." + GensokyoOntology.MODID +
                 ".marisa_hakkeiro"));
         if (Screen.hasShiftDown()) {
-            tooltip.add(new TranslationTextComponent("tooltip." + GensokyoOntology.MODID +
+            tooltip.add(Component.translatable("tooltip." + GensokyoOntology.MODID +
                     ".marisa_hakkeiro.info"));
         }
     }

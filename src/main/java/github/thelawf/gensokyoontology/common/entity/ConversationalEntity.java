@@ -4,14 +4,14 @@ import github.thelawf.gensokyoontology.GensokyoOntology;
 import github.thelawf.gensokyoontology.api.dialog.DialogTreeNode;
 import github.thelawf.gensokyoontology.api.dialog.IEntityDialog;
 import github.thelawf.gensokyoontology.common.entity.monster.YoukaiEntity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IAngerable;
-import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.IAngerable;
+import net.minecraft.world.entity.passive.TameableEntity;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class ConversationalEntity extends YoukaiEntity implements IAngerable, IEntityDialog {
@@ -20,7 +20,7 @@ public abstract class ConversationalEntity extends YoukaiEntity implements IAnge
     public static final DataParameter<String> DATA_DIALOG_KEY = EntityDataManager.createKey(
             ConversationalEntity.class, DataSerializers.STRING);
 
-    protected ConversationalEntity(EntityType<? extends TameableEntity> type, World worldIn) {
+    protected ConversationalEntity(EntityType<? extends TameableEntity> type, Level worldIn) {
         super(type, worldIn);
     }
 
@@ -31,7 +31,7 @@ public abstract class ConversationalEntity extends YoukaiEntity implements IAnge
     }
 
     @Override
-    public void readAdditional(@NotNull CompoundNBT compound) {
+    public void readAdditional(@NotNull CompoundTag compound) {
         super.readAdditional(compound);
         // if (compound.contains("dialog_key")) {
         //     this.dialog = new DialogTreeNode(compound.getString("dialog_key"));
@@ -39,7 +39,7 @@ public abstract class ConversationalEntity extends YoukaiEntity implements IAnge
     }
 
     @Override
-    public void writeAdditional(@NotNull CompoundNBT compound) {
+    public void writeAdditional(@NotNull CompoundTag compound) {
         super.writeAdditional(compound);
         // compound.putString("dialog_key", this.dialog.getName());
     }

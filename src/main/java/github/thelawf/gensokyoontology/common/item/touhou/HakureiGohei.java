@@ -12,21 +12,21 @@ import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuUtil;
 import github.thelawf.gensokyoontology.common.util.math.GeometryUtil;
 import github.thelawf.gensokyoontology.core.init.itemtab.GSKOItemTab;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.*;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.network.chat.Component;
+
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,26 +37,26 @@ import java.util.Optional;
  * 博丽灵梦的御币
  */
 public class HakureiGohei extends Item implements IRayTraceReader {
-    public static final ITextComponent TITLE = GensokyoOntology.withTranslation("gui.", ".hakurei_gohei.title");
+    public static final Component TITLE = GensokyoOntology.withTranslation("gui.", ".hakurei_gohei.title");
     public HakureiGohei(Properties properties) {
         super(properties);
     }
 
-    private void setMode(CompoundNBT nbt, Mode mode) {
+    private void setMode(CompoundTag nbt, Mode mode) {
         nbt.putInt("mode", mode.ordinal());
     }
 
-    public static Mode getMode(CompoundNBT nbt) {
+    public static Mode getMode(CompoundTag nbt) {
         return Mode.values()[nbt.getInt("mode")];
     }
 
-    private Mode switchMode(CompoundNBT nbt) {
+    private Mode switchMode(CompoundTag nbt) {
         return EnumUtil.switchEnum(Mode.class, getMode(nbt));
     }
 
     @Override
     @NotNull
-    public ActionResult<ItemStack> onItemRightClick(@NotNull World worldIn, PlayerEntity playerIn, @NotNull Hand handIn) {
+    public ActionResult<ItemStack> onItemRightClick(@NotNull Level worldIn, Player playerIn, @NotNull Hand handIn) {
         if (playerIn.getCooldownTracker().hasCooldown(this) && !playerIn.isCreative())
             return ActionResult.resultPass(playerIn.getHeldItem(handIn));
 
@@ -81,7 +81,7 @@ public class HakureiGohei extends Item implements IRayTraceReader {
         return ActionResult.resultSuccess(playerIn.getHeldItem(handIn));
     }
 
-    public void fireDreamSeal(World worldIn, PlayerEntity playerIn) {
+    public void fireDreamSeal(Level worldIn, Player playerIn) {
         for (int i = 0; i < 8; i++) {
             int i1 = i % 3;
             DanmakuColor color;
@@ -97,10 +97,10 @@ public class HakureiGohei extends Item implements IRayTraceReader {
                     color = DanmakuColor.GREEN;
                     break;
             }
-            Vector3d vector3d = i % 2 == 0 ? new Vector3d(2, 3, 0).rotatePitch((float) Math.PI * 2 / i) :
-                    new Vector3d(2, 3, 0).rotatePitch((float) -Math.PI * 2 / i);
-            // Vector3d shootVec = playerIn.getLookVec();
-            Vector3d initPos = vector3d.add(playerIn.getPositionVec());
+            Vec3 vector3d = i % 2 == 0 ? new Vec3(2, 3, 0).rotatePitch((float) Math.PI * 2 / i) :
+                    new Vec3(2, 3, 0).rotatePitch((float) -Math.PI * 2 / i);
+            // Vec3 shootVec = playerIn.getLookVec();
+            Vec3 initPos = vector3d.add(playerIn.getPositionVec());
 
             DreamSealEntity dreamSeal = new DreamSealEntity(worldIn, playerIn, color);
             dreamSeal.setNoGravity(true);
@@ -115,7 +115,7 @@ public class HakureiGohei extends Item implements IRayTraceReader {
     public void fillItemGroup(@NotNull ItemGroup group, @NotNull NonNullList<ItemStack> items) {
         if (group == GSKOItemTab.GSKO_ITEM_TAB) {
             ItemStack itemStack = new ItemStack(this);
-            CompoundNBT tag = new CompoundNBT();
+            CompoundTag tag = new CompoundTag();
             tag.putInt("mode", Mode.DANMAKU.ordinal());
             itemStack.setTag(tag);
             items.add(itemStack);
@@ -123,10 +123,10 @@ public class HakureiGohei extends Item implements IRayTraceReader {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
 
-        ITextComponent text = GensokyoOntology.withTranslation("tooltip.", ".hakurei_gohei.mode");
+        Component text = GensokyoOntology.withTranslation("tooltip.", ".hakurei_gohei.mode");
         if (stack.getTag() != null) {
             switch (getMode(stack.getTag())) {
                 default:

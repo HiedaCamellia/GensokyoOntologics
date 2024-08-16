@@ -2,9 +2,9 @@ package github.thelawf.gensokyoontology.client.renderer;
 
 import github.thelawf.gensokyoontology.client.renderer.world.ScarletSkyRenderer;
 import net.minecraft.client.world.DimensionRenderInfo;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ISkyRenderHandler;
 import net.minecraftforge.common.ForgeMod;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +18,7 @@ public class GSKODimensionRenderInfo extends DimensionRenderInfo {
 
     @Override
     @NotNull
-    public Vector3d func_230494_a_(@NotNull Vector3d biomeFogColor, float daylight) {
+    public Vec3 func_230494_a_(@NotNull Vec3 biomeFogColor, float daylight) {
         return biomeFogColor.mul(daylight * 0.94F + 0.06F, (daylight * 0.94F + 0.06F), (daylight * 0.91F + 0.09F));
     }
 

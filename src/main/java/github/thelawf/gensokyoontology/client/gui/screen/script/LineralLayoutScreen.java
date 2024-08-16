@@ -6,9 +6,9 @@ import github.thelawf.gensokyoontology.api.client.ITextBuilder;
 import github.thelawf.gensokyoontology.api.client.layout.WidgetConfig;
 import github.thelawf.gensokyoontology.client.gui.screen.widget.BlankWidget;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -17,7 +17,7 @@ import java.util.List;
 public abstract class LineralLayoutScreen extends Screen implements IInputParser, ITextBuilder {
     protected final BlankWidget blank = BlankWidget.INSTANCE;
     public static final Logger LOGGER = LogManager.getLogger();
-    protected LineralLayoutScreen(ITextComponent titleIn) {
+    protected LineralLayoutScreen(Component titleIn) {
         super(titleIn);
     }
 
@@ -56,7 +56,7 @@ public abstract class LineralLayoutScreen extends Screen implements IInputParser
             config.widget = new Button(x, y, config.width, config.height, config.text, config.action);
             this.addButton(config.widget);
         }
-        if (config.widget instanceof TextFieldWidget) {
+        if (config.widget instanceof EditBox) {
             config.widget.x = x;
             config.widget.y = y;
             config.widget.setWidth(config.width);

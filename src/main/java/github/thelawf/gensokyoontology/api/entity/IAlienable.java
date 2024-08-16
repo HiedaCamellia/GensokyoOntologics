@@ -1,6 +1,6 @@
 package github.thelawf.gensokyoontology.api.entity;
 
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 
 public interface IAlienable<B extends Entity, A extends Entity> {
     B getBefore();

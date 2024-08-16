@@ -1,13 +1,13 @@
 package github.thelawf.gensokyoontology.common.block.nature;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.fluid.*;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.world.ILevelReader;
 import net.minecraftforge.common.extensions.IForgeFluid;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
@@ -24,7 +24,7 @@ public class HotSpringWater extends ForgeFlowingFluid implements IForgeFluid {
     }
 
     @Override
-    public int getLevel(@Nullable FluidState state) {
+    public int level(@Nullable FluidState state) {
         return 1;
     }
 
@@ -34,7 +34,7 @@ public class HotSpringWater extends ForgeFlowingFluid implements IForgeFluid {
         }
 
         @Override
-        public boolean isEntityInside(FluidState state, IWorldReader world, BlockPos pos, Entity entity, double yToTest, Tag<Fluid> tag, boolean testingHead) {
+        public boolean isEntityInside(FluidState state, ILevelReader world, BlockPos pos, Entity entity, double yToTest, Tag<Fluid> tag, boolean testingHead) {
             return super.isEntityInside(state, world, pos, entity, yToTest, tag, testingHead);
         }
 
@@ -53,11 +53,11 @@ public class HotSpringWater extends ForgeFlowingFluid implements IForgeFluid {
         return true;
     }
 
-    public int getDropOff(IWorldReader p_204528_1_) {
+    public int getDropOff(ILevelReader p_204528_1_) {
         return 1;
     }
 
-    public int getTickDelay(IWorldReader p_205569_1_) {
+    public int getTickDelay(ILevelReader p_205569_1_) {
         return 5;
     }
 
@@ -72,7 +72,7 @@ public class HotSpringWater extends ForgeFlowingFluid implements IForgeFluid {
         }
 
         @Override
-        public boolean isEntityInside(FluidState state, IWorldReader world, BlockPos pos, Entity entity, double yToTest, Tag<Fluid> tag, boolean testingHead) {
+        public boolean isEntityInside(FluidState state, ILevelReader world, BlockPos pos, Entity entity, double yToTest, Tag<Fluid> tag, boolean testingHead) {
             return super.isEntityInside(state, world, pos, entity, yToTest, tag, testingHead);
         }
 
@@ -87,7 +87,7 @@ public class HotSpringWater extends ForgeFlowingFluid implements IForgeFluid {
     }
 
     @Override
-    public boolean isEntityInside(FluidState state, IWorldReader world, BlockPos pos, Entity entity, double yToTest, Tag<Fluid> tag, boolean testingHead) {
+    public boolean isEntityInside(FluidState state, ILevelReader world, BlockPos pos, Entity entity, double yToTest, Tag<Fluid> tag, boolean testingHead) {
         if (entity instanceof LivingEntity) {
             LivingEntity living = (LivingEntity) entity;
             living.heal(1.2F);

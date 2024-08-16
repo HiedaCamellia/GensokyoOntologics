@@ -7,22 +7,22 @@ import github.thelawf.gensokyoontology.common.util.GSKOUtil;
 import github.thelawf.gensokyoontology.common.util.danmaku.SpellBehavior;
 import github.thelawf.gensokyoontology.core.init.EntityRegistry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.monster.GuardianEntity;
-import net.minecraft.entity.passive.SheepEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.GuardianEntity;
+import net.minecraft.world.entity.passive.SheepEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -39,14 +39,14 @@ public class LaserSourceEntity extends AffiliatedEntity implements IRayTraceRead
     public static final DataParameter<Integer> DATA_LIFESPAN = EntityDataManager.createKey(LaserSourceEntity.class, DataSerializers.VARINT);
     public static final DataParameter<Integer> DATA_PREPARATION = EntityDataManager.createKey(LaserSourceEntity.class, DataSerializers.VARINT);
     public static final DataParameter<Float> DATA_RANGE = EntityDataManager.createKey(LaserSourceEntity.class, DataSerializers.FLOAT);
-    public LaserSourceEntity(EntityType<?> entityTypeIn, World worldIn) {
+    public LaserSourceEntity(EntityType<?> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
         this.ignoreFrustumCheck = true;
         this.setARGB(0x88FF0000);
         this.init(100, 30, 128F);
     }
 
-    public LaserSourceEntity(World worldIn, Entity owner) {
+    public LaserSourceEntity(Level worldIn, Entity owner) {
         super(EntityRegistry.LASER_SOURCE_ENTITY.get(), owner, worldIn);
         this.ignoreFrustumCheck = true;
         this.setARGB(0x88FF0000);
@@ -63,7 +63,7 @@ public class LaserSourceEntity extends AffiliatedEntity implements IRayTraceRead
     }
 
     @Override
-    protected void readAdditional(@NotNull CompoundNBT compound) {
+    protected void readAdditional(@NotNull CompoundTag compound) {
         super.readAdditional(compound);
         if (compound.contains("lifespan")) {
             this.lifespan = compound.getInt("lifespan");
@@ -84,7 +84,7 @@ public class LaserSourceEntity extends AffiliatedEntity implements IRayTraceRead
     }
 
     @Override
-    protected void writeAdditional(@NotNull CompoundNBT compound) {
+    protected void writeAdditional(@NotNull CompoundTag compound) {
         super.writeAdditional(compound);
         compound.putInt("lifespan", this.lifespan);
         compound.putInt("preparation", this.preparation);
@@ -105,8 +105,8 @@ public class LaserSourceEntity extends AffiliatedEntity implements IRayTraceRead
                     this.setMotion(behavior.motion.x, behavior.motion.y, behavior.motion.z);
                 });
 
-        Vector3d start = this.getPositionVec();
-        Vector3d end = this.getLookVec().scale(this.range).add(start);
+        Vec3 start = this.getPositionVec();
+        Vec3 end = this.getLookVec().scale(this.range).add(start);
         Predicate<Entity> canAttack = entity -> this.getOwnerID().isPresent() && entity.getUniqueID() != this.getOwnerID().get();
 
         if (this.ticksExisted % 2 == 0 && rayTrace(this.world, this, start, end).isPresent()) {

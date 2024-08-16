@@ -8,11 +8,11 @@ import github.thelawf.gensokyoontology.common.network.GSKONetworking;
 import github.thelawf.gensokyoontology.common.network.packet.CSwitchModePacket;
 import github.thelawf.gensokyoontology.common.util.EnumUtil;
 import net.minecraft.client.gui.screen.GamemodeSelectionScreen;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
+
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 @OnlyIn(Dist.CLIENT)
@@ -22,10 +22,10 @@ public class GoheiModeSelectScreen extends MultiSelectScreen{
     private int guiTop = 0;
     private int xSize;
     private int ySize;
-    public static final TranslationTextComponent DANMAKU = GensokyoOntology.withTranslation("gui.", ".gohei.mode.danmaku");
-    public static final TranslationTextComponent DREAM_SEAL = GensokyoOntology.withTranslation("gui.", ".gohei.mode.dream_seal");
+    public static final Component DANMAKU = GensokyoOntology.withTranslation("gui.", ".gohei.mode.danmaku");
+    public static final Component DREAM_SEAL = GensokyoOntology.withTranslation("gui.", ".gohei.mode.dream_seal");
     public static final ResourceLocation TEXTURE = GensokyoOntology.withRL("textures/gui/gohei_selection_screen.png");
-    public GoheiModeSelectScreen(ITextComponent titleIn, HakureiGohei.Mode mode) {
+    public GoheiModeSelectScreen(Component titleIn, HakureiGohei.Mode mode) {
         super(titleIn);
         this.mode = mode;
         this.xSize = 64;

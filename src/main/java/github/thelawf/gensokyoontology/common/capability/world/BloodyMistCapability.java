@@ -1,7 +1,7 @@
 package github.thelawf.gensokyoontology.common.capability.world;
 
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 
@@ -35,12 +35,12 @@ public class BloodyMistCapability implements IIncidentCapability {
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT nbt = new CompoundNBT();
+    public CompoundTag serializeNBT() {
+        CompoundTag nbt = new CompoundTag();
         ListNBT listNBT = new ListNBT();
 
         for (String registryName : this.biomeRegistryNames) {
-            CompoundNBT biomeNbt = new CompoundNBT();
+            CompoundTag biomeNbt = new CompoundTag();
             biomeNbt.putString("biome", registryName);
             listNBT.add(biomeNbt);
         }
@@ -50,7 +50,7 @@ public class BloodyMistCapability implements IIncidentCapability {
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         List<String> biomeNames = new ArrayList<>();
         if (nbt.get("biome_list") instanceof ListNBT) {
             ListNBT listNBT = (ListNBT) nbt.get("biome_list");
@@ -58,8 +58,8 @@ public class BloodyMistCapability implements IIncidentCapability {
             if (listNBT == null) return;
 
             for (INBT inbt : listNBT) {
-                if (inbt instanceof CompoundNBT) {
-                    CompoundNBT compound = (CompoundNBT) inbt;
+                if (inbt instanceof CompoundTag) {
+                    CompoundTag compound = (CompoundTag) inbt;
                     biomeNames.add(compound.getString("biome"));
                 }
             }

@@ -3,7 +3,7 @@ package github.thelawf.gensokyoontology.api.util.expression;
 import com.google.gson.JsonObject;
 import github.thelawf.gensokyoontology.api.util.tree.ITreeNode;
 import github.thelawf.gensokyoontology.api.util.tree.TreeNode;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListNBT;
 
 public class Expression<T> extends SerializableExpression<T> {
@@ -28,12 +28,12 @@ public class Expression<T> extends SerializableExpression<T> {
     }
 
     @Override
-    public CompoundNBT serialize() {
+    public CompoundTag serialize() {
         return null;
     }
 
     @Override
-    public IExpression deserialize(CompoundNBT nbt) {
+    public IExpression deserialize(CompoundTag nbt) {
         return null;
     }
 

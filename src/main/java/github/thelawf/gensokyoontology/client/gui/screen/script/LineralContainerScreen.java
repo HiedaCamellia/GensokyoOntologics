@@ -9,14 +9,14 @@ import github.thelawf.gensokyoontology.common.container.script.ScriptBuilderCont
 import github.thelawf.gensokyoontology.client.gui.screen.widget.SlotWidget;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.widget.button.ImageButton;
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.inventory.container.Container;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.network.chat.Component;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ public abstract class LineralContainerScreen<C extends Container> extends Contai
     protected final BlankWidget blank = BlankWidget.INSTANCE;
     protected static final int WHITE = 16777215;
     protected static final int DARK_GRAY = 5592405;
-    public LineralContainerScreen(C screenContainer, PlayerInventory inv, ITextComponent titleIn) {
+    public LineralContainerScreen(C screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
     }
 
@@ -85,7 +85,7 @@ public abstract class LineralContainerScreen<C extends Container> extends Contai
             config.widget = new ImageButton(x, y, config.width, config.height, config.u, config.v, 0, config.texture, 256, 256, config.action, config.text);
             this.addButton(config.widget);
         }
-        if (config.widget instanceof TextFieldWidget) {
+        if (config.widget instanceof EditBox) {
             config.widget.x = x;
             config.widget.y = y;
             config.widget.setWidth(config.width);

@@ -1,13 +1,13 @@
 package github.thelawf.gensokyoontology.common.util.danmaku;
 
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 
 public class TransformUnit {
     private final float yaw, roll, pitch;
     private final float scaling;
-    private final Vector3d acceleration, subtraction;
+    private final Vec3 acceleration, subtraction;
 
-    public TransformUnit(float yaw, float roll, float pitch, float scaling, Vector3d acceleration, Vector3d subtraction) {
+    public TransformUnit(float yaw, float roll, float pitch, float scaling, Vec3 acceleration, Vec3 subtraction) {
         this.yaw = yaw;
         this.roll = roll;
         this.pitch = pitch;
@@ -32,11 +32,11 @@ public class TransformUnit {
         return scaling;
     }
 
-    public Vector3d getAcceleration() {
+    public Vec3 getAcceleration() {
         return acceleration;
     }
 
-    public Vector3d getSubtraction() {
+    public Vec3 getSubtraction() {
         return subtraction;
     }
 }

@@ -1,8 +1,8 @@
 package github.thelawf.gensokyoontology.common.capability.special;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.common.util.INBTSerializable;
 
-public interface IMouseTracker extends INBTSerializable<CompoundNBT> {
+public interface IMouseTracker extends INBTSerializable<CompoundTag> {
 
 }

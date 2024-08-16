@@ -2,9 +2,9 @@ package github.thelawf.gensokyoontology.common.world.feature.placer;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.gen.IWorldGenerationReader;
+import net.minecraft.world.gen.ILevelGenerationReader;
 import net.minecraft.world.gen.feature.BaseTreeFeatureConfig;
 import net.minecraft.world.gen.feature.FeatureSpread;
 import net.minecraft.world.gen.foliageplacer.FoliagePlacer;
@@ -34,7 +34,7 @@ public class MapleFoliagePlacer extends FoliagePlacer {
     }
 
     @Override
-    protected void func_230372_a_(IWorldGenerationReader reader, Random random, BaseTreeFeatureConfig config,
+    protected void func_230372_a_(ILevelGenerationReader reader, Random random, BaseTreeFeatureConfig config,
                                   int trunkHeight, Foliage foliage, int foliageHeight, int radius,
                                   Set<BlockPos> foliageSet, int offset, MutableBoundingBox mutableBoundingBox) {
 

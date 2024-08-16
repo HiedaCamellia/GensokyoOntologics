@@ -1,6 +1,6 @@
 package github.thelawf.gensokyoontology.api.client.xmmui.data;
 
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.neoforged.fml.util.ObfuscationReflectionHelper;
 import org.dom4j.Element;
 
 import java.lang.reflect.Method;

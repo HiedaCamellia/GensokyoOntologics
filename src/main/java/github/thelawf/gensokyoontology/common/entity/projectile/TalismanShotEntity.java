@@ -5,27 +5,27 @@ import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuType;
 import github.thelawf.gensokyoontology.common.util.danmaku.SpellData;
 import github.thelawf.gensokyoontology.core.init.EntityRegistry;
 import github.thelawf.gensokyoontology.core.init.ItemRegistry;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.ThrowableEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.ThrowableEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.util.IItemProvider;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 public class TalismanShotEntity extends AbstractDanmakuEntity {
 
-    public TalismanShotEntity(EntityType<? extends ThrowableEntity> type, World worldIn) {
+    public TalismanShotEntity(EntityType<? extends ThrowableEntity> type, Level worldIn) {
         super(type, worldIn);
     }
 
-    public TalismanShotEntity(LivingEntity throwerIn, World world, SpellData spellData) {
+    public TalismanShotEntity(LivingEntity throwerIn, Level world, SpellData spellData) {
         super(EntityRegistry.TALISMAN_SHOT_ENTITY.get(), throwerIn, world, spellData);
     }
 
-    public TalismanShotEntity(LivingEntity throwerIn, World worldIn, DanmakuType danmakuTypeIn, DanmakuColor danmakuColorIn) {
+    public TalismanShotEntity(LivingEntity throwerIn, Level worldIn, DanmakuType danmakuTypeIn, DanmakuColor danmakuColorIn) {
         super(EntityRegistry.TALISMAN_SHOT_ENTITY.get(), throwerIn, worldIn, danmakuTypeIn, danmakuColorIn);
     }
 

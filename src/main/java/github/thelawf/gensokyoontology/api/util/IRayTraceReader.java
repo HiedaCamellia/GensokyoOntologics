@@ -1,14 +1,14 @@
 package github.thelawf.gensokyoontology.api.util;
 
 import github.thelawf.gensokyoontology.common.util.math.GSKOMathUtil;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.vector.Vector2f;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -21,16 +21,16 @@ import static github.thelawf.gensokyoontology.common.util.math.GSKOMathUtil.toDe
 
 public interface IRayTraceReader {
 
-    default List<List<AxisAlignedBB>> getRayTraceBox(Vector3d globalPos, Vector3d rayDirection, int length, float size) {
+    default List<List<AxisAlignedBB>> getRayTraceBox(Vec3 globalPos, Vec3 rayDirection, int length, float size) {
         List<List<AxisAlignedBB>> boxes = new ArrayList<>();
         List<AxisAlignedBB> aabb = new ArrayList<>();
         for (int i = 0; i < 50; i++) {
 
-            Vector3d posRow = new Vector3d(rayDirection.x > 0 ? Vector3f.XP : Vector3f.XN);
-            Vector3d posColumn = new Vector3d(rayDirection.z > 0 ? Vector3f.ZP : Vector3f.ZN);
-            Vector3d posVertical = new Vector3d(rayDirection.y > 0 ? Vector3f.YP : Vector3f.YN);
+            Vec3 posRow = new Vec3(rayDirection.x > 0 ? Vector3f.XP : Vector3f.XN);
+            Vec3 posColumn = new Vec3(rayDirection.z > 0 ? Vector3f.ZP : Vector3f.ZN);
+            Vec3 posVertical = new Vec3(rayDirection.y > 0 ? Vector3f.YP : Vector3f.YN);
 
-            Vector3d rayPos = globalPos.add(rayDirection);
+            Vec3 rayPos = globalPos.add(rayDirection);
 
             AxisAlignedBB aabb0 = new AxisAlignedBB(GSKOMathUtil.vecFloor(rayPos),
                     GSKOMathUtil.vecCeil(rayPos));
@@ -51,11 +51,11 @@ public interface IRayTraceReader {
         return boxes;
     }
 
-    default AxisAlignedBB createCubeBox(Vector3d pos, int radius) {
-        return new AxisAlignedBB(pos.subtract(new Vector3d(radius, radius, radius)), pos.add(new Vector3d(radius, radius, radius)));
+    default AxisAlignedBB createCubeBox(Vec3 pos, int radius) {
+        return new AxisAlignedBB(pos.subtract(new Vec3(radius, radius, radius)), pos.add(new Vec3(radius, radius, radius)));
     }
 
-    default <T extends Entity> List<T> getEntityWithin(World worldIn, Class<? extends T> entityClass, AxisAlignedBB aabb,
+    default <T extends Entity> List<T> getEntityWithin(Level worldIn, Class<? extends T> entityClass, AxisAlignedBB aabb,
                                                        @Nullable Predicate<? super T> predicate) {
         if (predicate != null) {
             return worldIn.getEntitiesWithinAABB(entityClass, aabb).stream()
@@ -74,7 +74,7 @@ public interface IRayTraceReader {
      * @param boxMax 碰撞箱所有顶点中的最大坐标
      * @return 是否相交
      */
-    default boolean isIntersecting(Vector3d start, Vector3d end, Vector3d boxMin, Vector3d boxMax) {
+    default boolean isIntersecting(Vec3 start, Vec3 end, Vec3 boxMin, Vec3 boxMax) {
         // 计算射线的参数
         double tMin = (boxMin.x - start.x) / (end.x - start.x);
         double tMax = (boxMax.x - start.x) / (end.x - start.x);
@@ -119,10 +119,10 @@ public interface IRayTraceReader {
      * @param aabb  碰撞箱
      * @return 是否相交
      */
-    default boolean isIntersecting(Vector3d start, Vector3d end, AxisAlignedBB aabb) {
+    default boolean isIntersecting(Vec3 start, Vec3 end, AxisAlignedBB aabb) {
         return isIntersecting(start, end,
-                new Vector3d(aabb.minX, aabb.minY, aabb.minZ),
-                new Vector3d(aabb.maxX, aabb.maxY, aabb.maxZ));
+                new Vec3(aabb.minX, aabb.minY, aabb.minZ),
+                new Vec3(aabb.maxX, aabb.maxY, aabb.maxZ));
     }
 
     /**
@@ -134,20 +134,20 @@ public interface IRayTraceReader {
      * @param aabb      碰撞箱
      * @return 是否相交
      */
-    default boolean isIntersecting(Vector3d start, Vector3d direction, double distance, AxisAlignedBB aabb) {
+    default boolean isIntersecting(Vec3 start, Vec3 direction, double distance, AxisAlignedBB aabb) {
         return isIntersecting(start, start.add(direction).scale(distance),
-                new Vector3d(aabb.minX, aabb.minY, aabb.minZ),
-                new Vector3d(aabb.maxX, aabb.maxY, aabb.maxZ));
+                new Vec3(aabb.minX, aabb.minY, aabb.minZ),
+                new Vec3(aabb.maxX, aabb.maxY, aabb.maxZ));
     }
 
     @Nullable
-    default EntityRayTraceResult rayTrace(World worldIn, Entity entityIn, Vector3d start, Vector3d end, AxisAlignedBB boundingBox, Predicate<Entity> selector, double limitDist) {
+    default EntityRayTraceResult rayTrace(Level worldIn, Entity entityIn, Vec3 start, Vec3 end, AxisAlignedBB boundingBox, Predicate<Entity> selector, double limitDist) {
         double currentDist = limitDist;
         Entity resultEntity = null;
 
         for(Entity foundEntity : worldIn.getEntitiesInAABBexcluding(entityIn, boundingBox, selector)) {
             AxisAlignedBB axisalignedbb = foundEntity.getBoundingBox().grow(0.5F);
-            Optional<Vector3d> optional = axisalignedbb.rayTrace(start, end);
+            Optional<Vec3> optional = axisalignedbb.rayTrace(start, end);
             if (optional.isPresent()) {
                 double newDist = start.squareDistanceTo(optional.get());
                 if (newDist < currentDist) {
@@ -164,12 +164,12 @@ public interface IRayTraceReader {
         }
     }
 
-    default Optional<Entity> rayTrace(World world, Entity sourceEntity, Vector3d startVec, Vector3d endVec) {
+    default Optional<Entity> rayTrace(Level world, Entity sourceEntity, Vec3 startVec, Vec3 endVec) {
         double closestDistance = startVec.distanceTo(endVec);
         for (Entity entity : world.getEntitiesWithinAABB(Entity.class, sourceEntity.getBoundingBox().grow(startVec.distanceTo(endVec)))) {
             if (entity != sourceEntity) {
                 AxisAlignedBB entityAABB = entity.getBoundingBox();
-                Optional<Vector3d> result = entityAABB.rayTrace(startVec, endVec);
+                Optional<Vec3> result = entityAABB.rayTrace(startVec, endVec);
 
                 if (result.isPresent()) {
                     double distance = startVec.squareDistanceTo(result.get());
@@ -183,13 +183,13 @@ public interface IRayTraceReader {
         return Optional.empty();
     }
 
-    default Vector3d getIntersectedPos(Vector3d start, Vector3d end, AxisAlignedBB aabb) {
+    default Vec3 getIntersectedPos(Vec3 start, Vec3 end, AxisAlignedBB aabb) {
         return getIntersectedPos(start, end,
-                new Vector3d(aabb.minX, aabb.minY, aabb.minZ),
-                new Vector3d(aabb.maxX, aabb.maxY, aabb.maxZ));
+                new Vec3(aabb.minX, aabb.minY, aabb.minZ),
+                new Vec3(aabb.maxX, aabb.maxY, aabb.maxZ));
     }
 
-    default Vector3d getIntersectedPos(Vector3d start, Vector3d end, Vector3d boxMin, Vector3d boxMax) {
+    default Vec3 getIntersectedPos(Vec3 start, Vec3 end, Vec3 boxMin, Vec3 boxMax) {
         // 计算射线的参数
         double tMin = (boxMin.x - start.x) / (end.x - start.x);
         double tMax = (boxMax.x - start.x) / (end.x - start.x);
@@ -206,7 +206,7 @@ public interface IRayTraceReader {
             tyMax = temp;
         }
         if ((tMin > tyMax) || (tyMin > tMax)) {
-            return Vector3d.ZERO;
+            return Vec3.ZERO;
         }
         if (tyMin > tMin) {
             tMin = tyMin;
@@ -224,7 +224,7 @@ public interface IRayTraceReader {
         }
 
         if ((tMin > tzMax) || (tzMin > tMax)) {
-            return Vector3d.ZERO;
+            return Vec3.ZERO;
         }
 
         if (tyMin > tMin) {
@@ -234,7 +234,7 @@ public interface IRayTraceReader {
             tMax = tyMax;
         }
 
-        return new Vector3d(
+        return new Vec3(
                 start.x + tMin * (end.x - start.x),
                 start.y + tMin * (end.y - start.y),
                 start.z + tMin * (end.z - start.z));
@@ -250,25 +250,25 @@ public interface IRayTraceReader {
      * @param aabb        碰撞箱
      * @return 位于球形碰撞箱内的生物的列表
      */
-    default <T extends Entity> List<T> getEntityWithinSphere(World worldIn, Class<? extends T> entityClass,
+    default <T extends Entity> List<T> getEntityWithinSphere(Level worldIn, Class<? extends T> entityClass,
                                                              AxisAlignedBB aabb, float radius) {
         return worldIn.getEntitiesWithinAABB(entityClass, aabb).stream()
                 .filter(t -> aabb.getCenter().distanceTo(t.getPositionVec()) <= radius)
                 .collect(Collectors.toList());
     }
 
-    default Vector3d getLookEnd(Vector3d startPos, Vector3d lookVec, double eyeHeight, double distance) {
+    default Vec3 getLookEnd(Vec3 startPos, Vec3 lookVec, double eyeHeight, double distance) {
         return lookVec.scale(distance).add(startPos.add(0,eyeHeight,0));
     }
 
-    default Vector3d getAimedVec(LivingEntity source, Entity target) {
+    default Vec3 getAimedVec(LivingEntity source, Entity target) {
         return target.getPositionVec().subtract(source.getPositionVec());
     }
 
-    default Vector2f toYawPitch(Vector3d vector3d) {
+    default Vec2 toYawPitch(Vec3 vector3d) {
         double yaw = Math.atan2(-vector3d.x, vector3d.z);
         double pitch = Math.atan2(vector3d.y, Math.sqrt(vector3d.x * vector3d.x + vector3d.z * vector3d.z));
-        return new Vector2f((float) toDegree(yaw), (float) toDegree(pitch));
+        return new Vec2((float) toDegree(yaw), (float) toDegree(pitch));
     }
 
     /**
@@ -281,7 +281,7 @@ public interface IRayTraceReader {
      * @param aabb        碰撞箱
      * @return 位于球形碰撞箱内且满足其它条件的所有生物的列表
      */
-    default <T extends Entity> List<T> getEntityWithinSphere(World worldIn, Class<? extends T> entityClass,
+    default <T extends Entity> List<T> getEntityWithinSphere(Level worldIn, Class<? extends T> entityClass,
                                                              Predicate<? super T> predicate, AxisAlignedBB aabb, float radius) {
         return worldIn.getEntitiesWithinAABB(entityClass, aabb).stream()
                 .filter(t -> aabb.getCenter().distanceTo(t.getPositionVec()) <= radius && predicate.test(t))

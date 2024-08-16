@@ -1,7 +1,7 @@
 package github.thelawf.gensokyoontology.common.nbt.script;
 
 import github.thelawf.gensokyoontology.GensokyoOntology;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 public enum BinaryOperation {
     NONE("None"),
@@ -24,7 +24,7 @@ public enum BinaryOperation {
     BinaryOperation(String key) {
         this.key = key;
     }
-    public ITextComponent toTextComponent() {
+    public Component toTextComponent() {
         return GensokyoOntology.withTranslation("gui.",".binary_operation.button.operation." + getKey());
     }
 

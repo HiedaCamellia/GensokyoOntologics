@@ -1,7 +1,7 @@
 package github.thelawf.gensokyoontology.common.block.decoration;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.block.GlassBlock;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.GlassBlock;
 
 public class ChireitenColoredGlassBlock extends GlassBlock {
     public ChireitenColoredGlassBlock() {

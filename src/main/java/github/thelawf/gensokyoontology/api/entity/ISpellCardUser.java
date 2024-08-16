@@ -1,7 +1,7 @@
 package github.thelawf.gensokyoontology.api.entity;
 
 import github.thelawf.gensokyoontology.common.entity.spellcard.SpellCardEntity;
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 
 import java.util.function.Predicate;
 

@@ -7,10 +7,10 @@ import github.thelawf.gensokyoontology.common.capability.GSKOCapabilities;
 import github.thelawf.gensokyoontology.common.util.client.GSKOClientUtil;
 import github.thelawf.gensokyoontology.common.world.GSKODimensions;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.client.entity.player.ClientPlayer;
+import net.minecraft.server.level.ServerLevel;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -35,11 +35,11 @@ public class BloodyMistRenderer {
 
     public void renderBloodyMist(EntityViewRenderEvent.RenderFogEvent event) {
         Minecraft mc = Minecraft.getInstance();
-        ClientPlayerEntity player = mc.player;
+        ClientPlayer player = mc.player;
 
         // if (mc.world == null) return;
-        ServerWorld serverWorld = GSKOClientUtil.getServerWorldFromClient(GSKODimensions.GENSOKYO);
-        if (serverWorld != null && shouldRender(serverWorld)) return;
+        ServerLevel serverLevel = GSKOClientUtil.getServerLevelFromClient(GSKODimensions.GENSOKYO);
+        if (serverLevel != null && shouldRender(serverLevel)) return;
 
         RenderSystem.fogDensity(0.8F);
         RenderSystem.fogStart(8.0F);
@@ -47,8 +47,8 @@ public class BloodyMistRenderer {
         RenderSystem.fogMode(GlStateManager.FogMode.LINEAR);
     }
 
-    public boolean shouldRender(ServerWorld serverWorld) {
-        LazyOptional<BloodyMistCapability> capability = serverWorld.getCapability(GSKOCapabilities.BLOODY_MIST);
+    public boolean shouldRender(ServerLevel serverLevel) {
+        LazyOptional<BloodyMistCapability> capability = serverLevel.getCapability(GSKOCapabilities.BLOODY_MIST);
         return !capability.resolve().isPresent() || !capability.resolve().get().isTriggered();
     }
 }

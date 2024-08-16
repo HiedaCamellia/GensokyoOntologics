@@ -7,27 +7,27 @@ import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuType;
 import github.thelawf.gensokyoontology.common.util.nbt.BehaviorFunctions;
 import github.thelawf.gensokyoontology.core.init.EntityRegistry;
 import github.thelawf.gensokyoontology.core.init.ItemRegistry;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.math.vector.Vector2f;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 public class SuperEgoSpellEntity extends SpellCardEntity {
 
-    public SuperEgoSpellEntity(World worldIn, PlayerEntity player) {
+    public SuperEgoSpellEntity(Level worldIn, Player player) {
         super(EntityRegistry.SUPER_EGO_SPELL_ENTITY.get(), worldIn, player);
     }
 
-    public SuperEgoSpellEntity(EntityType<? extends SpellCardEntity> entityTypeIn, World worldIn) {
+    public SuperEgoSpellEntity(EntityType<? extends SpellCardEntity> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
     }
 
@@ -35,28 +35,28 @@ public class SuperEgoSpellEntity extends SpellCardEntity {
     public void tick() {
         super.tick();
 
-        //PlayerEntity player = this.world.getPlayerByUuid(this.dataManager.get(DATA_OWNER_UUID).get());
-        Vector3d center = new Vector3d(Vector3f.XP);
+        //Player player = this.world.getPlayerByUuid(this.dataManager.get(DATA_OWNER_UUID).get());
+        Vec3 center = new Vec3(Vector3f.XP);
 
         if (ticksExisted % 5 == 0) return;
         for (int i = 0; i < 6; i++) {
-            Vector3d clockwise = center.add(120, 0, 0).rotateYaw((float) Math.PI * 2 / 6 * i);
-            Vector3d counterClockwise = center.add(120, 0, 0).rotateYaw((float) -Math.PI * 2 / 6 * i);
+            Vec3 clockwise = center.add(120, 0, 0).rotateYaw((float) Math.PI * 2 / 6 * i);
+            Vec3 counterClockwise = center.add(120, 0, 0).rotateYaw((float) -Math.PI * 2 / 6 * i);
 
             clockwise = clockwise.rotateYaw((float) (Math.PI / 180 * ticksExisted));
             counterClockwise = counterClockwise.rotateYaw((float) -Math.PI / 180 * ticksExisted);
-            Vector3d clockShoot = clockwise.normalize().inverse();
-            Vector3d counterClockShoot = counterClockwise.normalize().inverse();
+            Vec3 clockShoot = clockwise.normalize().inverse();
+            Vec3 counterClockShoot = counterClockwise.normalize().inverse();
 
-            CompoundNBT nbt = initColor(DanmakuColor.AQUA);
-            CompoundNBT nbtCounter = initColor(DanmakuColor.AQUA);
+            CompoundTag nbt = initColor(DanmakuColor.AQUA);
+            CompoundTag nbtCounter = initColor(DanmakuColor.AQUA);
             applyFunc(clockwise, nbt);
             applyFunc(counterClockwise, nbtCounter);
 
             HeartShotEntity heartShot = new HeartShotEntity((LivingEntity) this.getOwner(), world, nbt);
             HeartShotEntity heartCounter = new HeartShotEntity((LivingEntity) this.getOwner(), world, nbtCounter);
-            setDanmakuInit(heartShot, clockwise.add(this.getPositionVec()), new Vector2f((float) clockShoot.x, (float) clockShoot.z));
-            setDanmakuInit(heartCounter, counterClockwise.add(this.getPositionVec()), new Vector2f((float) counterClockShoot.x, (float) counterClockShoot.z));
+            setDanmakuInit(heartShot, clockwise.add(this.getPositionVec()), new Vec2((float) clockShoot.x, (float) clockShoot.z));
+            setDanmakuInit(heartCounter, counterClockwise.add(this.getPositionVec()), new Vec2((float) counterClockShoot.x, (float) counterClockShoot.z));
 
             heartShot.shoot(clockShoot.x, clockShoot.y, clockShoot.z, 0.6f, 0f);
             heartCounter.shoot(counterClockShoot.x, counterClockShoot.y, counterClockShoot.z, 0.6f, 0f);
@@ -65,9 +65,9 @@ public class SuperEgoSpellEntity extends SpellCardEntity {
         }
     }
 
-    private void applyFunc(Vector3d motion, CompoundNBT script) {
+    private void applyFunc(Vec3 motion, CompoundTag script) {
         ListNBT list = new ListNBT();
-        CompoundNBT behavior = new CompoundNBT();
+        CompoundTag behavior = new CompoundTag();
         motion = motion.rotateYaw((float) -Math.PI / 200 * 199).scale(0.1);
 
         ListNBT params = newDoubleNBTList(motion.x, motion.y, motion.z);

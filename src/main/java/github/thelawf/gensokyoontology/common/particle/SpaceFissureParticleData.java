@@ -7,7 +7,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
@@ -15,11 +15,11 @@ import java.util.Locale;
 
 public class SpaceFissureParticleData implements IParticleData {
 
-    private final Vector3d speed;
+    private final Vec3 speed;
     private final Color color;
     private final float diameter;
 
-    public SpaceFissureParticleData(Vector3d speed, Color color, float diameter) {
+    public SpaceFissureParticleData(Vec3 speed, Color color, float diameter) {
         this.speed = speed;
         this.color = color;
         this.diameter = diameter;
@@ -48,7 +48,7 @@ public class SpaceFissureParticleData implements IParticleData {
             int alpha = MathHelper.clamp(reader.readInt(), 1, MAX_COLOUR);
             reader.expect(' ');
             float diameter = reader.readFloat();
-            return new SpaceFissureParticleData(new Vector3d(speedX, speedY, speedZ), new Color(red, green, blue, alpha), diameter);
+            return new SpaceFissureParticleData(new Vec3(speedX, speedY, speedZ), new Color(red, green, blue, alpha), diameter);
         }
 
         @Override
@@ -64,7 +64,7 @@ public class SpaceFissureParticleData implements IParticleData {
             int blue = MathHelper.clamp(buffer.readInt(), MIN_COLOUR, MAX_COLOUR);
             int alpha = MathHelper.clamp(buffer.readInt(), 1, MAX_COLOUR);
             float diameter = buffer.readFloat();
-            return new SpaceFissureParticleData(new Vector3d(speedX, speedY, speedZ), new Color(red, green, blue, alpha), diameter);
+            return new SpaceFissureParticleData(new Vec3(speedX, speedY, speedZ), new Color(red, green, blue, alpha), diameter);
         }
     };
 
@@ -94,7 +94,7 @@ public class SpaceFissureParticleData implements IParticleData {
         return GSKOParticleRegistry.SPACE_FISSURE.get();
     }
 
-    public Vector3d getSpeed() {
+    public Vec3 getSpeed() {
         return speed;
     }
 

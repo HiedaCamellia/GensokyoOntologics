@@ -4,9 +4,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import github.thelawf.gensokyoontology.common.util.world.FeatureUtil;
 import github.thelawf.gensokyoontology.core.PlacerRegistry;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.gen.IWorldGenerationReader;
+import net.minecraft.world.gen.ILevelGenerationReader;
 import net.minecraft.world.gen.feature.BaseTreeFeatureConfig;
 import net.minecraft.world.gen.foliageplacer.FoliagePlacer;
 import net.minecraft.world.gen.trunkplacer.AbstractTrunkPlacer;
@@ -49,12 +49,12 @@ public class MagicTrunkPlacer extends AbstractTrunkPlacer {
 
     @Override
     @NotNull
-    public List<FoliagePlacer.Foliage> getFoliages(IWorldGenerationReader reader, Random random, int height, BlockPos startPos, Set<BlockPos> trunkBlocks, MutableBoundingBox bounds, BaseTreeFeatureConfig config) {
+    public List<FoliagePlacer.Foliage> getFoliages(ILevelGenerationReader reader, Random random, int height, BlockPos startPos, Set<BlockPos> trunkBlocks, MutableBoundingBox bounds, BaseTreeFeatureConfig config) {
         return generateTrunk(reader, random, startPos, trunkBlocks, bounds, config);
     }
 
 
-    private List<FoliagePlacer.Foliage> generateTrunk(IWorldGenerationReader reader, Random random, BlockPos startPos, Set<BlockPos> trunkBlocks, MutableBoundingBox bounds, BaseTreeFeatureConfig config) {
+    private List<FoliagePlacer.Foliage> generateTrunk(ILevelGenerationReader reader, Random random, BlockPos startPos, Set<BlockPos> trunkBlocks, MutableBoundingBox bounds, BaseTreeFeatureConfig config) {
         List<FoliagePlacer.Foliage> foliages = new ArrayList<>();
         for (int y = 0; y < this.baseHeight; y++) {
             if (y <= this.baseHeight / 2) {
@@ -72,7 +72,7 @@ public class MagicTrunkPlacer extends AbstractTrunkPlacer {
         return foliages;
     }
 
-    private void generateBranch(IWorldGenerationReader reader, Random random, BlockPos startPos, Set<BlockPos> trunkBlocks, MutableBoundingBox bounds, BaseTreeFeatureConfig config) {
+    private void generateBranch(ILevelGenerationReader reader, Random random, BlockPos startPos, Set<BlockPos> trunkBlocks, MutableBoundingBox bounds, BaseTreeFeatureConfig config) {
         FeatureUtil.placeDiagonalTrunks(reader, random, startPos, config.trunkProvider, this.trunkWidth, this.minHeight);
     }
 }

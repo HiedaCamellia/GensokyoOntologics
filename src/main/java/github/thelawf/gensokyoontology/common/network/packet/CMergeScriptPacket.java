@@ -4,10 +4,10 @@ import github.thelawf.gensokyoontology.common.container.script.BinaryOperationCo
 import github.thelawf.gensokyoontology.common.container.script.OneSlotContainer;
 import github.thelawf.gensokyoontology.common.item.script.DynamicScriptItem;
 import github.thelawf.gensokyoontology.core.init.ContainerRegistry;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.entity.player.ServerPlayer;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -15,9 +15,9 @@ import java.util.function.Supplier;
 
 public class CMergeScriptPacket {
 
-    private final CompoundNBT scriptData;
+    private final CompoundTag scriptData;
 
-    public CMergeScriptPacket(CompoundNBT scriptData) {
+    public CMergeScriptPacket(CompoundTag scriptData) {
         this.scriptData = scriptData;
     }
 
@@ -34,7 +34,7 @@ public class CMergeScriptPacket {
         ctx.get().setPacketHandled(true);
     }
 
-    public static void setContainerScript(ServerPlayerEntity serverPlayer, CMergeScriptPacket packet) {
+    public static void setContainerScript(ServerPlayer serverPlayer, CMergeScriptPacket packet) {
         if (serverPlayer == null) return;
 
         if (serverPlayer.openContainer.getType() == ContainerRegistry.BINARY_OPERATION_CONTAINER.get()) {

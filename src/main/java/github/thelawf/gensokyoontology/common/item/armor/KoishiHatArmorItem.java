@@ -2,23 +2,23 @@ package github.thelawf.gensokyoontology.common.item.armor;
 
 import github.thelawf.gensokyoontology.GensokyoOntology;
 import github.thelawf.gensokyoontology.client.model.KoishiHatModel;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.entity.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.IArmorMaterial;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
 public class KoishiHatArmorItem extends ArmorItem {
-    public static final Map<EquipmentSlotType, BipedModel<AbstractClientPlayerEntity>> KOISHI_HAT_MODEL = new HashMap<>();
+    public static final Map<EquipmentSlotType, BipedModel<AbstractClientPlayer>> KOISHI_HAT_MODEL = new HashMap<>();
     public KoishiHatArmorItem(IArmorMaterial materialIn, EquipmentSlotType slot, Properties builderIn) {
         super(materialIn, slot, builderIn);
     }

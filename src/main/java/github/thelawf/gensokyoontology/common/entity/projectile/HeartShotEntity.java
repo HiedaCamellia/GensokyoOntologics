@@ -6,19 +6,19 @@ import github.thelawf.gensokyoontology.common.util.danmaku.SpellData;
 import github.thelawf.gensokyoontology.common.util.danmaku.TransformFunction;
 import github.thelawf.gensokyoontology.core.init.EntityRegistry;
 import github.thelawf.gensokyoontology.core.init.ItemRegistry;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IRendersAsItem;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.ThrowableEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.IRendersAsItem;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.ThrowableEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.IItemProvider;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -28,11 +28,11 @@ import java.util.Map;
 @OnlyIn(value = Dist.CLIENT, _interface = IRendersAsItem.class)
 public class HeartShotEntity extends ScriptedDanmakuEntity implements IRendersAsItem {
 
-    public HeartShotEntity(EntityType<? extends ThrowableEntity> type, World worldIn) {
+    public HeartShotEntity(EntityType<? extends ThrowableEntity> type, Level worldIn) {
         super(type, worldIn);
     }
 
-    public HeartShotEntity(LivingEntity throwerIn, World worldIn, CompoundNBT scriptIn) {
+    public HeartShotEntity(LivingEntity throwerIn, Level worldIn, CompoundTag scriptIn) {
         super(EntityRegistry.HEART_SHOT_ENTITY.get(), throwerIn, worldIn, DanmakuType.HEART_SHOT, scriptIn);
     }
 
@@ -50,7 +50,7 @@ public class HeartShotEntity extends ScriptedDanmakuEntity implements IRendersAs
         super.onScriptTick();
         ListNBT inbts = getBehaviors(this.scriptsNBT);
         for (INBT inbt : inbts) {
-            CompoundNBT behavior = wrapAsCompound(inbt);
+            CompoundTag behavior = wrapAsCompound(inbt);
             if (behavior.contains("addMotion") && behavior.get("addMotion") instanceof ListNBT) {
                 List<Double> paramList = wrapAsDoubleFromList((ListNBT) behavior.get("addMotion"));
                 if (paramList.size() != 3) return;

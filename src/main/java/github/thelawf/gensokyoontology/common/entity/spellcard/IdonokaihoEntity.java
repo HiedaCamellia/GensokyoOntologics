@@ -5,15 +5,15 @@ import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuColor;
 import github.thelawf.gensokyoontology.common.util.nbt.BehaviorFunctions;
 import github.thelawf.gensokyoontology.core.init.EntityRegistry;
 import github.thelawf.gensokyoontology.core.init.ItemRegistry;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.math.vector.Vector2f;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -21,11 +21,11 @@ import org.jetbrains.annotations.NotNull;
  */
 public class IdonokaihoEntity extends SpellCardEntity {
 
-    public IdonokaihoEntity(World worldIn, LivingEntity player){
+    public IdonokaihoEntity(Level worldIn, LivingEntity player){
         super(EntityRegistry.IDO_NO_KAIHO_ENTITY.get(), worldIn, player);
     }
 
-    public IdonokaihoEntity(EntityType<IdonokaihoEntity> entityTypeIn, World worldIn) {
+    public IdonokaihoEntity(EntityType<IdonokaihoEntity> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
     }
 
@@ -38,28 +38,28 @@ public class IdonokaihoEntity extends SpellCardEntity {
     @Override
     public void tick() {
         super.tick();
-        Vector3d start = new Vector3d(1,0,0);
+        Vec3 start = new Vec3(1,0,0);
 
         // TODO: 现在可以通过继承脚本弹幕的方式设置其运动
         if (ticksExisted % 3 != 0) return;
         for (int i = 0; i < 6; i++) {
-            CompoundNBT nbtClockWise = new CompoundNBT();
-            CompoundNBT nbtCounterClockWise = new CompoundNBT();
+            CompoundTag nbtClockWise = new CompoundTag();
+            CompoundTag nbtCounterClockWise = new CompoundTag();
             nbtClockWise.putInt("color", DanmakuColor.PINK.ordinal());
             nbtCounterClockWise.putInt("color", DanmakuColor.PINK.ordinal());
 
-            Vector3d clockwise = start.rotateYaw((float) Math.PI * 2 / 6 * i);
-            Vector3d counterClockwise = start.rotateYaw((float) -Math.PI * 2/ 6 * i);
+            Vec3 clockwise = start.rotateYaw((float) Math.PI * 2 / 6 * i);
+            Vec3 counterClockwise = start.rotateYaw((float) -Math.PI * 2/ 6 * i);
             clockwise = clockwise.rotateYaw((float) Math.PI / 180 * ticksExisted);
             counterClockwise = counterClockwise.rotateYaw((float) -Math.PI / 180 * ticksExisted);
 
-            applyFunc(new Vector3d(-0.2, 0, 0), nbtClockWise);
-            applyFunc(new Vector3d(0.2, 0, 0), nbtCounterClockWise);
+            applyFunc(new Vec3(-0.2, 0, 0), nbtClockWise);
+            applyFunc(new Vec3(0.2, 0, 0), nbtCounterClockWise);
 
             HeartShotEntity heartClockwise = new HeartShotEntity((LivingEntity) this.getOwner(), world, nbtClockWise);
             HeartShotEntity heartCounterClockwise = new HeartShotEntity((LivingEntity) this.getOwner(), world, nbtCounterClockWise);
-            setDanmakuInit(heartClockwise, this.getPositionVec(), new Vector2f(this.rotationYaw, this.rotationPitch));
-            setDanmakuInit(heartCounterClockwise, this.getPositionVec(), new Vector2f(this.rotationYaw, this.rotationPitch));
+            setDanmakuInit(heartClockwise, this.getPositionVec(), new Vec2(this.rotationYaw, this.rotationPitch));
+            setDanmakuInit(heartCounterClockwise, this.getPositionVec(), new Vec2(this.rotationYaw, this.rotationPitch));
 
             heartClockwise.shoot(clockwise.x, clockwise.y, clockwise.z, 0.4f, 0f);
             heartCounterClockwise.shoot(counterClockwise.x, counterClockwise.y, counterClockwise.z, 0.4f, 0f);
@@ -68,9 +68,9 @@ public class IdonokaihoEntity extends SpellCardEntity {
         }
     }
 
-    private void applyFunc(Vector3d motion, CompoundNBT script) {
+    private void applyFunc(Vec3 motion, CompoundTag script) {
         ListNBT list = new ListNBT();
-        CompoundNBT behavior = new CompoundNBT();
+        CompoundTag behavior = new CompoundTag();
         motion = motion.rotateYaw((float) Math.PI / 2).scale(0.1);
 
         ListNBT params = newDoubleNBTList(motion.x, motion.y, motion.z);

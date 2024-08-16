@@ -3,10 +3,10 @@ package github.thelawf.gensokyoontology.client.renderer.world;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.client.world.ClientLevel;
+import net.minecraft.server.level.ServerLevel;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ISkyRenderHandler;
 import net.minecraftforge.client.MinecraftForgeClient;
 
@@ -17,7 +17,7 @@ public class ScarletSkyRenderer implements ISkyRenderHandler {
     @Override
     @OnlyIn(Dist.CLIENT)
     @SuppressWarnings("deprecation")
-    public void render(int ticks, float partialTicks, MatrixStack matrixStack, ClientWorld world, Minecraft mc) {
+    public void render(int ticks, float partialTicks, MatrixStack matrixStack, ClientLevel world, Minecraft mc) {
         RenderSystem.clearColor(1.0F, 0.0F, 0.0F, 1.0F);
         RenderSystem.clear(GL_COLOR_BUFFER_BIT, MinecraftForgeClient.getRenderLayer().isColoredOutlineBuffer());
         RenderSystem.matrixMode(GL_PROJECTION);
@@ -29,7 +29,7 @@ public class ScarletSkyRenderer implements ISkyRenderHandler {
         RenderSystem.translatef(0.0F, 0.0F, -200.0F);
     }
 
-    public void shouldRender(ServerWorld serverWorld) {
+    public void shouldRender(ServerLevel serverLevel) {
 
     }
 

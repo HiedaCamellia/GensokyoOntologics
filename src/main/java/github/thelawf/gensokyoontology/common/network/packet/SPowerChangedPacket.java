@@ -3,9 +3,9 @@ package github.thelawf.gensokyoontology.common.network.packet;
 import github.thelawf.gensokyoontology.common.capability.GSKOCapabilities;
 import github.thelawf.gensokyoontology.common.util.GSKOUtil;
 import github.thelawf.gensokyoontology.data.recipe.SorceryExtractorRecipe;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.entity.player.ServerPlayer;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -32,8 +32,8 @@ public class SPowerChangedPacket {
     public static void handle(SPowerChangedPacket packet, Supplier<NetworkEvent.Context> ctx) {
         if (ctx.get().getDirection().getReceptionSide().isClient()) {
             ctx.get().enqueueWork(() -> {
-                ServerPlayerEntity serverPlayer = ctx.get().getSender();
-                if (serverPlayer != null) handleOnServer(serverPlayer.getServerWorld(), packet);
+                ServerPlayer serverPlayer = ctx.get().getSender();
+                if (serverPlayer != null) handleOnServer(serverPlayer.getServerLevel(), packet);
 
             });
         }
@@ -41,8 +41,8 @@ public class SPowerChangedPacket {
     }
 
 
-    private static void handleOnServer(ServerWorld serverWorld, SPowerChangedPacket packet) {
-        serverWorld.getCapability(GSKOCapabilities.POWER).ifPresent(gskoCap -> {
+    private static void handleOnServer(ServerLevel serverLevel, SPowerChangedPacket packet) {
+        serverLevel.getCapability(GSKOCapabilities.POWER).ifPresent(gskoCap -> {
             gskoCap.setCount(packet.getCount());
             // GSKOUtil.log(packet.getClass(), "Count: " + packet.getCount());
         });

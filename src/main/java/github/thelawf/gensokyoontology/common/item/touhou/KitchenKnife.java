@@ -1,15 +1,15 @@
 package github.thelawf.gensokyoontology.common.item.touhou;
 
 import github.thelawf.gensokyoontology.core.init.itemtab.GSKOItemTab;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.*;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.*;
 import org.jetbrains.annotations.NotNull;
 
 public class KitchenKnife extends SwordItem {
 
     public KitchenKnife() {
         super(ItemTier.IRON, 3, -2.4F,
-                new Properties().group(GSKOItemTab.GSKO_ITEM_TAB).maxDamage(40));
+                new Properties().maxDamage(40));
     }
 
     @Override

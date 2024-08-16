@@ -1,45 +1,46 @@
 package github.thelawf.gensokyoontology.common.tileentity;
 
-import github.thelawf.gensokyoontology.common.util.world.GSKOWorldUtil;
+import github.thelawf.gensokyoontology.common.util.world.GSKOLevelUtil;
 import github.thelawf.gensokyoontology.core.init.TileEntityRegistry;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 
-public class GapTileEntity extends TileEntity implements ITickableTileEntity {
+public class GapTileEntity extends BlockEntity implements ITickableTileEntity {
 
     private static final int MAX_COOLDOWN_TICK = 400;
     private boolean allowTeleport = false;
     private BlockPos destinationPos;
-    private RegistryKey<World> destinationWorld;
+    private RegistryKey<Level> destinationLevel;
     private int cooldown = 0;
 
-    public GapTileEntity(RegistryKey<World> destinationWorld, BlockPos destinationPos) {
+    public GapTileEntity(RegistryKey<Level> destinationLevel, BlockPos destinationPos) {
         super(TileEntityRegistry.GAP_TILE_ENTITY.get());
-        this.setDestinationWorld(destinationWorld);
+        this.setDestinationLevel(destinationLevel);
         this.setDestinationPos(destinationPos);
     }
 
     public GapTileEntity() {
         super(TileEntityRegistry.GAP_TILE_ENTITY.get());
-        this.setDestinationWorld(World.OVERWORLD);
+        this.setDestinationLevel(Level.OVERWORLD);
         this.setDestinationPos(BlockPos.ZERO);
     }
 
     @Override
     @NotNull
-    public CompoundNBT getUpdateTag() {
+    public CompoundTag getUpdateTag() {
         return super.getUpdateTag();
     }
 
@@ -55,18 +56,18 @@ public class GapTileEntity extends TileEntity implements ITickableTileEntity {
     }
 
     @Override
-    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
+    public void handleUpdateTag(BlockState state, CompoundTag tag) {
         super.handleUpdateTag(state, tag);
     }
 
     @Override
-    public void read(@NotNull BlockState state, @NotNull CompoundNBT nbt) {
+    public void read(@NotNull BlockState state, @NotNull CompoundTag nbt) {
         if (nbt.contains("DestinationX") && nbt.contains("DestinationY") && nbt.contains("DestinationZ")) {
             this.destinationPos = new BlockPos(nbt.getInt("DestinationX"), nbt.getInt("DestinationY"), nbt.getInt("DestinationZ"));
         }
-        if (nbt.contains("DestinationWorld")) {
-            this.destinationWorld = GSKOWorldUtil.getWorldDimension(new ResourceLocation(
-                    nbt.getString("DestinationWorld")));
+        if (nbt.contains("DestinationLevel")) {
+            this.destinationLevel = GSKOLevelUtil.levelDimension(ResourceLocation.parse(
+                    nbt.getString("DestinationLevel")));
         }
         if (nbt.contains("AllowTeleport")) {
             this.allowTeleport = nbt.getBoolean("AllowTeleport");
@@ -79,9 +80,9 @@ public class GapTileEntity extends TileEntity implements ITickableTileEntity {
 
     @Override
     @Nonnull
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundTag write(CompoundTag compound) {
         super.write(compound);
-        compound.putString("DestinationWorld", this.destinationWorld.getLocation().toString());
+        compound.putString("DestinationLevel", this.destinationLevel.getLocation().toString());
         compound.putBoolean("AllowTeleport", this.allowTeleport);
         compound.putInt("Cooldown", this.cooldown);
         compound.putInt("DestinationX", this.destinationPos.getX());
@@ -96,8 +97,8 @@ public class GapTileEntity extends TileEntity implements ITickableTileEntity {
         markDirty();
     }
 
-    public void setDestinationWorld(RegistryKey<World> destinationWorld) {
-        this.destinationWorld = destinationWorld;
+    public void setDestinationLevel(RegistryKey<Level> destinationLevel) {
+        this.destinationLevel = destinationLevel;
         this.allowTeleport = true;
         markDirty();
     }
@@ -111,8 +112,8 @@ public class GapTileEntity extends TileEntity implements ITickableTileEntity {
         return this.destinationPos;
     }
 
-    public RegistryKey<World> getDestinationWorld() {
-        return this.destinationWorld;
+    public RegistryKey<Level> getDestinationLevel() {
+        return this.destinationLevel;
     }
 
     public boolean isAllowTeleport() {

@@ -1,12 +1,12 @@
 package github.thelawf.gensokyoontology.common.network.packet;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.entity.player.ServerPlayer;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.fml.network.ICustomPacket;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -40,17 +40,17 @@ public class IncidentPacket {
         });
     }
 
-    public static void sendToServer(World world, SimpleChannel channel, boolean value) {
+    public static void sendToServer(Level world, SimpleChannel channel, boolean value) {
         if (world.isRemote) {
             channel.sendToServer(new IncidentPacket(value));
         }
     }
 
-    public static void sendToWorld(RegistryKey<World> worldKey, SimpleChannel channel, boolean value) {
+    public static void sendToLevel(RegistryKey<Level> worldKey, SimpleChannel channel, boolean value) {
         channel.send(PacketDistributor.DIMENSION.with(() -> worldKey), new IncidentPacket(value));
     }
 
-    public static void sendToPlayer(World world, ServerPlayerEntity serverPlayer, SimpleChannel channel, boolean value) {
+    public static void sendToPlayer(Level world, ServerPlayer serverPlayer, SimpleChannel channel, boolean value) {
         if (!world.isRemote) channel.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new IncidentPacket(value));
     }
 }

@@ -1,11 +1,11 @@
 package github.thelawf.gensokyoontology.data;
 
 import github.thelawf.gensokyoontology.GensokyoOntology;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 
-@Mod.EventBusSubscriber(modid = GensokyoOntology.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = GensokyoOntology.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class GSKODataGenerator {
 
     @SubscribeEvent

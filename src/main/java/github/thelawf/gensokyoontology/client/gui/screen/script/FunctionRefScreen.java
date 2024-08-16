@@ -1,10 +1,10 @@
 package github.thelawf.gensokyoontology.client.gui.screen.script;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
 
 public class FunctionRefScreen extends ScriptBuilderScreen{
-    public FunctionRefScreen(ITextComponent titleIn, ItemStack stack) {
+    public FunctionRefScreen(Component titleIn, ItemStack stack) {
         super(titleIn, stack);
     }
 }

@@ -7,22 +7,23 @@ import github.thelawf.gensokyoontology.common.item.script.ScriptBuilderItem;
 import github.thelawf.gensokyoontology.common.item.script.ScriptReadOnlyItem;
 import github.thelawf.gensokyoontology.core.init.ItemRegistry;
 import github.thelawf.gensokyoontology.core.init.TileEntityRegistry;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.IRendersAsItem;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.IRendersAsItem;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.FurnaceTileEntity;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -35,24 +36,24 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 // TODO: 符卡控制台可以处理插入的物品，为其附加NBT数据
-public class SpellConsoleTileEntity extends TileEntity implements ITickableTileEntity {
+public class SpellConsoleTileEntity extends BlockEntity implements ITickableTileEntity {
     public final int slotCount = 31;
     private final ItemStackHandler itemHandler = createItemHandler();
     private final LazyOptional<IItemHandler> optionalHandler = LazyOptional.of(() -> itemHandler);
-    public static final TranslationTextComponent CONTAINER_NAME = GensokyoOntology.withTranslation("container.", ".spell_card_console.title");
+    public static final Component CONTAINER_NAME = GensokyoOntology.withTranslation("container.", ".spell_card_console.title");
     public SpellConsoleTileEntity() {
         super(TileEntityRegistry.SPELL_CONSOLE_TILE_ENTITY.get());
     }
 
     @Override
-    public void read(@NotNull BlockState state, CompoundNBT nbt) {
+    public void read(@NotNull BlockState state, CompoundTag nbt) {
         this.itemHandler.deserializeNBT(nbt.getCompound("inv"));
         super.read(state, nbt);
     }
 
     @Override
     @NotNull
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundTag write(CompoundTag compound) {
         compound.put("inv", this.itemHandler.serializeNBT());
         return super.write(compound);
     }
@@ -94,17 +95,17 @@ public class SpellConsoleTileEntity extends TileEntity implements ITickableTileE
         };
     }
 
-    public static INamedContainerProvider create(World worldIn, BlockPos posIn) {
+    public static INamedContainerProvider create(Level worldIn, BlockPos posIn) {
         return new INamedContainerProvider() {
             @Override
             @NotNull
-            public ITextComponent getDisplayName() {
+            public Component getDisplayName() {
                 return CONTAINER_NAME;
             }
 
             @NotNull
             @Override
-            public Container createMenu(int windowsId, @NotNull PlayerInventory playerInventory, @NotNull PlayerEntity player) {
+            public Container createMenu(int windowsId, @NotNull Inventory playerInventory, @NotNull Player player) {
                 return new SpellCardConsoleContainer(windowsId, player, worldIn, posIn);
             }
         };
@@ -126,11 +127,11 @@ public class SpellConsoleTileEntity extends TileEntity implements ITickableTileE
     }
 
     public boolean hasAllowedTag(int index, IItemHandler itemHandler) {
-        CompoundNBT nbt = getTag(index, itemHandler);
+        CompoundTag nbt = getTag(index, itemHandler);
         return nbt.keySet().contains("type") && nbt.keySet().contains("value") || nbt.keySet().contains("name");
     }
 
-    public CompoundNBT getTag(int index, IItemHandler itemHandler) {
+    public CompoundTag getTag(int index, IItemHandler itemHandler) {
         return itemHandler.getStackInSlot(index).getTag();
     }
 

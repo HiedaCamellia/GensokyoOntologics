@@ -7,18 +7,18 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.world.ClientLevel;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.ISkyRenderHandler;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class SukimaWorldRenderer implements ISkyRenderHandler {
+public class SukimaLevelRenderer implements ISkyRenderHandler {
 
-    public static final ResourceLocation SUKIMA_SKY_TEX = new ResourceLocation(GensokyoOntology.MODID,
+    public static final ResourceLocation SUKIMA_SKY_TEX = ResourceLocation.fromNamespaceAndPath(GensokyoOntology.MODID,
             "textures/environment/sukima_sky.png");
 
     @SuppressWarnings("deprecation")
@@ -70,7 +70,7 @@ public class SukimaWorldRenderer implements ISkyRenderHandler {
     }
 
     @Override
-    public void render(int ticks, float partialTicks, MatrixStack matrixStack, ClientWorld world, Minecraft mc) {
+    public void render(int ticks, float partialTicks, MatrixStack matrixStack, ClientLevel world, Minecraft mc) {
         renderSukimaSky(matrixStack, mc);
     }
 }

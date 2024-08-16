@@ -4,9 +4,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import github.thelawf.gensokyoontology.common.util.world.FeatureUtil;
 import github.thelawf.gensokyoontology.core.PlacerRegistry;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.gen.IWorldGenerationReader;
+import net.minecraft.world.gen.ILevelGenerationReader;
 import net.minecraft.world.gen.feature.BaseTreeFeatureConfig;
 import net.minecraft.world.gen.feature.FeatureSpread;
 import net.minecraft.world.gen.foliageplacer.FoliagePlacer;
@@ -35,7 +35,7 @@ public class MagicFoliagePlacer extends FoliagePlacer {
      * generateFoliage() 方法
      */
     @Override
-    protected void func_230372_a_(IWorldGenerationReader reader, Random random, BaseTreeFeatureConfig config,
+    protected void func_230372_a_(ILevelGenerationReader reader, Random random, BaseTreeFeatureConfig config,
                                   int trunkHeight, Foliage foliage, int foliageHeight, int radius,
                                   Set<BlockPos> leaves, int offset, MutableBoundingBox mutableBoundingBox) {
         BlockPos pos = foliage.func_236763_a_();

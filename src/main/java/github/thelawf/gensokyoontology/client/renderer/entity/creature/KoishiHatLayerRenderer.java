@@ -11,14 +11,14 @@ import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.model.generators.loaders.OBJLoaderBuilder;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
 
-public class KoishiHatLayerRenderer extends LayerRenderer<PlayerEntity, PlayerModel<PlayerEntity>> {
+public class KoishiHatLayerRenderer extends LayerRenderer<Player, PlayerModel<Player>> {
     private final ItemRenderer itemRenderer;
 
     public KoishiHatLayerRenderer(IEntityRenderer entityRendererIn, ItemRenderer itemRenderer) {
@@ -27,7 +27,7 @@ public class KoishiHatLayerRenderer extends LayerRenderer<PlayerEntity, PlayerMo
     }
 
     @Override
-    public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, PlayerEntity playerIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, Player playerIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         if (!playerIn.isInvisible()) {
             ItemStack helmetStack = playerIn.getItemStackFromSlot(EquipmentSlotType.HEAD);
             if (!helmetStack.isEmpty() && helmetStack.getItem().equals(ItemRegistry.KOISHI_HAT.get())) {

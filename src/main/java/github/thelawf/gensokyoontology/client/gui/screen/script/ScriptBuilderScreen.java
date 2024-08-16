@@ -2,12 +2,12 @@ package github.thelawf.gensokyoontology.client.gui.screen.script;
 
 import github.thelawf.gensokyoontology.GensokyoOntology;
 import net.minecraft.client.gui.screen.CommandBlockScreen;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class ScriptBuilderScreen extends LineralLayoutScreen {
@@ -17,10 +17,10 @@ public abstract class ScriptBuilderScreen extends LineralLayoutScreen {
     protected Button resetBtn;
     protected Button renameBtn;
     protected ItemStack stack;
-    protected final ITextComponent fieldName = GensokyoOntology.withTranslation("gui.", ".script_builder.fieldName");
-    protected ITextComponent saveText = GensokyoOntology.withTranslation("gui.", ".script.button.save");
+    protected final Component fieldName = GensokyoOntology.withTranslation("gui.", ".script_builder.fieldName");
+    protected Component saveText = GensokyoOntology.withTranslation("gui.", ".script.button.save");
 
-    public ScriptBuilderScreen(ITextComponent titleIn, ItemStack stack) {
+    public ScriptBuilderScreen(Component titleIn, ItemStack stack) {
         super(titleIn);
         this.stack = stack;
     }

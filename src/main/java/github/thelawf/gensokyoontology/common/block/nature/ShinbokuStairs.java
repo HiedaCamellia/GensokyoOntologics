@@ -1,10 +1,10 @@
 package github.thelawf.gensokyoontology.common.block.nature;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.StairsBlock;
-import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.StairsBlock;
+import net.minecraft.world.item.BlockItemUseContext;
 import org.jetbrains.annotations.NotNull;
 
 public class ShinbokuStairs extends StairsBlock {

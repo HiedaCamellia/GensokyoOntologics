@@ -3,14 +3,14 @@ package github.thelawf.gensokyoontology.client.settings;
 import com.google.common.collect.Lists;
 import github.thelawf.gensokyoontology.GensokyoOntology;
 import github.thelawf.gensokyoontology.core.init.EntityRegistry;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.entity.player.ClientPlayer;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.entity.SpawnReason;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.server.level.ServerLevel;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -40,21 +40,21 @@ public class GSKOKeyboardManager {
     public static void onSummonDestructiveEye(InputEvent.MouseInputEvent event) {
     }
 
-    private static void trySpawnFromClient(ClientPlayerEntity player) {
-        if (player.world instanceof ServerWorld) {
-            ServerWorld serverWorld = (ServerWorld) player.world;
-            EntityRegistry.DESTRUCTIVE_EYE_ENTITY.get().spawn(serverWorld, null, null, player.getPosition(), SpawnReason.MOB_SUMMONED, false, false);
-            serverWorld.getEntities().filter(entity -> entity.getType() == EntityRegistry.DESTRUCTIVE_EYE_ENTITY.get()).forEach(entity -> {
+    private static void trySpawnFromClient(ClientPlayer player) {
+        if (player.world instanceof ServerLevel) {
+            ServerLevel serverLevel = (ServerLevel) player.world;
+            EntityRegistry.DESTRUCTIVE_EYE_ENTITY.get().spawn(serverLevel, null, null, player.getPosition(), SpawnReason.MOB_SUMMONED, false, false);
+            serverLevel.getEntities().filter(entity -> entity.getType() == EntityRegistry.DESTRUCTIVE_EYE_ENTITY.get()).forEach(entity -> {
                 entity.canUpdate(false);
             });
         }
     }
 
 
-    private static void activateEye(ClientPlayerEntity player) {
-        if (player.world instanceof ServerWorld) {
-            ServerWorld serverWorld = (ServerWorld) player.world;
-            serverWorld.getEntities().filter(entity -> entity.getType() == EntityRegistry.DESTRUCTIVE_EYE_ENTITY.get()).forEach(entity -> {
+    private static void activateEye(ClientPlayer player) {
+        if (player.world instanceof ServerLevel) {
+            ServerLevel serverLevel = (ServerLevel) player.world;
+            serverLevel.getEntities().filter(entity -> entity.getType() == EntityRegistry.DESTRUCTIVE_EYE_ENTITY.get()).forEach(entity -> {
                 entity.canUpdate(true);
             });
         }

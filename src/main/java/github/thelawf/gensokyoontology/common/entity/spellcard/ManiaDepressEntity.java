@@ -6,35 +6,35 @@ import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuType;
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuUtil;
 import github.thelawf.gensokyoontology.core.init.EntityRegistry;
 import github.thelawf.gensokyoontology.core.init.ItemRegistry;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.vector.Vector2f;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class ManiaDepressEntity extends SpellCardEntity {
 
-    public ManiaDepressEntity(World worldIn, PlayerEntity player) {
+    public ManiaDepressEntity(Level worldIn, Player player) {
         super(EntityRegistry.MANIA_DEPRESS_ENTITY.get(), worldIn, player);
     }
 
-    public ManiaDepressEntity(EntityType<? extends SpellCardEntity> entityTypeIn, World worldIn) {
+    public ManiaDepressEntity(EntityType<? extends SpellCardEntity> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
     }
 
     @Override
     public void tick() {
         super.tick();
-        List<Vector3d> pinkPositions = DanmakuUtil.getHeartLinePos(0.3f, 0.11);
-        List<Vector3d> aquaPositions = DanmakuUtil.getHeartLinePos(1.8f, 0.11);
+        List<Vec3> pinkPositions = DanmakuUtil.getHeartLinePos(0.3f, 0.11);
+        List<Vec3> aquaPositions = DanmakuUtil.getHeartLinePos(1.8f, 0.11);
         int shootInterval = 15;
         int ratio = ticksExisted / shootInterval;
         pinkPositions = DanmakuUtil.getRotatedPos(pinkPositions, (float) Math.PI / 12 * ratio, 0f);
@@ -43,29 +43,29 @@ public class ManiaDepressEntity extends SpellCardEntity {
 
         if (ticksExisted % shootInterval == 0) {
 
-            for (Vector3d vector3d : pinkPositions) {
-                CompoundNBT nbt = new CompoundNBT();
+            for (Vec3 vector3d : pinkPositions) {
+                CompoundTag nbt = new CompoundTag();
                 nbt.putInt("color", DanmakuColor.PINK.ordinal());
                 HeartShotEntity heartShotPink = new HeartShotEntity((LivingEntity) this.getOwner(), world, nbt);
 
-                Vector3d shootVec = new Vector3d(vector3d.x, vector3d.y, vector3d.z);
+                Vec3 shootVec = new Vec3(vector3d.x, vector3d.y, vector3d.z);
                 vector3d = vector3d.add(this.getPositionVec());
 
-                setDanmakuInit(heartShotPink, vector3d, new Vector2f((float) vector3d.x, (float) vector3d.y));
+                setDanmakuInit(heartShotPink, vector3d, new Vec2((float) vector3d.x, (float) vector3d.y));
                 heartShotPink.shoot(shootVec.x, shootVec.y, shootVec.z, 0.55f, 0f);
                 world.addEntity(heartShotPink);
             }
 
-            for (Vector3d vector3d : aquaPositions) {
-                CompoundNBT nbt = new CompoundNBT();
+            for (Vec3 vector3d : aquaPositions) {
+                CompoundTag nbt = new CompoundTag();
                 nbt.putInt("color", DanmakuColor.AQUA.ordinal());
 
                 HeartShotEntity heartShotAqua = new HeartShotEntity((LivingEntity) this.getOwner(), world, nbt);
 
-                Vector3d shootVec = new Vector3d(vector3d.x, vector3d.y, vector3d.z);
+                Vec3 shootVec = new Vec3(vector3d.x, vector3d.y, vector3d.z);
                 vector3d = vector3d.add(this.getPositionVec());
 
-                setDanmakuInit(heartShotAqua, vector3d, new Vector2f((float) vector3d.x, (float) vector3d.y));
+                setDanmakuInit(heartShotAqua, vector3d, new Vec2((float) vector3d.x, (float) vector3d.y));
                 heartShotAqua.shoot(-shootVec.x, -shootVec.y, -shootVec.z, 0.3f, 0f);
                 world.addEntity(heartShotAqua);
             }

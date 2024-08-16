@@ -1,26 +1,26 @@
 package github.thelawf.gensokyoontology.api.util;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.BlockPos;
 
 import java.util.Optional;
 
 public interface INBTReader {
 
-    default Optional<CompoundNBT> getOrEmptyTag(ItemStack stack) {
+    default Optional<CompoundTag> getOrEmptyTag(ItemStack stack) {
         return stack.getTag() == null ? Optional.empty() : Optional.of(stack.getTag());
     }
 
-    default CompoundNBT getOrCreateTag(ItemStack stack) {
-        return stack.getTag() == null ? new CompoundNBT() : stack.getTag();
+    default CompoundTag getOrCreateTag(ItemStack stack) {
+        return stack.getTag() == null ? new CompoundTag() : stack.getTag();
     }
 
     default boolean containsKey(ItemStack stack, String key) {
         return getOrEmptyTag(stack).isPresent() && getOrEmptyTag(stack).get().contains(key);
     }
 
-    default int getNBTInt(CompoundNBT nbt, String key) {
+    default int getNBTInt(CompoundTag nbt, String key) {
         return nbt.getInt(key);
     }
 

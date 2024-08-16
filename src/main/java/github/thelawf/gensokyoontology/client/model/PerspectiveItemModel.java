@@ -1,7 +1,7 @@
 package github.thelawf.gensokyoontology.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;

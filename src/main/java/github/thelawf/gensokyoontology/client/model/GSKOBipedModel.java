@@ -5,7 +5,7 @@ import com.google.common.collect.Iterables;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.ModelHelper;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.NotNull;

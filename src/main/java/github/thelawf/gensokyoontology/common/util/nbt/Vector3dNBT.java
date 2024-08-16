@@ -1,19 +1,19 @@
 package github.thelawf.gensokyoontology.common.util.nbt;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringNBT;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-public class Vector3dNBT extends CompoundNBT{
+public class Vec3NBT extends CompoundTag{
     public static final String TYPE = "vector3d";
     private final StringNBT name;
-    private final CompoundNBT value = new CompoundNBT();
+    private final CompoundTag value = new CompoundTag();
     public final double x;
     public final double y;
     public final double z;
 
-    public Vector3dNBT(String name, Vector3d vector3d) {
+    public Vec3NBT(String name, Vec3 vector3d) {
         this.name = StringNBT.valueOf(name);
         this.x = vector3d.x;
         this.y = vector3d.y;
@@ -27,7 +27,7 @@ public class Vector3dNBT extends CompoundNBT{
         return this.name.getString();
     }
 
-    public CompoundNBT getValue() {
+    public CompoundTag getValue() {
         return this.value;
     }
 
@@ -43,7 +43,7 @@ public class Vector3dNBT extends CompoundNBT{
         return this.z;
     }
 
-    public Vector3d toVector3d() {
-        return new Vector3d(this.x, this.y, this.z);
+    public Vec3 toVec3() {
+        return new Vec3(this.x, this.y, this.z);
     }
 }

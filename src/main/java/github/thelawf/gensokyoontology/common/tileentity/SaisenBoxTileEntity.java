@@ -7,23 +7,24 @@ import github.thelawf.gensokyoontology.common.util.BlessType;
 import github.thelawf.gensokyoontology.core.init.EffectRegistry;
 import github.thelawf.gensokyoontology.core.init.ItemRegistry;
 import github.thelawf.gensokyoontology.core.init.TileEntityRegistry;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class SaisenBoxTileEntity extends TileEntity implements ITickableTileEntity, IRayTraceReader {
+public class SaisenBoxTileEntity extends BlockEntity implements ITickableTileEntity, IRayTraceReader {
     private int count;
     private UUID ownerId;
     private UUID throwerId;
@@ -36,7 +37,7 @@ public class SaisenBoxTileEntity extends TileEntity implements ITickableTileEnti
     }
 
     @Override
-    public void read(@NotNull BlockState state, @NotNull CompoundNBT nbt) {
+    public void read(@NotNull BlockState state, @NotNull CompoundTag nbt) {
         if (nbt.contains("count")) {
             this.count = nbt.getInt("count");
         }
@@ -45,7 +46,7 @@ public class SaisenBoxTileEntity extends TileEntity implements ITickableTileEnti
 
     @Override
     @NotNull
-    public CompoundNBT write(@NotNull CompoundNBT compound) {
+    public CompoundTag write(@NotNull CompoundTag compound) {
         super.write(compound);
         compound.putInt("count", this.count);
         return compound;
@@ -72,11 +73,11 @@ public class SaisenBoxTileEntity extends TileEntity implements ITickableTileEnti
     }
 
     private void tryApplyBless(ItemEntity itemEntity) {
-        if (itemEntity.getThrowerId() == null || !(world instanceof ServerWorld)) return;
+        if (itemEntity.getThrowerId() == null || !(world instanceof ServerLevel)) return;
 
-        ServerWorld serverWorld = (ServerWorld) world;
-        if (serverWorld.getEntityByUuid(itemEntity.getThrowerId()) instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) serverWorld.getEntityByUuid(itemEntity.getThrowerId());
+        ServerLevel serverLevel = (ServerLevel) world;
+        if (serverLevel.getEntityByUuid(itemEntity.getThrowerId()) instanceof Player) {
+            Player player = (Player) serverLevel.getEntityByUuid(itemEntity.getThrowerId());
             if (player == null) return;
             testCount(player);
             itemEntity.getItem().shrink(itemEntity.getItem().getCount());
@@ -87,7 +88,7 @@ public class SaisenBoxTileEntity extends TileEntity implements ITickableTileEnti
         return this.count;
     }
 
-    public void testCount(PlayerEntity player) {
+    public void testCount(Player player) {
         for (int i = 0; i < BLESS_LIST.size(); i++) {
             if (this.getCount() >= BLESS_LIST.get(i).getFirst()) {
                 int duration = 6000 + 500 * i;

@@ -1,7 +1,7 @@
 package github.thelawf.gensokyoontology.common.capability.world;
 
 import github.thelawf.gensokyoontology.common.capability.GSKOCapabilities;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-public class BloodyMistProvider implements ICapabilityProvider, INBTSerializable<CompoundNBT> {
+public class BloodyMistProvider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
     private BloodyMistCapability capability;
     private List<String> biomeRegistryNames;
     private boolean isTriggered;
@@ -39,12 +39,12 @@ public class BloodyMistProvider implements ICapabilityProvider, INBTSerializable
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
+    public CompoundTag serializeNBT() {
         return getOrCreateCapability().serializeNBT();
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         getOrCreateCapability().deserializeNBT(nbt);
     }
 

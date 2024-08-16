@@ -3,14 +3,14 @@ package github.thelawf.gensokyoontology.common.entity.ai.goal;
 import github.thelawf.gensokyoontology.common.entity.misc.DestructiveEyeEntity;
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuUtil;
 import github.thelawf.gensokyoontology.core.init.EntityRegistry;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.pathfinding.Path;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -40,15 +40,15 @@ public class SummonEyeGoal extends Goal {
         }
     }
 
-    private void generateEye(World world, LivingEntity target) {
+    private void generateEye(Level world, LivingEntity target) {
         if (!world.isRemote) {
-            ServerWorld serverWorld = (ServerWorld) world;
-            boolean canSummon = serverWorld.getEntities().filter(e -> e.getType() == EntityRegistry.DESTRUCTIVE_EYE_ENTITY.get()).count() <= 20;
+            ServerLevel serverLevel = (ServerLevel) world;
+            boolean canSummon = serverLevel.getEntities().filter(e -> e.getType() == EntityRegistry.DESTRUCTIVE_EYE_ENTITY.get()).count() <= 20;
 
             if (canSummon) {
                 for (int i = 0; i < 3; i++) {
                     DestructiveEyeEntity eye = new DestructiveEyeEntity(entity.world);
-                    Vector3d vector3d = DanmakuUtil.getRandomPosWithin(MAX_DISTANCE, DanmakuUtil.Plane.XYZ).add(target.getPositionVec());
+                    Vec3 vector3d = DanmakuUtil.getRandomPosWithin(MAX_DISTANCE, DanmakuUtil.Plane.XYZ).add(target.getPositionVec());
                     eye.setLocationAndAngles(vector3d.x, vector3d.y, vector3d.z, 0F, 0F);
                     world.addEntity(eye);
                 }
@@ -72,8 +72,8 @@ public class SummonEyeGoal extends Goal {
         LivingEntity target = this.entity.getAttackTarget();
         Random random = new Random();
         if (!entity.world.isRemote) {
-            ServerWorld serverWorld = (ServerWorld) entity.world;
-            long count = serverWorld.getEntities().filter(e -> e.getType() == EntityRegistry.DESTRUCTIVE_EYE_ENTITY.get()).count();
+            ServerLevel serverLevel = (ServerLevel) entity.world;
+            long count = serverLevel.getEntities().filter(e -> e.getType() == EntityRegistry.DESTRUCTIVE_EYE_ENTITY.get()).count();
             if (count >= 8) return false;
         }
         return this.entity.ticksExisted % 100 == 0 && target != null && target.isAlive();
@@ -88,8 +88,8 @@ public class SummonEyeGoal extends Goal {
         if (target == null || !target.isAlive()) {
             return false;
         } else {
-            boolean isPlayerAndCanNotBeAttacked = target instanceof PlayerEntity
-                    && (target.isSpectator() || ((PlayerEntity) target).isCreative());
+            boolean isPlayerAndCanNotBeAttacked = target instanceof Player
+                    && (target.isSpectator() || ((Player) target).isCreative());
             return !isPlayerAndCanNotBeAttacked;
         }
     }

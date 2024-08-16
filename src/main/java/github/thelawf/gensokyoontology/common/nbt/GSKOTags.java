@@ -1,13 +1,13 @@
 package github.thelawf.gensokyoontology.common.nbt;
 
 import github.thelawf.gensokyoontology.GensokyoOntology;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.Item;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagRegistry;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.Tags;
 
 public class GSKOTags {
@@ -22,15 +22,15 @@ public class GSKOTags {
         public static final Tags.IOptionalNamedTag<Item> SMALL_STAR_SHOTS = makeModTag("danmaku/small_star_shots");
 
         private static Tags.IOptionalNamedTag<Item> makeForgeTag(String name) {
-            return ItemTags.createOptional(new ResourceLocation("forge", name));
+            return ItemTags.createOptional(ResourceLocation.parse("forge", name));
         }
 
         private static Tags.IOptionalNamedTag<Item> makeMcTag(String name) {
-            return ItemTags.createOptional(new ResourceLocation("minecraft", name));
+            return ItemTags.createOptional(ResourceLocation.parse("minecraft", name));
         }
 
         private static Tags.IOptionalNamedTag<Item> makeModTag(String name) {
-            return ItemTags.createOptional(new ResourceLocation(GensokyoOntology.MODID, name));
+            return ItemTags.createOptional(ResourceLocation.parse(GensokyoOntology.MODID, name));
         }
     }
 
@@ -38,15 +38,15 @@ public class GSKOTags {
         public static final Tags.IOptionalNamedTag<Block> ONION_CROP = makeForgeTag("crops/onion");
 
         private static Tags.IOptionalNamedTag<Block> makeForgeTag(String name) {
-            return BlockTags.createOptional(new ResourceLocation("forge", name));
+            return BlockTags.createOptional(ResourceLocation.parse("forge", name));
         }
 
         private static Tags.IOptionalNamedTag<Item> makeMcTag(String id) {
-            return ItemTags.createOptional(new ResourceLocation("minecraft", id));
+            return ItemTags.createOptional(ResourceLocation.parse("minecraft", id));
         }
 
         private static Tags.IOptionalNamedTag<Block> makeModTag(String name) {
-            return BlockTags.createOptional(new ResourceLocation(GensokyoOntology.MODID, name));
+            return BlockTags.createOptional(ResourceLocation.parse(GensokyoOntology.MODID, name));
         }
     }
 }

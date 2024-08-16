@@ -1,12 +1,12 @@
 package github.thelawf.gensokyoontology.common.util;
 
 import github.thelawf.gensokyoontology.common.block.DanmakuTableBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.ServerPlayer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.NonNullConsumer;
 import org.apache.logging.log4j.LogManager;
@@ -15,36 +15,36 @@ import java.util.List;
 import java.util.Random;
 
 public class GSKOUtil {
-    public static void showChatMsg(PlayerEntity receiver, String text, int frequency) {
+    public static void showChatMsg(Player receiver, String text, int frequency) {
         if (receiver.ticksExisted % frequency == 0) {
-            receiver.sendMessage(new StringTextComponent(text), receiver.getUniqueID());
+            receiver.sendMessage(Component.literal(text), receiver.getUniqueID());
         }
     }
-    public static void showChatMsg(PlayerEntity player, boolean b, int frequency) {
+    public static void showChatMsg(Player player, boolean b, int frequency) {
         if (player.ticksExisted % frequency == 0) {
-            player.sendMessage(new StringTextComponent(String.valueOf(b)), player.getUniqueID());
+            player.sendMessage(Component.literal(String.valueOf(b)), player.getUniqueID());
         }
     }
-    public static void showChatMsg(PlayerEntity player, int i, int frequency) {
+    public static void showChatMsg(Player player, int i, int frequency) {
         if (player.ticksExisted % frequency == 0) {
-            player.sendMessage(new StringTextComponent(String.valueOf(i)), player.getUniqueID());
+            player.sendMessage(Component.literal(String.valueOf(i)), player.getUniqueID());
         }
     }
-    public static void showChatMsg(PlayerEntity player, float f, int frequency) {
+    public static void showChatMsg(Player player, float f, int frequency) {
         if (player.ticksExisted % frequency == 0) {
-            player.sendMessage(new StringTextComponent(String.valueOf(f)), player.getUniqueID());
-        }
-    }
-
-    public static void showChatMsg(PlayerEntity player, long l, int frequency) {
-        if (player.ticksExisted % frequency == 0) {
-            player.sendMessage(new StringTextComponent(String.valueOf(l)), player.getUniqueID());
+            player.sendMessage(Component.literal(String.valueOf(f)), player.getUniqueID());
         }
     }
 
-    public static void showChatMsg(PlayerEntity player, Object obj, int frequency) {
+    public static void showChatMsg(Player player, long l, int frequency) {
         if (player.ticksExisted % frequency == 0) {
-            player.sendMessage(new StringTextComponent(obj.toString()), player.getUniqueID());
+            player.sendMessage(Component.literal(String.valueOf(l)), player.getUniqueID());
+        }
+    }
+
+    public static void showChatMsg(Player player, Object obj, int frequency) {
+        if (player.ticksExisted % frequency == 0) {
+            player.sendMessage(Component.literal(obj.toString()), player.getUniqueID());
         }
     }
 
@@ -66,14 +66,14 @@ public class GSKOUtil {
     public static void log(Class<?> clazz, Object obj) {
         LogManager.getLogger().info(clazz.getName() + ": {}", obj.toString());
     }
-    public static ItemStack findItem(PlayerEntity player, Item item) {
+    public static ItemStack findItem(Player player, Item item) {
         for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
             if (player.inventory.getStackInSlot(i).getItem() == item) return player.inventory.getStackInSlot(i);
         }
         return ItemStack.EMPTY;
     }
 
-    public static boolean firstMatch(PlayerEntity player, Item item) {
+    public static boolean firstMatch(Player player, Item item) {
         for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
             if (player.inventory.getStackInSlot(i).getItem() == item) return true;
         }

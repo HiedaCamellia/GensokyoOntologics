@@ -2,9 +2,9 @@ package github.thelawf.gensokyoontology.common.network.packet;
 
 import github.thelawf.gensokyoontology.common.network.GSKONetworking;
 import github.thelawf.gensokyoontology.core.init.ItemRegistry;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.player.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -27,10 +27,10 @@ public class CSwitchModePacket {
 
     public static void handle(CSwitchModePacket packet, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            ServerPlayerEntity serverPlayer = ctx.get().getSender();
+            ServerPlayer serverPlayer = ctx.get().getSender();
             if (serverPlayer != null && serverPlayer.getHeldItemMainhand().getItem() == ItemRegistry.HAKUREI_GOHEI.get()) {
                 ItemStack stack = serverPlayer.getHeldItemMainhand();
-                CompoundNBT nbt = new CompoundNBT();
+                CompoundTag nbt = new CompoundTag();
                 nbt.putInt("mode", packet.enumIndex);
                 stack.setTag(nbt);
             }

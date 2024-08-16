@@ -1,9 +1,9 @@
 package github.thelawf.gensokyoontology.common.item.tool;
 
 import github.thelawf.gensokyoontology.common.item.touhou.GSKOItemTier;
-import net.minecraft.block.Block;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.item.AxeItem;
+import net.minecraft.world.item.Item;
 
 public class JadeAxe extends AxeItem {
     public JadeAxe(Properties properties) {

@@ -4,11 +4,11 @@ import com.mojang.datafixers.util.Pair;
 import github.thelawf.gensokyoontology.common.util.block.BlockPositions;
 import github.thelawf.gensokyoontology.common.util.block.BlockStateData;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.gen.feature.template.Template;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ public class GSKOTemplateGenerator {
      * 对应位置上包含的方块。
      *
      */
-    public void generate(World worldIn, BlockPos posStart, Template template) throws NoSuchFieldException, IllegalAccessException {
+    public void generate(Level worldIn, BlockPos posStart, Template template) throws NoSuchFieldException, IllegalAccessException {
         BlockPositions positions = new BlockPositions();
         BlockStateData states = new BlockStateData();
         List<Pair<BlockPositions, BlockStateData>> pairs = new ArrayList<>();
@@ -36,7 +36,7 @@ public class GSKOTemplateGenerator {
         pairs.forEach(pair -> worldIn.setBlockState(pair.getFirst().get(pairs.indexOf(pair)), pair.getSecond().get(pairs.indexOf(pair))));
     }
 
-    private Template getTemplate(ServerWorld serverWorld, ResourceLocation location) {
-        return serverWorld.getStructureTemplateManager().getTemplate(location);
+    private Template getTemplate(ServerLevel serverLevel, ResourceLocation location) {
+        return serverLevel.getStructureTemplateManager().getTemplate(location);
     }
 }

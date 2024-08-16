@@ -6,20 +6,20 @@ import github.thelawf.gensokyoontology.api.util.IRayTraceReader;
 import github.thelawf.gensokyoontology.common.entity.misc.LaserSourceEntity;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.*;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+
+import net.minecraft.world.level.Level;
 import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -36,13 +36,13 @@ public class KoishiEyeOpen extends Item implements IRayTraceReader {
 
     @Override
     @NotNull
-    public ActionResult<ItemStack> onItemRightClick(@NotNull World worldIn, @NotNull PlayerEntity playerIn, @NotNull Hand handIn) {
+    public ActionResult<ItemStack> onItemRightClick(@NotNull Level worldIn, @NotNull Player playerIn, @NotNull Hand handIn) {
         ItemStack stack = playerIn.getHeldItem(handIn);
         if (playerIn.getCooldownTracker().hasCooldown(this))
             return ActionResult.resultPass(stack);
 
         if (stack.getTag() == null || !stack.getTag().contains("total_count")) {
-            CompoundNBT nbt = new CompoundNBT();
+            CompoundTag nbt = new CompoundTag();
             nbt.putInt("total_count",  playerIn.ticksExisted + this.getUseDuration(stack));
             stack.setTag(nbt);
         }
@@ -70,7 +70,7 @@ public class KoishiEyeOpen extends Item implements IRayTraceReader {
         return super.onItemRightClick(worldIn, playerIn, handIn);
     }
 
-    private void lasers(World worldIn, PlayerEntity playerIn) {
+    private void lasers(Level worldIn, Player playerIn) {
         List<Integer> colors = ImmutableList.of(
                 0x88FF0000, 0x88FF8C00, 0x88FFFF00, 0x8800FF00, 0x8800FFFF, 0x880000FF, 0x88FF00FF, 0x88800080
         );
@@ -88,22 +88,22 @@ public class KoishiEyeOpen extends Item implements IRayTraceReader {
     /**
      * 这里实现的是妖怪测谎仪的激光，需要注意的是这里第一行的谓词需要取非再传入IRayTraceReader.getEntityWithinSphere()
      */
-    public void applyRayDamage(World worldIn, LivingEntity user, ItemStack stack, int radius) {
-        Predicate<LivingEntity> predicate = living -> living instanceof PlayerEntity;
+    public void applyRayDamage(Level worldIn, LivingEntity user, ItemStack stack, int radius) {
+        Predicate<LivingEntity> predicate = living -> living instanceof Player;
 
         if (predicate.test(user)) {
-            PlayerEntity player = (PlayerEntity) user;
+            Player player = (Player) user;
             if (player.getCooldownTracker().hasCooldown(this)) return;
             AxisAlignedBB box = createCubeBox(player.getPositionVec(), radius);
 
-            Vector3d start = player.getPositionVec();
-            Vector3d vec = new Vector3d(player.getLookVec().x, 0, player.getLookVec().z);
-            Vector3d vector3d = start.add(vec.scale(10));
+            Vec3 start = player.getPositionVec();
+            Vec3 vec = new Vec3(player.getLookVec().x, 0, player.getLookVec().z);
+            Vec3 vector3d = start.add(vec.scale(10));
 
             // TODO: 妖怪测谎仪数值设计
             for (int i = 0; i < 8; i++) {
                 double angle = Math.PI * 2 / this.getUseDuration(stack) * totalCount;
-                Vector3d end = vector3d.rotateYaw((float) Math.PI * 2 / 8 * i).rotateYaw((float) angle);
+                Vec3 end = vector3d.rotateYaw((float) Math.PI * 2 / 8 * i).rotateYaw((float) angle);
                 getEntityWithinSphere(worldIn, LivingEntity.class, predicate.negate(), box, 12F).stream()
                         .filter(living -> isIntersecting(start, end, living.getBoundingBox().offset(0, -1, 0)))
                         .forEach(living -> living.attackEntityFrom(DamageSource.causePlayerDamage(player), 8F));
@@ -113,14 +113,14 @@ public class KoishiEyeOpen extends Item implements IRayTraceReader {
     }
 
     @Override
-    public void onPlayerStoppedUsing(@NotNull ItemStack stack, @NotNull World worldIn, @NotNull LivingEntity entityLiving, int timeLeft) {
+    public void onPlayerStoppedUsing(@NotNull ItemStack stack, @NotNull Level worldIn, @NotNull LivingEntity entityLiving, int timeLeft) {
         super.onPlayerStoppedUsing(stack, worldIn, entityLiving, timeLeft);
-        stack.setTag(new CompoundNBT());
+        stack.setTag(new CompoundTag());
     }
 
     @Override
-    public @NotNull ItemStack onItemUseFinish(@NotNull ItemStack stack, @NotNull World worldIn, @NotNull LivingEntity entityLiving) {
-        stack.setTag(new CompoundNBT());
+    public @NotNull ItemStack onItemUseFinish(@NotNull ItemStack stack, @NotNull Level worldIn, @NotNull LivingEntity entityLiving) {
+        stack.setTag(new CompoundTag());
         return super.onItemUseFinish(stack, worldIn, entityLiving);
     }
 
@@ -130,7 +130,7 @@ public class KoishiEyeOpen extends Item implements IRayTraceReader {
     }
 
     @Override
-    public void addInformation(@NotNull ItemStack stack, @Nullable World worldIn, @NotNull List<ITextComponent> tooltip, @NotNull ITooltipFlag flagIn) {
+    public void addInformation(@NotNull ItemStack stack, @Nullable Level worldIn, @NotNull List<Component> tooltip, @NotNull ITooltipFlag flagIn) {
         tooltip.add(GensokyoOntology.withTranslation("tooltip.", ".koishi_eye_open"));
         if (Screen.hasShiftDown()) {
             tooltip.add(GensokyoOntology.withTranslation("tooltip.", ".koishi_eye_open.comment"));

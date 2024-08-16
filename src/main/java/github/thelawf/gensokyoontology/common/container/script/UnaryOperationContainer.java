@@ -1,6 +1,6 @@
 package github.thelawf.gensokyoontology.common.container.script;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import org.jetbrains.annotations.NotNull;
@@ -12,7 +12,7 @@ public class UnaryOperationContainer extends Container {
     }
 
     @Override
-    public boolean canInteractWith(@NotNull PlayerEntity playerIn) {
+    public boolean canInteractWith(@NotNull Player playerIn) {
         return true;
     }
 }

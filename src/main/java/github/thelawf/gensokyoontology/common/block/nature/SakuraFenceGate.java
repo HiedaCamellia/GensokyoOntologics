@@ -1,7 +1,7 @@
 package github.thelawf.gensokyoontology.common.block.nature;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FenceGateBlock;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.FenceGateBlock;
 
 public class SakuraFenceGate extends FenceGateBlock {
     public SakuraFenceGate() {

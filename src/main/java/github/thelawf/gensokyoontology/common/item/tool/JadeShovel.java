@@ -1,8 +1,8 @@
 package github.thelawf.gensokyoontology.common.item.tool;
 
 import github.thelawf.gensokyoontology.common.item.touhou.GSKOItemTier;
-import net.minecraft.item.Item;
-import net.minecraft.item.ShovelItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ShovelItem;
 
 public class JadeShovel extends ShovelItem {
     public JadeShovel(Properties properties) {

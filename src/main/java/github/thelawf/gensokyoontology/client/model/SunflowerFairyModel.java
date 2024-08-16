@@ -7,7 +7,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import github.thelawf.gensokyoontology.common.entity.monster.SunflowerFairyEntity;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 
 public class SunflowerFairyModel extends GSKOBipedModel<SunflowerFairyEntity> {
     private final ModelRenderer bone;

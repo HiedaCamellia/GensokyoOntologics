@@ -2,7 +2,7 @@ package github.thelawf.gensokyoontology.common.util.danmaku;
 
 import github.thelawf.gensokyoontology.GensokyoOntology;
 import net.minecraft.potion.Effect;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -41,7 +41,7 @@ public enum DanmakuType {
         this.effect = effect;
     }
 
-    public ITextComponent toTextComponent() {
+    public Component toTextComponent() {
         return GensokyoOntology.withTranslation("gui.", ".danmaku_type." + this.name);
     }
 

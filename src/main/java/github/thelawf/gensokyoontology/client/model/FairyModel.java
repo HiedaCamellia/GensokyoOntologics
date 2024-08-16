@@ -10,7 +10,7 @@ import github.thelawf.gensokyoontology.common.entity.monster.FairyEntity;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 
 public class FairyModel extends BipedModel<FairyEntity> {
     private final ModelRenderer bone;

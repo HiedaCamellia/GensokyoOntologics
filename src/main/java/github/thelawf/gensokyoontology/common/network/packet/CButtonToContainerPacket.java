@@ -1,9 +1,9 @@
 package github.thelawf.gensokyoontology.common.network.packet;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.entity.player.ServerPlayer;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -11,9 +11,9 @@ import java.util.function.Supplier;
 
 public class CButtonToContainerPacket {
     private final ContainerType<?> containerType;
-    private final CompoundNBT actionData;
+    private final CompoundTag actionData;
 
-    public CButtonToContainerPacket(ContainerType<?> containerType, CompoundNBT actionData) {
+    public CButtonToContainerPacket(ContainerType<?> containerType, CompoundTag actionData) {
         this.containerType = containerType;
         this.actionData = actionData;
     }
@@ -34,7 +34,7 @@ public class CButtonToContainerPacket {
         ctx.get().setPacketHandled(true);
     }
 
-    public boolean matchesContainer(CButtonToContainerPacket packet, ServerPlayerEntity serverPlayer) {
+    public boolean matchesContainer(CButtonToContainerPacket packet, ServerPlayer serverPlayer) {
         if (serverPlayer == null) return false;
         return serverPlayer.openContainer.getType() == packet.containerType;
     }

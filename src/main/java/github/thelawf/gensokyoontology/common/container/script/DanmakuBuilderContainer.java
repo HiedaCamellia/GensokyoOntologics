@@ -5,25 +5,25 @@ import github.thelawf.gensokyoontology.client.gui.screen.script.OneSlotContainer
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuColor;
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuType;
 import github.thelawf.gensokyoontology.core.init.ContainerRegistry;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class DanmakuBuilderContainer extends OneSlotContainer {
 
-    public DanmakuBuilderContainer(int id, PlayerInventory playerInventory) {
+    public DanmakuBuilderContainer(int id, Inventory playerInventory) {
         super(ContainerRegistry.DB_CONTAINER.get(), id, playerInventory);
     }
 
     @Override
-    public boolean canInteractWith(@NotNull PlayerEntity playerIn) {
+    public boolean canInteractWith(@NotNull Player playerIn) {
         return true;
     }
 
@@ -31,12 +31,12 @@ public class DanmakuBuilderContainer extends OneSlotContainer {
         return new INamedContainerProvider() {
             @Override
             @NotNull
-            public ITextComponent getDisplayName() {
-                return new TranslationTextComponent("container." + GensokyoOntology.MODID + "." + title +".title");
+            public Component getDisplayName() {
+                return Component.translatable("container." + GensokyoOntology.MODID + "." + title +".title");
             }
             @NotNull
             @Override
-            public Container createMenu(int windowId, @NotNull PlayerInventory playerInventory, @NotNull PlayerEntity p_createMenu_3_) {
+            public Container createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player p_createMenu_3_) {
                 return new DanmakuBuilderContainer(windowId, playerInventory);
             }
         };

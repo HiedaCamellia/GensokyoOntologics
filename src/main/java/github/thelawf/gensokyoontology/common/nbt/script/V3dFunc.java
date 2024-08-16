@@ -2,7 +2,7 @@ package github.thelawf.gensokyoontology.common.nbt.script;
 
 import com.google.common.collect.Lists;
 import github.thelawf.gensokyoontology.GensokyoOntology;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ public enum V3dFunc {
         this.paramCount = paramTypes.size();
     }
 
-    public ITextComponent toTextComponent() {
+    public Component toTextComponent() {
         return GensokyoOntology.withTranslation("gui.",".func_invoker.vector3d." + this.methodName);
     }
 }

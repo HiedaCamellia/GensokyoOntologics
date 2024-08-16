@@ -2,8 +2,8 @@ package github.thelawf.gensokyoontology.common.world.surface;
 
 import com.mojang.serialization.Codec;
 import github.thelawf.gensokyoontology.core.init.BlockRegistry;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.IChunk;
 import net.minecraft.world.gen.surfacebuilders.ConfiguredSurfaceBuilder;

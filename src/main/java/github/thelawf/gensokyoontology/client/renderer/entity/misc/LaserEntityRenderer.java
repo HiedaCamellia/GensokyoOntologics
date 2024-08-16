@@ -15,14 +15,14 @@ import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -145,13 +145,13 @@ public class LaserEntityRenderer extends EntityRenderer<LaserSourceEntity> {
         TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(LASER_SOURCE_TEX);
         IRenderTypeBuffer.Impl buffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
         IVertexBuilder builder = buffer.getBuffer(GSKORenderTypes.LASER_LINE);
-        float length = entityIn.getRange(); // (float) new Vector3d(0, 1, 0).distanceTo(entityIn.getLookVec().scale(100));
+        float length = entityIn.getRange(); // (float) new Vec3(0, 1, 0).distanceTo(entityIn.getLookVec().scale(100));
 
         // renderLaserUsingGardianLaser(entityIn, null, partialTicks, matrixStackIn, bufferIn, packedLightIn);
 
         matrixStackIn.push();
         matrixStackIn.translate(0.0D, entityIn.getEyeHeight(), 0.0D);
-        Vector3d vector3d2 = entityIn.getLookVec();
+        Vec3 vector3d2 = entityIn.getLookVec();
         GSKOMathUtil.rotateMatrixToLookVec(matrixStackIn, vector3d2);
 
         // float f5 = (float)Math.acos(vector3d2.y);
@@ -184,7 +184,7 @@ public class LaserEntityRenderer extends EntityRenderer<LaserSourceEntity> {
     }
 
     private void toLookVec(MatrixStack matrixStack, LaserSourceEntity entityIn) {
-        Vector3d vector3d2 = entityIn.getLookVec();
+        Vec3 vector3d2 = entityIn.getLookVec();
         float yaw = (float)Math.atan2(vector3d2.z, vector3d2.x);
         float pitch = (float)Math.asin(vector3d2.y);
 
@@ -198,7 +198,7 @@ public class LaserEntityRenderer extends EntityRenderer<LaserSourceEntity> {
      * Guardian Entity's laser.
      */
     @Deprecated
-    private void renderLaserUsingGardianLaser(LaserSourceEntity entityIn, @Nullable Vector3d lookVec, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn){
+    private void renderLaserUsingGardianLaser(LaserSourceEntity entityIn, @Nullable Vec3 lookVec, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn){
         //LivingEntity livingentity = entityIn.getTargetedEntity();
         IRenderTypeBuffer.Impl buffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
         IVertexBuilder builder = buffer.getBuffer(RenderType.getLightning());
@@ -210,15 +210,15 @@ public class LaserEntityRenderer extends EntityRenderer<LaserSourceEntity> {
         matrixStackIn.push();
         buffer.finish(RenderType.getLightning());
         matrixStackIn.translate(0.0D, eyeHeight, 0.0D);
-        Vector3d vector3d = entityIn.getPositionVec();
+        Vec3 vector3d = entityIn.getPositionVec();
 
         // RenderType.getLightning().getVertexFormat()
         // Using this.getPosition(entityIn, eyeHeight, partialTicks);
-        Vector3d vector3d1 = entityIn.getLookVec().scale(entityIn.getRange());
+        Vec3 vector3d1 = entityIn.getLookVec().scale(entityIn.getRange());
         float f4 = (float)(vector3d1.length() + 1.0D);
 
         // 获取激光光束的发射方向，根据这个方向旋转matrixStack到相应的位置进行渲染
-        Vector3d vector3d2 = entityIn.getLookVec();
+        Vec3 vector3d2 = entityIn.getLookVec();
         float f5 = (float)Math.acos(vector3d2.y);
         float f6 = (float)Math.atan2(vector3d2.z, vector3d2.x);
         matrixStackIn.rotate(Vector3f.YP.rotationDegrees(((float)Math.PI / 2 - f6) * (180 / (float)Math.PI)));
@@ -299,7 +299,7 @@ public class LaserEntityRenderer extends EntityRenderer<LaserSourceEntity> {
         drawLaser(ivertexbuilder, matrix4f, matrix3f, f21, f4, f22, j, k, l, 0.0F, f30);
     }
 
-    private Vector3f toVec3f(Vector3d v3d) {
+    private Vector3f toVec3f(Vec3 v3d) {
         return new Vector3f((float) v3d.x, (float) v3d.y, (float) v3d.z);
     }
 

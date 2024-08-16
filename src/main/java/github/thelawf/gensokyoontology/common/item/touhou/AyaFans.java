@@ -4,19 +4,19 @@ import github.thelawf.gensokyoontology.GensokyoOntology;
 import github.thelawf.gensokyoontology.api.util.IRayTraceReader;
 import github.thelawf.gensokyoontology.common.util.math.GSKOMathUtil;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.UseAction;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ProjectileEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.UseAction;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,24 +30,24 @@ public class AyaFans extends Item implements IRayTraceReader {
 
     @Override
     @NotNull
-    public ActionResult<ItemStack> onItemRightClick(@NotNull World worldIn, PlayerEntity playerIn, @NotNull Hand handIn) {
+    public ActionResult<ItemStack> onItemRightClick(@NotNull Level worldIn, Player playerIn, @NotNull Hand handIn) {
         if (playerIn.getCooldownTracker().hasCooldown(this))
             return ActionResult.resultPass(playerIn.getHeldItem(handIn));
 
-        AxisAlignedBB aabb = new AxisAlignedBB(playerIn.getPositionVec().subtract(new Vector3d(5, 10, 5)),
-                playerIn.getPositionVec().add(new Vector3d(5, 10, 5)));
+        AxisAlignedBB aabb = new AxisAlignedBB(playerIn.getPositionVec().subtract(new Vec3(5, 10, 5)),
+                playerIn.getPositionVec().add(new Vec3(5, 10, 5)));
 
-        Vector3d lookVec = playerIn.getLookVec();
+        Vec3 lookVec = playerIn.getLookVec();
         // List<LivingEntity> livings = worldIn.getEntitiesWithinAABB(LivingEntity.class, aabb);
 //
         // livings.forEach(living -> {
         //     if (playerIn.getPositionVec().distanceTo(living.getPositionVec()) <= 5 &&
-        //             !(living instanceof PlayerEntity)) {
+        //             !(living instanceof Player)) {
         //         living.applyKnockback(5.0f, -lookVec.x, -lookVec.z);
         //     }
         // });
 
-        Predicate<LivingEntity> predicate = living -> !(living instanceof PlayerEntity);
+        Predicate<LivingEntity> predicate = living -> !(living instanceof Player);
         getEntityWithinSphere(worldIn, LivingEntity.class, predicate, aabb, 12F).forEach(living -> {
             living.applyKnockback(3.0f, -lookVec.x, -lookVec.z);
         });
@@ -55,8 +55,8 @@ public class AyaFans extends Item implements IRayTraceReader {
         // 和上面是一样的功能，只不过先使用Stream流进行了判断。
         // 首先仍然是获取在一个方形碰撞箱内的所有投掷物实体，然后使用Stream.filter()保留了距离玩家12格以内的投掷物实体
         // 将这些被保留的实体使用Stream.collect()方法重新转换成列表，再用列表的内置.forEach()方法对每一个投掷物执行操作
-        AxisAlignedBB box = new AxisAlignedBB(playerIn.getPositionVec().subtract(new Vector3d(12, 12, 12)),
-                playerIn.getPositionVec().add(new Vector3d(12, 12, 12)));
+        AxisAlignedBB box = new AxisAlignedBB(playerIn.getPositionVec().subtract(new Vec3(12, 12, 12)),
+                playerIn.getPositionVec().add(new Vec3(12, 12, 12)));
 
         getEntityWithinSphere(worldIn, ProjectileEntity.class, box, 12).forEach(projectile ->
                 applyProjectileKnockback(projectile, 3.0f, -lookVec.x, -lookVec.z));
@@ -73,14 +73,14 @@ public class AyaFans extends Item implements IRayTraceReader {
 
     private void applyProjectileKnockback(ProjectileEntity projectile, float strength, double ratioX, double ratioZ) {
         if (!(strength <= 0.0F)) {
-            Vector3d vector3d = projectile.getMotion();
-            Vector3d vector3d1 = (new Vector3d(ratioX, 0.0D, ratioZ)).normalize().scale(strength);
+            Vec3 vector3d = projectile.getMotion();
+            Vec3 vector3d1 = (new Vec3(ratioX, 0.0D, ratioZ)).normalize().scale(strength);
             projectile.setMotion(vector3d.x / 2.0D - vector3d1.x, projectile.isOnGround() ? Math.min(0.4D, vector3d.y / 2.0D + (double) strength) : vector3d.y, vector3d.z / 2.0D - vector3d1.z);
         }
     }
 
     @Override
-    public void addInformation(@NotNull ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, @NotNull ITooltipFlag flagIn) {
+    public void addInformation(@NotNull ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, @NotNull ITooltipFlag flagIn) {
         tooltip.add(GensokyoOntology.withTranslation("tooltip.", ".aya_fans"));
         super.addInformation(stack, worldIn, tooltip, flagIn);
     }

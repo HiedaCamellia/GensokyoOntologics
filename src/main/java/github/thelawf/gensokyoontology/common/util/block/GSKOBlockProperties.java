@@ -1,12 +1,12 @@
 package github.thelawf.gensokyoontology.common.util.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.Property;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 public class GSKOBlockProperties {
     public static final EnumProperty<CauldronFluid> CAULDRON_FLUID = EnumProperty.create("fluid", CauldronFluid.class);
 
-    public static <T extends Comparable<T>, V extends T> BlockState getStateWith(World world, BlockPos pos, Property<T> property, V value) {
+    public static <T extends Comparable<T>, V extends T> BlockState getStateWith(Level world, BlockPos pos, Property<T> property, V value) {
         return world.getBlockState(pos).with(property, value);
     }
 
@@ -26,7 +26,7 @@ public class GSKOBlockProperties {
         return voxelShapes;
     }
 
-    // public static <T extends Comparable<T>, V extends T> BlockState containsProperty(World world, BlockPos pos, Property<T> property, V value) {
+    // public static <T extends Comparable<T>, V extends T> BlockState containsProperty(Level world, BlockPos pos, Property<T> property, V value) {
     //     return world.getBlockState(pos).with(property, value);
     // }
 }

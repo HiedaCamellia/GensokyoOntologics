@@ -2,10 +2,10 @@ package github.thelawf.gensokyoontology.common.entity.ai.goal;
 
 import github.thelawf.gensokyoontology.common.entity.spellcard.boss.BossSpell;
 import github.thelawf.gensokyoontology.core.init.EntityRegistry;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.server.level.ServerLevel;
 
 public class SpellCardAttackGoal extends Goal {
     private final MobEntity entity;
@@ -40,8 +40,8 @@ public class SpellCardAttackGoal extends Goal {
     public boolean shouldExecute() {
         LivingEntity target = this.entity.getAttackTarget();
         if (!entity.world.isRemote) {
-            ServerWorld serverWorld = (ServerWorld) entity.world;
-            long count = serverWorld.getEntities().filter(e -> e.getType() == EntityRegistry.LASER_SOURCE_ENTITY.get()).count();
+            ServerLevel serverLevel = (ServerLevel) entity.world;
+            long count = serverLevel.getEntities().filter(e -> e.getType() == EntityRegistry.LASER_SOURCE_ENTITY.get()).count();
             if (count >= 8) return false;
         }
         return this.entity.ticksExisted % 50 == 0 && target != null && target.isAlive();

@@ -6,7 +6,7 @@ import github.thelawf.gensokyoontology.common.entity.monster.KomeijiKoishiEntity
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class KomeijiKoishiRenderer extends MobRenderer<KomeijiKoishiEntity, EntityModel<KomeijiKoishiEntity>> {
 

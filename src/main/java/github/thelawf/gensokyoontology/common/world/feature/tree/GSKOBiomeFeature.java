@@ -2,14 +2,14 @@ package github.thelawf.gensokyoontology.common.world.feature.tree;
 
 import com.mojang.serialization.Codec;
 import github.thelawf.gensokyoontology.common.world.feature.config.GSKOTreeConfig;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.ISeedReader;
 import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.gen.IWorldGenerationBaseReader;
+import net.minecraft.world.gen.ILevelGenerationBaseReader;
 import net.minecraft.world.gen.feature.Feature;
 
 public abstract class GSKOBiomeFeature<FC extends GSKOTreeConfig> extends Feature<FC> {
@@ -22,11 +22,11 @@ public abstract class GSKOBiomeFeature<FC extends GSKOTreeConfig> extends Featur
      * @param pos    Position to check.
      * @return Determines if the pos is of the dirt tag or another block.
      */
-    public boolean isDirtOrGrassBlock(IWorldGenerationBaseReader reader, BlockPos pos) {
+    public boolean isDirtOrGrassBlock(ILevelGenerationBaseReader reader, BlockPos pos) {
         return reader.hasBlockState(pos, (state) -> state == Blocks.DIRT.getDefaultState() && state == Blocks.GRASS_BLOCK.getDefaultState());
     }
 
-    public boolean isTrunkBlockAt(IWorldGenerationBaseReader reader, BlockPos pos) {
+    public boolean isTrunkBlockAt(ILevelGenerationBaseReader reader, BlockPos pos) {
         return reader.hasBlockState(pos, (state) -> state.isIn(BlockTags.LOGS));
     }
 

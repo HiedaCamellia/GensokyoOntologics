@@ -1,13 +1,13 @@
 package github.thelawf.gensokyoontology.client.model;
 
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.entity.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 /** 用于渲染盔甲的图层渲染器中有一个获取装备模型的方法叫
  * {@link net.minecraft.client.renderer.entity.layers.BipedArmorLayer#getArmorModelHook(LivingEntity, ItemStack, EquipmentSlotType, BipedModel) getArmorModelHook}。 <br>
@@ -15,7 +15,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * 然后写一个仅客户端可用的静态方法初始化模型，最后在客户端初始化事件中调用这个静态方法就行了。
  * */
 @OnlyIn(Dist.CLIENT)
-public class KoishiHatModel extends BipedModel<AbstractClientPlayerEntity> {
+public class KoishiHatModel extends BipedModel<AbstractClientPlayer> {
 
 
     private final ModelRenderer hat;

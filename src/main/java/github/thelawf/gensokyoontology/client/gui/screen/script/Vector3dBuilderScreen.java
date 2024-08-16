@@ -1,7 +1,6 @@
 package github.thelawf.gensokyoontology.client.gui.screen.script;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import github.thelawf.gensokyoontology.GensokyoOntology;
 import github.thelawf.gensokyoontology.api.client.layout.WidgetConfig;
 import github.thelawf.gensokyoontology.client.gui.screen.widget.BlankWidget;
@@ -9,19 +8,16 @@ import github.thelawf.gensokyoontology.common.container.script.OneSlotContainer;
 import github.thelawf.gensokyoontology.common.nbt.GSKONBTUtil;
 import github.thelawf.gensokyoontology.common.network.GSKONetworking;
 import github.thelawf.gensokyoontology.common.network.packet.CMergeScriptPacket;
-import github.thelawf.gensokyoontology.common.util.GSKOUtil;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.DoubleNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.network.chat.Component;
+
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -32,23 +28,23 @@ import java.util.List;
 // 50, 100
 // 150, 85; 45, 20
 @OnlyIn(value = Dist.CLIENT)
-public class Vector3dBuilderScreen extends OneSlotContainerScreen {
+public class Vec3BuilderScreen extends OneSlotContainerScreen {
     public static final String TYPE = "vector3d";
-    private final CompoundNBT vector3dData = new CompoundNBT();
-    private TextFieldWidget nameInput;
-    private TextFieldWidget xInput;
-    private TextFieldWidget yInput;
-    private TextFieldWidget zInput;
+    private final CompoundTag vector3dData = new CompoundTag();
+    private EditBox nameInput;
+    private EditBox xInput;
+    private EditBox yInput;
+    private EditBox zInput;
     public static final ResourceLocation TEXTURE = GensokyoOntology.withRL("textures/gui/one_slot_screen_vec.png");
     private final WidgetConfig TEXT_LABEL1 = WidgetConfig.of(new BlankWidget(0,0,0,0, withText("null")),0,0).isText(true);
     private final WidgetConfig TEXT_LABEL2 = WidgetConfig.of(new BlankWidget(0,0,0,0, withText("null")),0,0).isText(true);
     private final WidgetConfig TEXT_LABEL3 = WidgetConfig.of(new BlankWidget(0,0,0,0, withText("null")),0,0).isText(true);
     private final WidgetConfig TEXT_LABEL4 = WidgetConfig.of(new BlankWidget(0,0,0,0, withText("null")),0,0).isText(true);
 
-    private final ITextComponent tipName = GensokyoOntology.withTranslation("gui.",".vector3d.builder.name");
+    private final Component tipName = GensokyoOntology.withTranslation("gui.",".vector3d.builder.name");
     private List<WidgetConfig> WIDGETS;
 
-    public Vector3dBuilderScreen(OneSlotContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
+    public Vec3BuilderScreen(OneSlotContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         this.playerInventoryTitleX = 6;
         this.playerInventoryTitleY = 115;
@@ -68,10 +64,10 @@ public class Vector3dBuilderScreen extends OneSlotContainerScreen {
     @Override
     protected void init() {
         super.init();
-        this.nameInput = new TextFieldWidget(this.font, 0,0,0,0, this.title);
-        this.xInput = new TextFieldWidget(this.font, 0, 50, 100, 30, new StringTextComponent(""));
-        this.yInput = new TextFieldWidget(this.font, 60, 50, 100, 30, new StringTextComponent(""));
-        this.zInput = new TextFieldWidget(this.font, 120, 50, 100, 30, new StringTextComponent(""));
+        this.nameInput = new EditBox(this.font, 0,0,0,0, this.title);
+        this.xInput = new EditBox(this.font, 0, 50, 100, 30, Component.literal(""));
+        this.yInput = new EditBox(this.font, 60, 50, 100, 30, Component.literal(""));
+        this.zInput = new EditBox(this.font, 120, 50, 100, 30, Component.literal(""));
 
         this.saveBtn = new Button(0, 200, 30, 30, this.saveText, (button) -> {});
 
@@ -108,7 +104,7 @@ public class Vector3dBuilderScreen extends OneSlotContainerScreen {
             this.nameInput.active = false;
 
             this.nameInput.setText(this.stack.getTag().getString("name"));
-            CompoundNBT nbt = this.stack.getTag();
+            CompoundTag nbt = this.stack.getTag();
 
             this.xInput.setText(GSKONBTUtil.getMemberValueAsString(nbt, "x"));
             this.yInput.setText(GSKONBTUtil.getMemberValueAsString(nbt, "y"));
@@ -126,7 +122,7 @@ public class Vector3dBuilderScreen extends OneSlotContainerScreen {
     }
 
     private void saveData() {
-        CompoundNBT vector3d = new CompoundNBT();
+        CompoundTag vector3d = new CompoundTag();
         vector3d.put("x", DoubleNBT.valueOf(parseDouble(this.xInput.getText())));
         vector3d.put("y", DoubleNBT.valueOf(parseDouble(this.yInput.getText())));
         vector3d.put("z", DoubleNBT.valueOf(parseDouble(this.zInput.getText())));
@@ -155,13 +151,13 @@ public class Vector3dBuilderScreen extends OneSlotContainerScreen {
         this.blit(matrixStack, this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
     }
 
-    public CompoundNBT getVector3dNBT() {
+    public CompoundTag getVec3NBT() {
         return this.vector3dData;
     }
 
-    public Vector3d getAsVector3d() {
-        CompoundNBT nbt = this.vector3dData;
-        return new Vector3d(nbt.getDouble("x"), nbt.getDouble("y"), nbt.getDouble("z"));
+    public Vec3 getAsVec3() {
+        CompoundTag nbt = this.vector3dData;
+        return new Vec3(nbt.getDouble("x"), nbt.getDouble("y"), nbt.getDouble("z"));
     }
 
 }

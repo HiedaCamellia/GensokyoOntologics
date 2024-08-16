@@ -1,9 +1,9 @@
 package github.thelawf.gensokyoontology.common.world.feature.config;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.gen.Heightmap;
-import net.minecraft.world.gen.feature.WorldDecoratingHelper;
+import net.minecraft.world.gen.feature.LevelDecoratingHelper;
 import net.minecraft.world.gen.placement.HeightmapBasedPlacement;
 import net.minecraft.world.gen.placement.SimplePlacement;
 
@@ -18,7 +18,7 @@ public class ChunkPlacement extends HeightmapBasedPlacement<ChunkAverageConfig> 
     }
 
     @Override
-    public Stream<BlockPos> getPositions(WorldDecoratingHelper helper, Random rand, ChunkAverageConfig config, BlockPos pos) {
+    public Stream<BlockPos> getPositions(LevelDecoratingHelper helper, Random rand, ChunkAverageConfig config, BlockPos pos) {
         return IntStream.range(0, 16).mapToObj(value -> {
             int x = rand.nextInt(16) + pos.getX();
             int z = rand.nextInt(16) + pos.getZ();

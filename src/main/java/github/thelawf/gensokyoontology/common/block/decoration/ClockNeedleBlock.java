@@ -2,17 +2,17 @@ package github.thelawf.gensokyoontology.common.block.decoration;
 
 import github.thelawf.gensokyoontology.common.util.block.ClockHandDirection;
 import github.thelawf.gensokyoontology.core.init.ItemRegistry;
-import net.minecraft.block.*;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItemUseContext;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,13 +28,13 @@ public class ClockNeedleBlock extends Block {
     @Override
     @NotNull
     @SuppressWarnings("deprecation")
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public ActionResultType onBlockActivated(BlockState state, Level worldIn, BlockPos pos, Player player, Hand handIn, BlockRayTraceResult hit) {
 
         return super.onBlockActivated(state, worldIn, pos, player, handIn, hit);
     }
 
     @Override
-    public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player) {
+    public void onBlockHarvested(Level worldIn, BlockPos pos, BlockState state, Player player) {
         super.onBlockHarvested(worldIn, pos, state, player);
         spawnDrops(state, worldIn, pos, null, player, new ItemStack(ItemRegistry.CROOKED_CLOCK_NEEDLE.get()));
     }

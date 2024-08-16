@@ -5,21 +5,22 @@ import github.thelawf.gensokyoontology.common.container.SorceryExtractorContaine
 import github.thelawf.gensokyoontology.core.RecipeRegistry;
 import github.thelawf.gensokyoontology.core.init.TileEntityRegistry;
 import github.thelawf.gensokyoontology.data.recipe.SorceryExtractorRecipe;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -30,41 +31,41 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-public class SorceryExtractorTileEntity extends TileEntity implements ITickableTileEntity {
+public class SorceryExtractorTileEntity extends BlockEntity implements ITickableTileEntity {
     private final int slotCount = 5;
     private final ItemStackHandler itemHandler = createItemHandler();
     private final LazyOptional<IItemHandler> optionalHandler = LazyOptional.of(() -> itemHandler);
-    public static final TranslationTextComponent CONTAINER_NAME = new TranslationTextComponent("container." +
+    public static final Component CONTAINER_NAME = Component.translatable("container." +
             GensokyoOntology.MODID + ".sorcery_extractor.title");
 
     public SorceryExtractorTileEntity() {
         super(TileEntityRegistry.SORCERY_EXTRACTOR_TILE_ENTITY.get());
     }
 
-    public static INamedContainerProvider createContainer(World worldIn, BlockPos posIn) {
+    public static INamedContainerProvider createContainer(Level worldIn, BlockPos posIn) {
         return new INamedContainerProvider() {
             @Override
             @NotNull
-            public ITextComponent getDisplayName() {
+            public Component getDisplayName() {
                 return CONTAINER_NAME;
             }
 
             @Override
-            public Container createMenu(int windowId, @NotNull PlayerInventory playerInventory, @NotNull PlayerEntity player) {
+            public Container createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player player) {
                 return new SorceryExtractorContainer(windowId, worldIn, posIn, playerInventory);
             }
         };
     }
 
     @Override
-    public void read(@NotNull BlockState state, CompoundNBT nbt) {
+    public void read(@NotNull BlockState state, CompoundTag nbt) {
         this.itemHandler.deserializeNBT(nbt.getCompound("inv"));
         super.read(state, nbt);
     }
 
     @Override
     @NotNull
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundTag write(CompoundTag compound) {
         compound.put("inv", this.itemHandler.serializeNBT());
         return super.write(compound);
     }

@@ -1,6 +1,6 @@
 package github.thelawf.gensokyoontology.common.util.math;
 
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -28,8 +28,8 @@ public class BezierUtil {
         return points[0];
     }
 
-    public static List<Vector3d> getBezierPos(Vector3d start, Vector3d end, Vector3d p, float time) {
-        List<Vector3d> bezierPositions = new ArrayList<>();
+    public static List<Vec3> getBezierPos(Vec3 start, Vec3 end, Vec3 p, float time) {
+        List<Vec3> bezierPositions = new ArrayList<>();
         for (int i = 0; i < 1; i += time) {
             bezierPositions.add(GSKOMathUtil.bezier2(start, end, p, time));
         }

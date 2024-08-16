@@ -9,7 +9,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.Commands;
 import net.minecraft.command.arguments.BlockPosArgument;
-import net.minecraft.util.text.StringTextComponent;
+
 
 public class MathFuncCommand {
 
@@ -43,6 +43,6 @@ public class MathFuncCommand {
     }
 
     private static void showMathResult(CommandContext<CommandSource> ctx, double result) {
-        ctx.getSource().sendFeedback(new StringTextComponent(String.valueOf(result)), true);
+        ctx.getSource().sendFeedback(Component.literal(String.valueOf(result)), true);
     }
 }

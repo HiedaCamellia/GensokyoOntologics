@@ -3,7 +3,7 @@ package github.thelawf.gensokyoontology.client.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 
 public class MasterSparkModel extends EntityModel {
     @Override

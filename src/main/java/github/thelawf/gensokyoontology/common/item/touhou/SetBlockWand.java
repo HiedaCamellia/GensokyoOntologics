@@ -2,22 +2,22 @@ package github.thelawf.gensokyoontology.common.item.touhou;
 
 import github.thelawf.gensokyoontology.GensokyoOntology;
 import github.thelawf.gensokyoontology.common.nbt.GSKONBTUtil;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUseContext;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -27,7 +27,7 @@ public class SetBlockWand extends Item {
 
     BlockState blockState = Blocks.STONE.getDefaultState();
     Mode mode = Mode.CIRCLE;
-    CompoundNBT nbt = new CompoundNBT();
+    CompoundTag nbt = new CompoundTag();
 
     public SetBlockWand(Properties properties) {
         super(properties);
@@ -36,12 +36,12 @@ public class SetBlockWand extends Item {
     @Override
     public ActionResultType onItemUse(ItemUseContext context) {
         if (Screen.hasShiftDown()) {
-            blockState = context.getWorld().getBlockState(context.getPos());
+            blockState = context.level().getBlockState(context.getPos());
         }
 
         ItemStack itemStack = Objects.requireNonNull(context.getPlayer()).getHeldItemMainhand();
 
-        if (!context.getWorld().isRemote) {
+        if (!context.level().isRemote) {
             BlockPos pos = context.getPos(); // 获取玩家所在的坐标
 
             if (this.mode == Mode.CIRCLE && itemStack.getTag() != null &&
@@ -53,10 +53,10 @@ public class SetBlockWand extends Item {
                 nbt.putInt("centerY", pos.getY());
                 nbt.putInt("centerZ", pos.getZ());
                 itemStack.setTag(nbt);
-                context.getPlayer().sendMessage(new TranslationTextComponent("set_block_item.message.set_center",
+                context.getPlayer().sendMessage(Component.translatable("set_block_item.message.set_center",
                         pos.getX(), pos.getY(), pos.getZ()), context.getPlayer().getUniqueID());
             } else { // 如果物品已经有标签，就设置半径
-                CompoundNBT nbt = itemStack.getTag();
+                CompoundTag nbt = itemStack.getTag();
                 int centerX, centerY, centerZ, radius;
 
                 if (nbt != null && nbt.contains("centerX") &&
@@ -69,7 +69,7 @@ public class SetBlockWand extends Item {
                     nbt.putInt("radius", radius);
 
                     itemStack.setTag(nbt);
-                    context.getPlayer().sendMessage(new TranslationTextComponent("item.message.set_radius", radius), context.getPlayer().getUniqueID());
+                    context.getPlayer().sendMessage(Component.translatable("item.message.set_radius", radius), context.getPlayer().getUniqueID());
                     placeCircleBlock(new BlockPos(centerX, centerY, centerZ), radius);
 
                     nbt.remove("centerX");
@@ -90,7 +90,7 @@ public class SetBlockWand extends Item {
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
+    public ActionResult<ItemStack> onItemRightClick(Level worldIn, Player playerIn, Hand handIn) {
         if (Screen.hasAltDown()) {
             switch (mode) {
                 case CIRCLE:
@@ -116,10 +116,10 @@ public class SetBlockWand extends Item {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        tooltip.add(new TranslationTextComponent("tooltip." +
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag tooltipFlag) {
+        tooltip.add(Component.translatable("tooltip." +
                 GensokyoOntology.MODID + "set_block_wand.mode"));
-        tooltip.add(new TranslationTextComponent("tooltip." +
+        tooltip.add(Component.translatable("tooltip." +
                 GensokyoOntology.MODID + "set_block_wand.key_hint"));
         super.addInformation(stack, worldIn, tooltip, flagIn);
     }

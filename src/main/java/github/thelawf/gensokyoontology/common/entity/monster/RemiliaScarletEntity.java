@@ -8,18 +8,18 @@ import github.thelawf.gensokyoontology.common.entity.ai.goal.SpellCardAttackGoal
 import github.thelawf.gensokyoontology.common.entity.spellcard.SpellCardEntity;
 import github.thelawf.gensokyoontology.common.entity.spellcard.boss.BossSpell;
 import github.thelawf.gensokyoontology.common.entity.spellcard.boss.RemiliaSpellAttack;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.CreatureEntity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.passive.TameableEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 import java.util.List;
 
 public class RemiliaScarletEntity extends YoukaiEntity implements ISpellCardUser {
-    public RemiliaScarletEntity(EntityType<? extends TameableEntity> type, World worldIn) {
+    public RemiliaScarletEntity(EntityType<? extends TameableEntity> type, Level worldIn) {
         super(type, worldIn);
     }
 
@@ -31,11 +31,11 @@ public class RemiliaScarletEntity extends YoukaiEntity implements ISpellCardUser
         this.goalSelector.addGoal(3, new LaserSpiralGoal(this, new GSKOBossGoal.Stage(GSKOBossGoal.Type.NON_SPELL, 500, false)));
         this.goalSelector.addGoal(4, new FollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
         this.goalSelector.addGoal(5, new WaterAvoidingRandomWalkingGoal(this, 0.4f));
-        this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 0.8f));
+        this.goalSelector.addGoal(8, new LookAtGoal(this, Player.class, 0.8f));
         this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
 
         this.targetSelector.addGoal(1, (new HurtByTargetGoal(this, CreatureEntity.class)).setCallsForHelp());
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, TsumiBukuroEntity.class, true));
     }
 

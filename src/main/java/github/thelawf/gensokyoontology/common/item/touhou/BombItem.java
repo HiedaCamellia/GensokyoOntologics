@@ -1,16 +1,16 @@
 package github.thelawf.gensokyoontology.common.item.touhou;
 
 import github.thelawf.gensokyoontology.common.capability.GSKOCapabilities;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.StringTextComponent;
+
 import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.NotNull;
 
 public class BombItem extends Item {
@@ -21,41 +21,41 @@ public class BombItem extends Item {
 
     @Override
     @NotNull
-    public ActionResult<ItemStack> onItemRightClick(@NotNull World worldIn, @NotNull PlayerEntity playerIn, @NotNull Hand handIn) {
+    public ActionResult<ItemStack> onItemRightClick(@NotNull Level worldIn, @NotNull Player playerIn, @NotNull Hand handIn) {
         ItemStack stack = playerIn.getHeldItem(handIn);
 
         if (stack.hasTag() && stack.getTag() != null && stack.getTag().contains("is_triggered")){
-            playerIn.sendMessage(new StringTextComponent("has_tag"), playerIn.getUniqueID());
+            playerIn.sendSystemMessage((Component.literal("has_tag"), Component.literal(String.valueOf(playerIn.getUUID())));
             setCapabilityTriggered(worldIn, playerIn, false);
-            if (!worldIn.isRemote) {
-                ServerWorld serverWorld = (ServerWorld) worldIn;
-                serverWorld.getServer().getWorlds().forEach(sw -> sw.setDayTime(15000));
+            if (worldIn.isClientSide) {
+                ServerLevel serverLevel = (ServerLevel) worldIn;
+                serverLevel.getServer().levels().forEach(sw -> sw.setDayTime(15000));
             }
-            stack.setTag(new CompoundNBT());
+            stack.setTag(new CompoundTag());
             return super.onItemRightClick(worldIn, playerIn, handIn);
         }
 
-        CompoundNBT nbt = new CompoundNBT();
+        CompoundTag nbt = new CompoundTag();
         nbt.putBoolean("isTriggered", this.flag);
-        playerIn.sendMessage(new StringTextComponent("no_tag"), playerIn.getUniqueID());
+        playerIn.sendSystemMessage((Component.literal("no_tag"), Component.literal(String.valueOf(playerIn.getUUID())));
         setCapabilityTriggered(worldIn, playerIn, true);
-        if (!worldIn.isRemote) {
-            ServerWorld serverWorld = (ServerWorld) worldIn;
-            serverWorld.getServer().getWorlds().forEach(sw -> sw.setDayTime(15000));
+        if (worldIn.isClientSide) {
+            ServerLevel serverLevel = (ServerLevel) worldIn;
+            serverLevel.getServer().levels().forEach(sw -> sw.setDayTime(15000));
         }
         return super.onItemRightClick(worldIn, playerIn, handIn);
     }
 
-    private void setCapabilityTriggered(World worldIn, PlayerEntity playerIn, boolean triggered) {
+    private void setCapabilityTriggered(Level worldIn, Player playerIn, boolean triggered) {
         //if (worldIn.isRemote) ImperishableNightPacket.sendToServer(worldIn, GSKONetworking.IMPERISHABLE_NIGHT, triggered);
-        if (!worldIn.isRemote) {
-            ServerWorld serverWorld = (ServerWorld) worldIn;
-            serverWorld.getCapability(GSKOCapabilities.IMPERISHABLE_NIGHT).ifPresent(cap -> {
+        if (worldIn.isClientSide) {
+            ServerLevel serverLevel = (ServerLevel) worldIn;
+            serverLevel.getCapability(GSKOCapabilities.IMPERISHABLE_NIGHT).ifPresent(cap -> {
                 cap.setTriggered(triggered);
-                // playerIn.sendMessage(new StringTextComponent(String.valueOf(cap.isTriggered())), playerIn.getUniqueID());
-                serverWorld.getGameRules().get(GameRules.DO_DAYLIGHT_CYCLE).set(cap.isTriggered(), serverWorld.getServer());
+                // playerIn.sendSystemMessage((Component.literal(String.valueOf(cap.isTriggered())), Component.literal(String.valueOf(playerIn.getUUID())));
+                serverLevel.getGameRules().get(GameRules.DO_DAYLIGHT_CYCLE).set(cap.isTriggered(), serverLevel.getServer());
             });
-            //ImperishableNightPacket.sendToPlayer(serverWorld, (ServerPlayerEntity) playerIn, GSKONetworking.IMPERISHABLE_NIGHT, triggered);
+            //ImperishableNightPacket.sendToPlayer(serverLevel, (ServerPlayer) playerIn, GSKONetworking.IMPERISHABLE_NIGHT, triggered);
         }
 
     }

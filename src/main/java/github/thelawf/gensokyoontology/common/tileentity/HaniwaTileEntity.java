@@ -7,19 +7,21 @@ import github.thelawf.gensokyoontology.common.util.GSKOUtil;
 import github.thelawf.gensokyoontology.core.init.BlockRegistry;
 import github.thelawf.gensokyoontology.core.init.EntityRegistry;
 import github.thelawf.gensokyoontology.core.init.TileEntityRegistry;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.command.impl.TimeCommand;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.server.level.ServerLevel;
 
 import java.util.UUID;
 
-public class HaniwaTileEntity extends TileEntity implements ITickableTileEntity {
+public class HaniwaTileEntity extends BlockEntity implements ITickableTileEntity {
     private int faithCount = 0;
     private boolean canAddCount;
     private UUID ownerId;
@@ -29,7 +31,7 @@ public class HaniwaTileEntity extends TileEntity implements ITickableTileEntity 
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt) {
+    public void read(BlockState state, CompoundTag nbt) {
         if (nbt.contains("faith_count")) {
             this.faithCount = nbt.getInt("faith_count");
         }
@@ -43,7 +45,7 @@ public class HaniwaTileEntity extends TileEntity implements ITickableTileEntity 
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundTag write(CompoundTag compound) {
         super.write(compound);
         compound.putInt("faith_count", this.faithCount);
         compound.putBoolean("can_add_count", this.canAddCount);

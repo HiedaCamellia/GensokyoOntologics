@@ -7,16 +7,16 @@ import github.thelawf.gensokyoontology.common.item.armor.KoishiHatArmorItem;
 import github.thelawf.gensokyoontology.core.init.EntityRegistry;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.entity.SpriteRenderer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @OnlyIn(Dist.CLIENT)
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, modid = GensokyoOntology.MODID, value = Dist.CLIENT)
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD, modid = GensokyoOntology.MODID, value = Dist.CLIENT)
 public class GSKOClientSetupEvents {
 
     @SubscribeEvent
@@ -137,7 +137,7 @@ public class GSKOClientSetupEvents {
             Minecraft minecraft = Minecraft.getInstance();
             // only fire if we're in the twilight forest
             if (minecraft.world != null && GSKODimensions.GENSOKYO.getRegistryName().equals(
-                    minecraft.world.getDimensionKey().getLocation())) {
+                    minecraft.world.dimension().getLocation())) {
                 if (minecraft.ingameGUI != null) {
                     minecraft.ingameGUI.prevVignetteBrightness = 0.0F;
                 }
@@ -153,7 +153,7 @@ public class GSKOClientSetupEvents {
         Minecraft mc = Minecraft.getInstance();
         float partial = mc.getRenderPartialTicks();
 
-        // DimensionRenderInfo info = DimensionRenderInfo.field_239208_a_.get(new ResourceLocation(GensokyoOntology.MODID, "render"));
+        // DimensionRenderInfo info = DimensionRenderInfo.field_239208_a_.get(ResourceLocation.parse(GensokyoOntology.MODID, "render"));
     }
     */
 

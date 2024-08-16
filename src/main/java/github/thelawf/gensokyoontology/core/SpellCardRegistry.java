@@ -5,9 +5,9 @@ import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuColor;
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuType;
 import github.thelawf.gensokyoontology.common.util.danmaku.SpellData;
 import github.thelawf.gensokyoontology.common.util.danmaku.TransformFunction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fml.DeferredRegister;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
@@ -20,7 +20,7 @@ public class SpellCardRegistry {
 
     static {
         SPELL_CARD_REGISTRY = new RegistryBuilder<SpellData>()
-                .setDefaultKey(new ResourceLocation("spell_data"))
+                .setDefaultKey(ResourceLocation.parse("spell_data"))
                 .setType(SpellData.class)
                 .create();
     }
@@ -28,17 +28,17 @@ public class SpellCardRegistry {
     public static final DeferredRegister<SpellData> SPELL_DATA = DeferredRegister.create(
             SPELL_CARD_REGISTRY, GensokyoOntology.MODID);
 
-    public static final RegistryObject<SpellData> IDO_NO_KAIHO_DATA = SPELL_DATA.register(
+    public static final DeferredRegister<SpellData> IDO_NO_KAIHO_DATA = SPELL_DATA.register(
             "ido_no_kaiho_data", SpellCardRegistry::initSpell);
 
-    public static final RegistryObject<SpellData> IDO_NO_KAIHO_MONSTER = SPELL_DATA.register(
+    public static final DeferredRegister<SpellData> IDO_NO_KAIHO_MONSTER = SPELL_DATA.register(
             "ido_no_kaiho_monster", SpellCardRegistry::initMonsterSpell);
 
     private static SpellData initMonsterSpell() {
         HashMap<Integer, TransformFunction> functions = new HashMap<>();
         TransformFunction function = TransformFunction.Builder.create()
-                .setInitLocation(Vector3d.ZERO)
-                .setShootVector(Vector3d.ZERO);
+                .setInitLocation(Vec3.ZERO)
+                .setShootVector(Vec3.ZERO);
 
         return new SpellData(functions, DanmakuType.HEART_SHOT, DanmakuColor.PINK, true, true);
     }

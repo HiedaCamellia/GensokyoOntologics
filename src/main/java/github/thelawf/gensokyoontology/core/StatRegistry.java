@@ -2,7 +2,7 @@ package github.thelawf.gensokyoontology.core;
 
 import net.minecraft.stats.IStatFormatter;
 import net.minecraft.stats.StatType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,7 +11,7 @@ public class StatRegistry {
     public static final ResourceLocation TRAVEL_TO_GSKO_TIMES = registerStat("travel_to_gensokyo_times", IStatFormatter.DEFAULT);
 
     public static ResourceLocation registerStat(String key, IStatFormatter formatter) {
-        ResourceLocation resourcelocation = new ResourceLocation(key);
+        ResourceLocation resourcelocation = ResourceLocation.parse(key);
         Registry.register(Registry.CUSTOM_STAT, key, resourcelocation);
         GSKO_STATS.get(resourcelocation, formatter);
         return resourcelocation;

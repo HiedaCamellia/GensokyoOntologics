@@ -7,14 +7,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.fonts.Font;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.resources.ResourceLocation;
+
 
 public class GSKOMissionHud extends AbstractGui {
     private final int width;
     private final int height;
     private final Minecraft minecraft;
-    private final ResourceLocation HUD = new ResourceLocation(GensokyoOntology.MODID, "textures/client/hud.png");
+    private final ResourceLocation HUD = ResourceLocation.parse(GensokyoOntology.MODID, "textures/client/hud.png");
     private MatrixStack matrixStack;
 
     private String description;
@@ -35,7 +35,7 @@ public class GSKOMissionHud extends AbstractGui {
     public void render() {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.minecraft.getTextureManager().bindTexture(HUD);
-        // drawCenteredString(matrixStack, this.minecraft.fontRenderer, new TranslationTextComponent(
+        // drawCenteredString(matrixStack, this.minecraft.fontRenderer, Component.translatable(
         //         "hud." + GensokyoOntology.MODID + ".mission." + this.description), width / 2 , 85, 199999);
         blit(matrixStack, width / 2 - 16, height / 2 - 64, 0, 0, 32, 32, 32, 32);
     }

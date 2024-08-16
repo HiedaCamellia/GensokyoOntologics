@@ -6,13 +6,13 @@ import com.mojang.datafixers.util.Pair;
 import github.thelawf.gensokyoontology.GensokyoOntology;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class RhythmAttackHud extends AbstractGui {
     private int totalTick, animateTick;
     private final int width, height;
     private final Minecraft mc;
-    private final ResourceLocation NOTE_TEXTURES = new ResourceLocation(GensokyoOntology.MODID, "textures/gui/notes.png");
+    private final ResourceLocation NOTE_TEXTURES = ResourceLocation.parse(GensokyoOntology.MODID, "textures/gui/notes.png");
     private final Pair<Integer, Integer> UV_TAP_NOTE = Pair.of(0,0);
     private final Pair<Integer, Integer> UV_COLLISION_CIRCLE = Pair.of(16,0);
     private final Pair<Integer, Integer> UV_HOLD_NOTE = Pair.of(32,0);

@@ -7,29 +7,29 @@ import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuType;
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuUtil;
 import github.thelawf.gensokyoontology.core.init.EntityRegistry;
 import github.thelawf.gensokyoontology.core.init.ItemRegistry;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class MobiusRingEntity extends SpellCardEntity {
 
-    public MobiusRingEntity(EntityType<? extends SpellCardEntity> entityTypeIn, World worldIn) {
+    public MobiusRingEntity(EntityType<? extends SpellCardEntity> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
     }
 
-    public MobiusRingEntity(World worldIn, PlayerEntity player) {
+    public MobiusRingEntity(Level worldIn, Player player) {
         super(EntityRegistry.MOBIUS_RING_WORLD_ENTITY.get(), worldIn, player);
     }
 
@@ -38,11 +38,11 @@ public class MobiusRingEntity extends SpellCardEntity {
 
         // 创建圆环的水平面：
         // 定义一个位于 X-Z 平面的 PQ 向量，以P为圆心形成圆P
-        Vector3d horizonVec = new Vector3d(Vector3f.ZP);
+        Vec3 horizonVec = new Vec3(Vector3f.ZP);
         horizonVec = horizonVec.scale(6);
 
         // 创建竖圆：
-        Vector3d verticalVec = new Vector3d(Vector3f.ZP);
+        Vec3 verticalVec = new Vec3(Vector3f.ZP);
         verticalVec = verticalVec.scale(3);
 
         float velocity = 0.2f;

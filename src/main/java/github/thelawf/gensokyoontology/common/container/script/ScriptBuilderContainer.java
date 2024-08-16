@@ -1,7 +1,7 @@
 package github.thelawf.gensokyoontology.common.container.script;
 
 import github.thelawf.gensokyoontology.common.container.WrapPlayerContainer;
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
@@ -11,7 +11,7 @@ import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class ScriptBuilderContainer extends WrapPlayerContainer {
-    public ScriptBuilderContainer(@Nullable ContainerType<?> type, PlayerInventory playerInventory, int id) {
+    public ScriptBuilderContainer(@Nullable ContainerType<?> type, Inventory playerInventory, int id) {
         super(type, playerInventory, id);
     }
 

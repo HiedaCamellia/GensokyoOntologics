@@ -4,9 +4,9 @@ import github.thelawf.gensokyoontology.common.capability.GSKOCapabilities;
 import github.thelawf.gensokyoontology.common.capability.entity.GSKOPowerCapability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.server.level.ServerLevel;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -44,8 +44,8 @@ public class CPowerChangedPacket {
 
     }
 
-    private static void sendToServer(ServerWorld serverWorld, CPowerChangedPacket packet) {
-        serverWorld.getCapability(GSKOCapabilities.POWER).ifPresent(gskoCap ->
+    private static void sendToServer(ServerLevel serverLevel, CPowerChangedPacket packet) {
+        serverLevel.getCapability(GSKOCapabilities.POWER).ifPresent(gskoCap ->
             gskoCap.setCount(packet.getCount()));
     }
 

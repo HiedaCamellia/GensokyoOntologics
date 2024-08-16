@@ -5,16 +5,16 @@ import github.thelawf.gensokyoontology.common.entity.monster.FlandreScarletEntit
 import github.thelawf.gensokyoontology.common.entity.projectile.LargeShotEntity;
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuUtil;
 import github.thelawf.gensokyoontology.common.util.math.GSKOMathUtil;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
 
 import java.util.List;
 
 public class FlandreSpellAttack {
     public final BossSpell bossSpell;
-    public World world;
+    public Level world;
     public FlandreScarletEntity flandre;
-    public FlandreSpellAttack(World world, FlandreScarletEntity flandre) {
+    public FlandreSpellAttack(Level world, FlandreScarletEntity flandre) {
         this.world = world;
         this.flandre = flandre;
         this.bossSpell = BossSpell.of(this::sphereDanmaku, this::laserAttack);
@@ -36,9 +36,9 @@ public class FlandreSpellAttack {
     }
 
     private void sphereShot(int count) {
-        List<Vector3d> shootVec = DanmakuUtil.spheroidPos(1, count);
+        List<Vec3> shootVec = DanmakuUtil.spheroidPos(1, count);
         shootVec.forEach(vector3d -> {
-            Vector3d vec = GSKOMathUtil.randomVec(-3, 3);
+            Vec3 vec = GSKOMathUtil.randomVec(-3, 3);
             LargeShotEntity largeShot = new LargeShotEntity(world);
             DanmakuUtil.initDanmaku(largeShot, flandre.getPositionVec().add(vector3d.x, 1.2, vector3d.z)
                     .add(vec.x, 0, vec.z), true);
@@ -60,10 +60,10 @@ public class FlandreSpellAttack {
     }
 
     public static void sphere(FlandreScarletEntity flandre) {
-        List<Vector3d> shootVec = DanmakuUtil.spheroidPos(1, 10);
-        World world = flandre.world;
+        List<Vec3> shootVec = DanmakuUtil.spheroidPos(1, 10);
+        Level world = flandre.world;
         shootVec.forEach(vector3d -> {
-            Vector3d vec = GSKOMathUtil.randomVec(-3, 3);
+            Vec3 vec = GSKOMathUtil.randomVec(-3, 3);
             LargeShotEntity largeShot = new LargeShotEntity(world);
             DanmakuUtil.initDanmaku(largeShot, flandre.getPositionVec().add(vector3d.x, 1.2, vector3d.z)
                     .add(vec.x, 0, vec.z), true);

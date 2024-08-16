@@ -1,8 +1,8 @@
 package github.thelawf.gensokyoontology.common.entity.ai.goal;
 
 import github.thelawf.gensokyoontology.common.entity.monster.FlandreScarletEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.pathfinding.Path;
 
 public class FlandreSpellAttackGoal extends GSKOBossGoal {
@@ -64,8 +64,8 @@ public class FlandreSpellAttackGoal extends GSKOBossGoal {
     @Override
     public void resetTask() {
         LivingEntity target = this.flandre.getAttackTarget();
-        boolean isPlayerAndCanNotBeAttacked = target instanceof PlayerEntity
-                && (target.isSpectator() || ((PlayerEntity) target).isCreative());
+        boolean isPlayerAndCanNotBeAttacked = target instanceof Player
+                && (target.isSpectator() || ((Player) target).isCreative());
         if (isPlayerAndCanNotBeAttacked) {
             this.flandre.setAttackTarget(null);
         }

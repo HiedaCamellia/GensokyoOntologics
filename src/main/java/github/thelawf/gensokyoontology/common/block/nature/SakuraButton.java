@@ -1,9 +1,9 @@
 package github.thelawf.gensokyoontology.common.block.nature;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.WoodButtonBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.WoodButtonBlock;
 
 public class SakuraButton extends WoodButtonBlock {
     public SakuraButton() {

@@ -3,21 +3,21 @@ package github.thelawf.gensokyoontology.common.events;
 import github.thelawf.gensokyoontology.GensokyoOntology;
 import github.thelawf.gensokyoontology.common.item.touhou.SakuyaStopWatch;
 import github.thelawf.gensokyoontology.core.init.ItemRegistry;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ProjectileEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
+import net.minecraft.world.phys.Vec3;
+
+import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,16 +25,16 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
 
-@Mod.EventBusSubscriber(modid = "gensokyoontology", bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
+@EventBusSubscriber(modid = "gensokyoontology", bus = EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class GSKOItemStackEvents {
     public static final Logger LOGGER = LogManager.getLogger();
-    private static Vector3d motion = new Vector3d(0,0,0);
+    private static Vec3 motion = new Vec3(0,0,0);
     private static float speed = 0.F;
     @SubscribeEvent
     public static void onSakuyaStopWatchTick(LivingEvent.LivingUpdateEvent event) {
-        if (event.getEntityLiving() instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) event.getEntityLiving();
-            World world = player.world;
+        if (event.getEntityLiving() instanceof Player) {
+            Player player = (Player) event.getEntityLiving();
+            Level world = player.world;
             AxisAlignedBB aabb = new AxisAlignedBB(player.getPositionVec().subtract(10,10,10), player.getPositionVec().add(10,10,10));
             ItemStack stack = player.getHeldItemMainhand();
 
@@ -44,16 +44,16 @@ public class GSKOItemStackEvents {
             }
             if (player.ticksExisted >= SakuyaStopWatch.totalTicks && stack.getItem() == ItemRegistry.SAKUYA_WATCH.get()) {
                 // player.sendStatusMessage(GensokyoOntology.withTranslation("msg.",".sakuya_stop_watch.unfreeze"), true);
-                stack.setTag(new CompoundNBT());
+                stack.setTag(new CompoundTag());
                 unfreezeEntities(world, null, aabb, 15F);
             }
         }
     }
 
-    public static void freezeEntities(World world, @Nullable Predicate<Entity> predicate, AxisAlignedBB aabb, float radius) {
+    public static void freezeEntities(Level world, @Nullable Predicate<Entity> predicate, AxisAlignedBB aabb, float radius) {
         if (predicate == null) {
             world.getEntitiesWithinAABB(Entity.class, aabb).stream()
-                    .filter(entity -> aabb.getCenter().distanceTo(entity.getPositionVec()) <= radius && !(entity instanceof PlayerEntity))
+                    .filter(entity -> aabb.getCenter().distanceTo(entity.getPositionVec()) <= radius && !(entity instanceof Player))
                     .forEach(GSKOItemStackEvents::forEntitiesOnTimeFreeze);
             return;
         }
@@ -62,10 +62,10 @@ public class GSKOItemStackEvents {
                 .forEach(GSKOItemStackEvents::forEntitiesOnTimeFreeze);
     }
 
-    public static void unfreezeEntities(World world, @Nullable Predicate<Entity> predicate, AxisAlignedBB aabb, float radius) {
+    public static void unfreezeEntities(Level world, @Nullable Predicate<Entity> predicate, AxisAlignedBB aabb, float radius) {
         if (predicate == null) {
             world.getEntitiesWithinAABB(Entity.class, aabb).stream()
-                    .filter(entity -> aabb.getCenter().distanceTo(entity.getPositionVec()) <= radius && !(entity instanceof PlayerEntity))
+                    .filter(entity -> aabb.getCenter().distanceTo(entity.getPositionVec()) <= radius && !(entity instanceof Player))
                     .forEach(GSKOItemStackEvents::forEntitiesOnTimeUnfreeze);
             return;
         }
@@ -80,7 +80,7 @@ public class GSKOItemStackEvents {
             motion = entity.getMotion();
             entity.setMotion(0, 0, 0);
             entity.velocityChanged = true;
-        } else if (entity instanceof LivingEntity && !(entity instanceof PlayerEntity)) {
+        } else if (entity instanceof LivingEntity && !(entity instanceof Player)) {
             LivingEntity living = (LivingEntity) entity;
             speed = living.getAIMoveSpeed();
             living.setAIMoveSpeed(0);
@@ -92,7 +92,7 @@ public class GSKOItemStackEvents {
         if (entity instanceof ProjectileEntity) {
             entity.setMotion(motion);
             entity.velocityChanged = true;
-        } else if (entity instanceof LivingEntity && !(entity instanceof PlayerEntity)) {
+        } else if (entity instanceof LivingEntity && !(entity instanceof Player)) {
             LivingEntity living = (LivingEntity) entity;
             living.setAIMoveSpeed(speed);
         }

@@ -8,9 +8,9 @@ import github.thelawf.gensokyoontology.core.init.ContainerRegistry;
 import github.thelawf.gensokyoontology.core.init.ItemRegistry;
 import github.thelawf.gensokyoontology.data.recipe.DanmakuRecipe;
 import github.thelawf.gensokyoontology.data.recipe.GSKORecipeHandler;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.ServerPlayer;
 import net.minecraft.inventory.CraftResultInventory;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
@@ -18,13 +18,13 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.CraftingResultSlot;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.network.play.server.SSetSlotPacket;
-import net.minecraft.util.IWorldPosCallable;
+import net.minecraft.util.ILevelPosCallable;
 import net.minecraft.util.NonNullList;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -47,23 +47,23 @@ import java.util.stream.Stream;
  */
 public class DanmakuCraftingContainer extends Container {
     // private final DomainFieldEntity fieldEntity;
-    private final PlayerEntity player;
+    private final Player player;
     private final IItemHandler playerInventory;
 
     public static final Logger LOGGER = LogManager.getLogger();
 
     private final CraftingInventory craftingMatrix = new CraftingInventory(this, 5, 5);
     private final IInventory resultInv = new CraftResultInventory();
-    public DanmakuCraftingContainer(int windowId, PlayerInventory playerInventory) {
-        this(windowId, playerInventory, IWorldPosCallable.DUMMY);
+    public DanmakuCraftingContainer(int windowId, Inventory playerInventory) {
+        this(windowId, playerInventory, ILevelPosCallable.DUMMY);
     }
 
-    public DanmakuCraftingContainer(int windowId, PlayerInventory playerInventory, IWorldPosCallable callable) {
+    public DanmakuCraftingContainer(int windowId, Inventory playerInventory, ILevelPosCallable callable) {
         super(ContainerRegistry.DANMAKU_CRAFTING_CONTAINER.get(), windowId);
         this.player = playerInventory.player;
         this.playerInventory = new InvWrapper(playerInventory);
 
-        this.addPlayerInventorySlots(playerInventory, 28, 124, 182);
+        this.addInventorySlots(playerInventory, 28, 124, 182);
         for (int i = 0; i < 5; ++i) {
             for (int j = 0; j < 5; ++j) {
                 this.addSlot(new Slot(this.craftingMatrix, j + i * 5, 16 + j * 18, 21 + i * 18));
@@ -74,12 +74,12 @@ public class DanmakuCraftingContainer extends Container {
     }
 
     @Override
-    public boolean canInteractWith(@NotNull PlayerEntity playerIn) {
+    public boolean canInteractWith(@NotNull Player playerIn) {
         return true;
     }
 
     @Override
-    public void onContainerClosed(@NotNull PlayerEntity playerIn) {
+    public void onContainerClosed(@NotNull Player playerIn) {
         super.onContainerClosed(playerIn);
         this.clearContainer(playerIn, playerIn.world, this.craftingMatrix);
         this.clearContainer(playerIn, playerIn.world, this.resultInv);
@@ -87,8 +87,8 @@ public class DanmakuCraftingContainer extends Container {
 
     protected void updateCraftingResult() {
         if (!this.player.world.isRemote) {
-            World world = this.player.world;
-            ServerPlayerEntity serverplayerentity = (ServerPlayerEntity)this.player;
+            Level world = this.player.world;
+            ServerPlayer serverplayerentity = (ServerPlayer)this.player;
             ItemStack itemstack = ItemStack.EMPTY;
 
             Optional<DanmakuRecipe> optional = world.getServer().getRecipeManager().getRecipes().stream().flatMap(iRecipe ->  {
@@ -113,8 +113,8 @@ public class DanmakuCraftingContainer extends Container {
         }
     }
 
-    private ItemStack onItemTake(ServerPlayerEntity serverPlayer, IInventory result) {
-        ServerWorld world = serverPlayer.getServerWorld();
+    private ItemStack onItemTake(ServerPlayer serverPlayer, IInventory result) {
+        ServerLevel world = serverPlayer.getServerLevel();
         Optional<DanmakuRecipe> optional = world.getServer().getRecipeManager().getRecipe(RecipeRegistry.DANMAKU_RECIPE,
                 this.craftingMatrix, world);
         if (optional.isPresent()) {
@@ -171,19 +171,19 @@ public class DanmakuCraftingContainer extends Container {
         return index;
     }
 
-    private void layoutPlayerInventorySlots(int leftCol, int topRow) {
+    private void layoutInventorySlots(int leftCol, int topRow) {
         addSlotBox(playerInventory, 9, leftCol, topRow, 9, 3, 18, 18);
         topRow += 58;
         addSlotRange(playerInventory, 0, leftCol, topRow, 9, 18);
     }
 
-    private void layoutPlayerInventorySlots(PlayerInventory playerInventory, int leftCol, int topRow) {
+    private void layoutInventorySlots(Inventory playerInventory, int leftCol, int topRow) {
         addSlotBox(playerInventory, 9, leftCol, topRow, 9, 3, 18, 18);
         topRow += 58;
         addSlotRange(playerInventory, 0, leftCol, topRow, 9, 18);
     }
 
-    private void addPlayerInventorySlots(PlayerInventory playerInventory, int left, int top, int hotBarTop) {
+    private void addInventorySlots(Inventory playerInventory, int left, int top, int hotBarTop) {
         for(int k = 0; k < 3; ++k) {
             for(int i = 0; i < 9; ++i) {
                 this.addSlot(new Slot(playerInventory, i + k * 9 + 9, left + i * 18, top + k * 18));
@@ -215,7 +215,7 @@ public class DanmakuCraftingContainer extends Container {
 
     @Override
     @NotNull
-    public ItemStack transferStackInSlot(@NotNull PlayerEntity playerIn, int index) {
+    public ItemStack transferStackInSlot(@NotNull Player playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
 
         Slot slot = this.inventorySlots.get(index);

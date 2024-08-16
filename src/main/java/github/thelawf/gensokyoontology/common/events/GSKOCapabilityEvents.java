@@ -20,18 +20,18 @@ import github.thelawf.gensokyoontology.common.util.BeliefType;
 import github.thelawf.gensokyoontology.common.util.GSKOUtil;
 import github.thelawf.gensokyoontology.common.world.GSKODimensions;
 import github.thelawf.gensokyoontology.core.init.ItemRegistry;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.ServerPlayer;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.event.world.LevelEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -39,12 +39,12 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import java.util.ArrayList;
 import java.util.List;
 
-@Mod.EventBusSubscriber(modid = GensokyoOntology.MODID)
+@EventBusSubscriber(modid = GensokyoOntology.MODID)
 public class GSKOCapabilityEvents {
 
     @SubscribeEvent
-    public static void onCapabilityAttachToWorld(AttachCapabilitiesEvent<World> event) {
-        if (event.getObject() instanceof World) {
+    public static void onCapabilityAttachToLevel(AttachCapabilitiesEvent<Level> event) {
+        if (event.getObject() instanceof Level) {
             List<String> biomes = new ArrayList<>();
             biomes.add("gensokyoontology:scarlet_mansion_precincts");
             biomes.add("gensokyoontology:misty_lake");
@@ -62,7 +62,7 @@ public class GSKOCapabilityEvents {
     @SubscribeEvent
     public static void onCapabilityAttachToEntity(AttachCapabilitiesEvent<Entity> event) {
         Entity entity = event.getObject();
-        if (entity instanceof PlayerEntity) {
+        if (entity instanceof Player) {
 
             List<Pair<BeliefType, Integer>> set = new ArrayList<>();
             for (BeliefType type : BeliefType.values()) set.add(Pair.of(type, 1));
@@ -86,13 +86,13 @@ public class GSKOCapabilityEvents {
     }
 
     @SubscribeEvent
-    public static void onWorldTickDuringIncident(WorldEvent.Load event) {
-        if (event.getWorld() instanceof ServerWorld) {
-            ServerWorld serverWorld = ((ServerWorld) event.getWorld()).getServer().getWorld(GSKODimensions.GENSOKYO);
+    public static void onLevelTickDuringIncident(LevelEvent.Load event) {
+        if (event.level() instanceof ServerLevel) {
+            ServerLevel serverLevel = ((ServerLevel) event.level()).getServer().level(GSKODimensions.GENSOKYO);
 
-            if (serverWorld != null) {
-                updateCapability(serverWorld, GSKOCapabilities.BLOODY_MIST);
-                updateCapability(serverWorld, GSKOCapabilities.IMPERISHABLE_NIGHT);
+            if (serverLevel != null) {
+                updateCapability(serverLevel, GSKOCapabilities.BLOODY_MIST);
+                updateCapability(serverLevel, GSKOCapabilities.IMPERISHABLE_NIGHT);
             }
         }
     }
@@ -107,7 +107,7 @@ public class GSKOCapabilityEvents {
      */
     @SubscribeEvent
     public static void onPacketSync(TickEvent.PlayerTickEvent event) {
-        PlayerEntity player = event.player;
+        Player player = event.player;
         boolean flag = event.side == LogicalSide.SERVER && event.phase == TickEvent.Phase.END;
         // if (flag) {
             // trySyncLifetime(player);
@@ -121,7 +121,7 @@ public class GSKOCapabilityEvents {
         }
     }
 
-    public static void trySyncLifetime(PlayerEntity player) {
+    public static void trySyncLifetime(Player player) {
         player.getCapability(GSKOCapabilities.SECULAR_LIFE).ifPresent(cap -> {
             // GSKOUtil.showChatMsg(player, cap.isDirty(), 20);
             cap.addTime(1L);
@@ -130,14 +130,14 @@ public class GSKOCapabilityEvents {
     }
 
 
-    public static void trySyncPower(PlayerEntity player) {
+    public static void trySyncPower(Player player) {
         player.getCapability(GSKOCapabilities.POWER).ifPresent(cap -> {
             GSKONetworking.sendToClientPlayer(new CPowerChangedPacket(cap.getCount()), player);
             cap.markDirty();
         });
     }
 
-    public static void trySyncPowerToTLM(PlayerEntity player) {
+    public static void trySyncPowerToTLM(Player player) {
         player.getCapability(GSKOCapabilities.POWER).ifPresent(gskoCap ->
                 player.getCapability(PowerCapabilityProvider.POWER_CAP).ifPresent(tlmCap ->
                         player.getCapability(MaidNumCapabilityProvider.MAID_NUM_CAP).ifPresent(maidNumCap ->
@@ -147,7 +147,7 @@ public class GSKOCapabilityEvents {
                             tlmCap.setDirty(false);
                         })));
     }
-    public static void trySyncPowerFromTLM(PlayerEntity player) {
+    public static void trySyncPowerFromTLM(Player player) {
         player.getCapability(GSKOCapabilities.POWER).ifPresent(gskoCap ->
                 player.getCapability(PowerCapabilityProvider.POWER_CAP).ifPresent(tlmCap ->
                 {
@@ -159,7 +159,7 @@ public class GSKOCapabilityEvents {
 
     // @SubscribeEvent
     public static void onPacketSendToClient(TickEvent.PlayerTickEvent event) {
-        PlayerEntity player = event.player;
+        Player player = event.player;
         if (event.side == LogicalSide.CLIENT && event.phase == TickEvent.Phase.END) {
             player.getCapability(GSKOCapabilities.POWER).ifPresent(cap -> {
                 GSKONetworking.CHANNEL.sendToServer(new GSKOPowerCapability(cap.getCount()));
@@ -183,8 +183,8 @@ public class GSKOCapabilityEvents {
 
     private static void updateLife(PlayerEvent.Clone event) {
 
-        PlayerEntity playerOld = event.getOriginal();
-        PlayerEntity playerNew = event.getPlayer();
+        Player playerOld = event.getOriginal();
+        Player playerNew = event.getPlayer();
 
         LazyOptional<SecularLifeCapability> oldCapability = playerOld.getCapability(GSKOCapabilities.SECULAR_LIFE);
         LazyOptional<SecularLifeCapability> newCapability = playerNew.getCapability(GSKOCapabilities.SECULAR_LIFE);
@@ -211,15 +211,15 @@ public class GSKOCapabilityEvents {
         }
     }
 
-    private static <C extends IIncidentCapability> void updateCapability(ServerWorld serverWorld, Capability<C> capability) {
-        LazyOptional<C> oldCapability = serverWorld.getCapability(capability);
-        LazyOptional<C> newCapability = serverWorld.getCapability(capability);
+    private static <C extends IIncidentCapability> void updateCapability(ServerLevel serverLevel, Capability<C> capability) {
+        LazyOptional<C> oldCapability = serverLevel.getCapability(capability);
+        LazyOptional<C> newCapability = serverLevel.getCapability(capability);
         if (oldCapability.isPresent() && newCapability.isPresent()) {
             newCapability.ifPresent(capNew -> oldCapability.ifPresent(capOld -> capNew.deserializeNBT(capOld.serializeNBT())));
         }
     }
 
-    private static void updateCapability(ServerPlayerEntity serverPlayer) {
+    private static void updateCapability(ServerPlayer serverPlayer) {
         GSKONetworking.CHANNEL.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new CPowerChangedPacket(3));
     }
 }

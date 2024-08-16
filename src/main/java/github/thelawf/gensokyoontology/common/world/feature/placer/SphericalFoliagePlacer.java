@@ -4,10 +4,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import github.thelawf.gensokyoontology.core.PlacerRegistry;
 import github.thelawf.gensokyoontology.common.util.world.FeatureUtil;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.gen.IWorldGenerationReader;
+import net.minecraft.world.gen.ILevelGenerationReader;
 import net.minecraft.world.gen.blockstateprovider.BlockStateProvider;
 import net.minecraft.world.gen.feature.BaseTreeFeatureConfig;
 import net.minecraft.world.gen.feature.FeatureSpread;
@@ -57,7 +57,7 @@ public class SphericalFoliagePlacer extends FoliagePlacer {
     }
 
     @Override // place foliage
-    protected void func_230372_a_(IWorldGenerationReader world, Random random, BaseTreeFeatureConfig baseTreeFeatureConfig, int trunkHeight, Foliage foliage, int foliageHeight, int radius, Set<BlockPos> leavesSet, int offset, MutableBoundingBox mutableBoundingBox) {
+    protected void func_230372_a_(ILevelGenerationReader world, Random random, BaseTreeFeatureConfig baseTreeFeatureConfig, int trunkHeight, Foliage foliage, int foliageHeight, int radius, Set<BlockPos> leavesSet, int offset, MutableBoundingBox mutableBoundingBox) {
         BlockPos center = foliage.func_236763_a_().up(offset); // foliage.getCenter
 
         //FeatureUtil.makeLeafCircle(world, random, center, radius, baseTreeFeatureConfig.leavesProvider, leavesSet);]w'
@@ -79,7 +79,7 @@ public class SphericalFoliagePlacer extends FoliagePlacer {
         }
     }
 
-    private void placeLeafCluster(IWorldGenerationReader world, Random random, BlockPos pos, BlockStateProvider state, Set<BlockPos> leavesPos) {
+    private void placeLeafCluster(ILevelGenerationReader world, Random random, BlockPos pos, BlockStateProvider state, Set<BlockPos> leavesPos) {
         FeatureUtil.placeLeafBlock(world, random, pos, state, leavesPos);
         FeatureUtil.placeLeafBlock(world, random, pos.east(), state, leavesPos);
         FeatureUtil.placeLeafBlock(world, random, pos.south(), state, leavesPos);

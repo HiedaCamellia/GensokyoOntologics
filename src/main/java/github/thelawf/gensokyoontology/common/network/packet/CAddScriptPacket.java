@@ -2,9 +2,9 @@ package github.thelawf.gensokyoontology.common.network.packet;
 
 import github.thelawf.gensokyoontology.common.container.SpellCardConsoleContainer;
 import github.thelawf.gensokyoontology.common.tileentity.SpellConsoleTileEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.player.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -33,7 +33,7 @@ public class CAddScriptPacket {
         ctx.get().setPacketHandled(true);
     }
 
-    public static void addScript(ServerPlayerEntity serverPlayer) {
+    public static void addScript(ServerPlayer serverPlayer) {
         if (serverPlayer == null) return;
         if (!(serverPlayer.openContainer instanceof SpellCardConsoleContainer)) return;
         SpellCardConsoleContainer container = (SpellCardConsoleContainer) serverPlayer.openContainer;
@@ -41,7 +41,7 @@ public class CAddScriptPacket {
 
         if (tileEntity instanceof SpellConsoleTileEntity) {
             SpellConsoleTileEntity spellConsole = (SpellConsoleTileEntity) tileEntity;
-            CompoundNBT scriptData = new CompoundNBT();
+            CompoundTag scriptData = new CompoundTag();
             ListNBT scriptList = new ListNBT();
 
             spellConsole.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(itemHandler -> {
@@ -61,11 +61,11 @@ public class CAddScriptPacket {
     }
 
     private static boolean hasAllowedTag(int index, IItemHandler itemHandler) {
-        CompoundNBT nbt = getTag(index, itemHandler);
+        CompoundTag nbt = getTag(index, itemHandler);
         return nbt.contains("type") && nbt.contains("value");
     }
 
-    private static CompoundNBT getTag(int index, IItemHandler itemHandler) {
+    private static CompoundTag getTag(int index, IItemHandler itemHandler) {
         return itemHandler.getStackInSlot(index).getTag();
     }
 

@@ -7,12 +7,12 @@ import github.thelawf.gensokyoontology.api.client.layout.WidgetConfig;
 import github.thelawf.gensokyoontology.common.container.script.ScriptBuilderContainer;
 import github.thelawf.gensokyoontology.client.gui.screen.widget.BlankWidget;
 import github.thelawf.gensokyoontology.client.gui.screen.widget.SlotWidget;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
@@ -22,13 +22,13 @@ import java.util.List;
 public class AssignInstanceScreen extends ScriptContainerScreen {
     public static final String TYPE = "assignment";
     public static final ResourceLocation TEXTURE = GensokyoOntology.withRL("textures/gui/assign_screen.png");
-    private final CompoundNBT assignData = new CompoundNBT();
-    private TextFieldWidget nameInput;
+    private final CompoundTag assignData = new CompoundTag();
+    private EditBox nameInput;
     private SlotWidget slotWidget;
     private final WidgetConfig NAME_LABEL = WidgetConfig.of(new BlankWidget(0,0,0,0, withText("null")),0,0).isText(true);
     private List<WidgetConfig> WIDGETS;
 
-    public AssignInstanceScreen(ScriptBuilderContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
+    public AssignInstanceScreen(ScriptBuilderContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
     }
 
@@ -37,7 +37,7 @@ public class AssignInstanceScreen extends ScriptContainerScreen {
         if (this.minecraft == null) return;
         if (this.minecraft.player == null) return;
 
-        this.nameInput = new TextFieldWidget(this.font, 0,0,0,0, this.title);
+        this.nameInput = new EditBox(this.font, 0,0,0,0, this.title);
         this.slotWidget = new SlotWidget(0,0,0,0, withText("slot"));
         this.saveBtn = new Button(0, 0, 30, 30, this.saveText, (button) -> {});
 

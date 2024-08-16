@@ -2,14 +2,14 @@ package github.thelawf.gensokyoontology.data.recipe;
 
 import github.thelawf.gensokyoontology.GensokyoOntology;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.crafting.IRecipe;
+import net.minecraft.world.item.crafting.IRecipeType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.NotNull;
 
 public interface ISorceryExtractorRecipe extends IRecipe<IInventory> {
-    ResourceLocation RECIPE_ID = new ResourceLocation(GensokyoOntology.MODID, "sorcery_extract");
+    ResourceLocation RECIPE_ID = ResourceLocation.parse(GensokyoOntology.MODID, "sorcery_extract");
 
     @Override
     @NotNull

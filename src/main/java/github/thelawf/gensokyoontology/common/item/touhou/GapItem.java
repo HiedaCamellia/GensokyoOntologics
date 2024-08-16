@@ -6,24 +6,24 @@ import github.thelawf.gensokyoontology.common.block.GapBlock;
 import github.thelawf.gensokyoontology.common.tileentity.GapTileEntity;
 import github.thelawf.gensokyoontology.common.world.GSKODimensions;
 import github.thelawf.gensokyoontology.core.init.BlockRegistry;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUseContext;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.network.chat.Component;
+
+
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.system.CallbackI;
@@ -36,16 +36,16 @@ public class GapItem extends BlockItem implements INBTWriter, INBTRunnable {
     }
 
     @Override
-    protected boolean onBlockPlaced(@NotNull BlockPos pos, @NotNull World worldIn, @Nullable PlayerEntity player, ItemStack stack, BlockState state) {
+    protected boolean onBlockPlaced(@NotNull BlockPos pos, @NotNull Level worldIn, @Nullable Player player, ItemStack stack, BlockState state) {
 
         if (player == null) return super.onBlockPlaced(pos, worldIn, player, stack, state);
 
         if (player.getHeldItemMainhand().getItem() == this) {
 
             if (stack.hasTag()) {
-                CompoundNBT nbt = stack.getTag();
+                CompoundTag nbt = stack.getTag();
                 // setBlockTileSecond(player, worldIn, pos, nbt);
-                stack.setTag(new CompoundNBT());
+                stack.setTag(new CompoundTag());
                 stack.shrink(1);
                 return super.onBlockPlaced(pos, worldIn, player, stack, state);
 
@@ -58,19 +58,19 @@ public class GapItem extends BlockItem implements INBTWriter, INBTRunnable {
 
 
     @Override
-    public void addInformation(@NotNull ItemStack stack, @Nullable World worldIn, @NotNull List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void addInformation(@NotNull ItemStack stack, @Nullable Level worldIn, @NotNull List<Component> tooltip, ITooltipFlag flagIn) {
         super.addInformation(stack, worldIn, tooltip, flagIn);
         if (stack.getTag() != null && stack.getTag().contains("first_pos")) {
-            CompoundNBT nbt = stack.getTag();
+            CompoundTag nbt = stack.getTag();
             if (nbt.contains("first_pos")) {
                 BlockPos pos = BlockPos.fromLong(nbt.getLong("first_pos"));
-                tooltip.add(new StringTextComponent("第一处隙间设置为: " + pos.getCoordinatesAsString()));
+                tooltip.add(Component.literal("第一处隙间设置为: " + pos.getCoordinatesAsString()));
             }
             if (nbt.contains("departure_world")) {
-                tooltip.add(new TranslationTextComponent(nbt.getString("departure_world")));
+                tooltip.add(Component.translatable(nbt.getString("departure_world")));
             }
             if (nbt.contains("is_first_placement")) {
-                tooltip.add(new StringTextComponent("是否是第一次点击：" + nbt.getBoolean("is_first_placement")));
+                tooltip.add(Component.literal("是否是第一次点击：" + nbt.getBoolean("is_first_placement")));
             }
         }
     }

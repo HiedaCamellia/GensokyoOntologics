@@ -7,18 +7,18 @@ import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuType;
 import github.thelawf.gensokyoontology.common.util.danmaku.TransformFunction;
 import github.thelawf.gensokyoontology.core.init.EntityRegistry;
 import github.thelawf.gensokyoontology.core.init.ItemRegistry;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector2f;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -27,17 +27,17 @@ public class HellEclipseEntity extends SpellCardEntity {
 
     private final FakeLunarEntity fakeLunar;
 
-    public HellEclipseEntity(World worldIn, PlayerEntity player) {
+    public HellEclipseEntity(Level worldIn, Player player) {
         super(EntityRegistry.HELL_ECLIPSE_ENTITY.get(), worldIn, player);
         this.setOwner(player.getEntity());
         this.fakeLunar = new FakeLunarEntity(player, world, DanmakuType.FAKE_LUNAR, DanmakuColor.NONE);
         this.fakeLunar.setLifespan(this.lifeSpan);
-        setDanmakuInit(this.fakeLunar, this.getPositionVec(), new Vector2f(this.rotationYaw, this.rotationPitch));
+        setDanmakuInit(this.fakeLunar, this.getPositionVec(), new Vec2(this.rotationYaw, this.rotationPitch));
         worldIn.addEntity(this.fakeLunar);
 
     }
 
-    public HellEclipseEntity(EntityType<? extends SpellCardEntity> entityTypeIn, World world) {
+    public HellEclipseEntity(EntityType<? extends SpellCardEntity> entityTypeIn, Level world) {
         super(entityTypeIn, world);
         fakeLunar = new FakeLunarEntity(EntityRegistry.FAKE_LUNAR_ENTITY.get(), world);
         world.addEntity(fakeLunar);
@@ -52,20 +52,20 @@ public class HellEclipseEntity extends SpellCardEntity {
     }
 
     @Override
-    public void onTick(World world, Entity entity, int ticksIn) {
+    public void onTick(Level world, Entity entity, int ticksIn) {
         super.onTick(world, entity, ticksIn);
-        Vector3d center = new Vector3d(Vector3f.XP);
+        Vec3 center = new Vec3(Vector3f.XP);
 
         float angle = (float) (Math.PI / 60 * ticksExisted);
         float lunarAngle = (float) ((world.getGameTime() * 0.1f) % (Math.PI * 2));
         float angle2 = (float) ((world.getGameTime() * 0.08f) % (Math.PI * 2));
         float speed = 0.2F;
-        Vector3d local = center.add(4, 0, 0).rotateYaw(angle);
-        Vector3d global = local.add(this.getPositionVec());
+        Vec3 local = center.add(4, 0, 0).rotateYaw(angle);
+        Vec3 global = local.add(this.getPositionVec());
 
-        Vector3d lunarPos = this.fakeLunar.getPositionVec();
-        // Vector3d lunarPos = center.add(4, 0, 0).rotateYaw(-angle).add(this.getPositionVec());
-        Vector3d lunarMotion = new Vector3d(MathHelper.cos(lunarAngle) * speed, 0, MathHelper.sin(lunarAngle) * speed);
+        Vec3 lunarPos = this.fakeLunar.getPositionVec();
+        // Vec3 lunarPos = center.add(4, 0, 0).rotateYaw(-angle).add(this.getPositionVec());
+        Vec3 lunarMotion = new Vec3(MathHelper.cos(lunarAngle) * speed, 0, MathHelper.sin(lunarAngle) * speed);
         // this.fakeLunar.setPosition(lunarPos.x, lunarPos.y, lunarPos.z);
         this.fakeLunar.setPosition(lunarPos.x + lunarMotion.x, lunarPos.y, lunarPos.z + lunarMotion.z);
         this.fakeLunar.setMotion(lunarMotion);
@@ -73,7 +73,7 @@ public class HellEclipseEntity extends SpellCardEntity {
         for (int i = 0; i < 8; i++) {
 
             SmallShotEntity smallShot = new SmallShotEntity((LivingEntity) this.getOwner(), world, DanmakuType.LARGE_SHOT, DanmakuColor.RED);
-            Vector3d vector3d = center.rotateYaw((float) (Math.PI / 4 * i))
+            Vec3 vector3d = center.rotateYaw((float) (Math.PI / 4 * i))
                     .rotateYaw((float) (Math.PI / 100 * ticksExisted));
 
             smallShot.setLocationAndAngles(global.x, global.y, global.z,

@@ -4,14 +4,14 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import github.thelawf.gensokyoontology.common.world.layer.SimpleNoise;
 import github.thelawf.gensokyoontology.common.world.dimension.biome.GSKOBiomesProvider;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Blockreader;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.ILevel;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.provider.BiomeProvider;
 import net.minecraft.world.chunk.IChunk;
@@ -65,7 +65,7 @@ public final class GSKOChunkGenerator extends NoiseChunkGenerator {
     }
 
     @Override
-    public void generateSurface(@NotNull WorldGenRegion region, @NotNull IChunk chunk) {
+    public void generateSurface(@NotNull LevelGenRegion region, @NotNull IChunk chunk) {
         BlockState grassBlock = Blocks.GRASS_BLOCK.getDefaultState();
         BlockState stone = Blocks.STONE.getDefaultState();
         BlockState bedrock = Blocks.BEDROCK.getDefaultState();
@@ -87,7 +87,7 @@ public final class GSKOChunkGenerator extends NoiseChunkGenerator {
                 chunk.setBlockState(positions.add(x, 64, z), grassBlock, true);
             }
         }
-        long seed = region.getWorld().getSeed();
+        long seed = region.level().getSeed();
         LOGGER.info(chunkPos.x + ", " + chunkPos.z);
 
         // 再使用噪声生成器生成地表的草方块和地下的石头
@@ -107,7 +107,7 @@ public final class GSKOChunkGenerator extends NoiseChunkGenerator {
     }
 
     @Override
-    public void func_230352_b_(@NotNull IWorld world, @NotNull StructureManager structureManager, @NotNull IChunk chunk) {
+    public void func_230352_b_(@NotNull ILevel world, @NotNull StructureManager structureManager, @NotNull IChunk chunk) {
 
     }
 

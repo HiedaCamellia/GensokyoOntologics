@@ -1,10 +1,10 @@
 package github.thelawf.gensokyoontology.common.entity.projectile;
 
 import github.thelawf.gensokyoontology.core.init.PotionRegistry;
-import net.minecraft.entity.*;
-import net.minecraft.entity.projectile.PotionEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.projectile.PotionEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -14,7 +14,7 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -28,7 +28,7 @@ public class LovePotionEntity extends PotionEntity implements IRendersAsItem {
                     LovePotionEntity::new, EntityClassification.MISC).size(0.25F, 0.25F).trackingRange(4)
             .updateInterval(10).build("love_potion_entity");
 
-    public LovePotionEntity(EntityType<? extends PotionEntity> type, World worldIn) {
+    public LovePotionEntity(EntityType<? extends PotionEntity> type, Level worldIn) {
         super(type, worldIn);
     }
 

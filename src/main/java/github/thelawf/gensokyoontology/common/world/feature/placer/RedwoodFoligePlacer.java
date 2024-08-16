@@ -1,8 +1,8 @@
 package github.thelawf.gensokyoontology.common.world.feature.placer;
 
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.world.gen.IWorldGenerationReader;
+import net.minecraft.world.gen.ILevelGenerationReader;
 import net.minecraft.world.gen.feature.BaseTreeFeatureConfig;
 import net.minecraft.world.gen.feature.FeatureSpread;
 import net.minecraft.world.gen.foliageplacer.FoliagePlacer;
@@ -25,7 +25,7 @@ public class RedwoodFoligePlacer extends FoliagePlacer {
      * 生成树的核心代码
      */
     @Override
-    protected void func_230372_a_(IWorldGenerationReader reader, Random random, BaseTreeFeatureConfig config, int height, Foliage foliage, int p_230372_6_, int p_230372_7_, Set<BlockPos> blockPos, int p_230372_9_, MutableBoundingBox p_230372_10_) {
+    protected void func_230372_a_(ILevelGenerationReader reader, Random random, BaseTreeFeatureConfig config, int height, Foliage foliage, int p_230372_6_, int p_230372_7_, Set<BlockPos> blockPos, int p_230372_9_, MutableBoundingBox p_230372_10_) {
 
     }
 

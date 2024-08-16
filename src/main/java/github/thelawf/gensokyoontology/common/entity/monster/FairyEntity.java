@@ -5,24 +5,24 @@ import github.thelawf.gensokyoontology.common.entity.projectile.*;
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuColor;
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuType;
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuUtil;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.controller.MovementController;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.monster.GhastEntity;
-import net.minecraft.entity.passive.IFlyingAnimal;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.controller.MovementController;
+import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.monster.GhastEntity;
+import net.minecraft.world.entity.passive.IFlyingAnimal;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.IPacket;
 import net.minecraft.pathfinding.FlyingPathNavigator;
 import net.minecraft.pathfinding.PathNavigator;
-import net.minecraft.util.math.vector.Vector2f;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.ILevel;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,7 +36,7 @@ public class FairyEntity extends RetreatableEntity implements IFlyingAnimal {
 
     private static final int MAX_LIVING_TICK = 3000;
 
-    public FairyEntity(EntityType<? extends RetreatableEntity> entityTypeIn, World worldIn) {
+    public FairyEntity(EntityType<? extends RetreatableEntity> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
         this.setNoGravity(true);
         this.getAttributeManager().createInstanceIfAbsent(Attributes.MAX_HEALTH);
@@ -47,10 +47,10 @@ public class FairyEntity extends RetreatableEntity implements IFlyingAnimal {
         goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new DamakuAttackGoal(this, 100, 0.6f));
         this.goalSelector.addGoal(2, new WaterAvoidingRandomFlyingGoal(this, 0.8f));
-        this.goalSelector.addGoal(3, new LookAtGoal(this, PlayerEntity.class, 8.0f));
+        this.goalSelector.addGoal(3, new LookAtGoal(this, Player.class, 8.0f));
         this.goalSelector.addGoal(4, new LookRandomlyGoal(this));
 
-        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
+        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
     }
 
     @Override
@@ -60,7 +60,7 @@ public class FairyEntity extends RetreatableEntity implements IFlyingAnimal {
 
     @Override
     @NotNull
-    protected PathNavigator createNavigator(@NotNull World worldIn) {
+    protected PathNavigator createNavigator(@NotNull Level worldIn) {
         FlyingPathNavigator navigator = new FlyingPathNavigator(this, worldIn);
         navigator.setCanOpenDoors(false);
         navigator.setCanEnterDoors(true);
@@ -69,7 +69,7 @@ public class FairyEntity extends RetreatableEntity implements IFlyingAnimal {
     }
 
     @Override
-    public void onKillEntity(@NotNull ServerWorld world, @NotNull LivingEntity killedEntity) {
+    public void onKillEntity(@NotNull ServerLevel world, @NotNull LivingEntity killedEntity) {
         super.onKillEntity(world, killedEntity);
     }
 
@@ -88,7 +88,7 @@ public class FairyEntity extends RetreatableEntity implements IFlyingAnimal {
     }
 
     @Override
-    public boolean canSpawn(@NotNull IWorld worldIn, @NotNull SpawnReason spawnReasonIn) {
+    public boolean canSpawn(@NotNull ILevel worldIn, @NotNull SpawnReason spawnReasonIn) {
         return super.canSpawn(worldIn, spawnReasonIn);
     }
 
@@ -185,7 +185,7 @@ public class FairyEntity extends RetreatableEntity implements IFlyingAnimal {
     }
 
     private void aimedShot(LivingEntity target) {
-        Vector3d direction = new Vector3d(target.getPosX() - this.getPosX(), target.getPosY() - this.getPosY(), target.getPosZ() - this.getPosZ());
+        Vec3 direction = new Vec3(target.getPosX() - this.getPosX(), target.getPosY() - this.getPosY(), target.getPosZ() - this.getPosZ());
         // SmallShotEntity smallShot = new SmallShotEntity(this.getOwner(), world, DanmakuType.LARGE_SHOT, DanmakuColor.RED);
         AbstractDanmakuEntity danmaku = randomSelect();
         DanmakuUtil.initDanmaku(danmaku, this.getPositionVec().add(0,1,0), true);
@@ -194,7 +194,7 @@ public class FairyEntity extends RetreatableEntity implements IFlyingAnimal {
 
     }
 
-    private void oddAimedShot(Vector3d pos, Vector3d shootVec) {
+    private void oddAimedShot(Vec3 pos, Vec3 shootVec) {
         AbstractDanmakuEntity danmaku = randomSelect();
         DanmakuUtil.initDanmaku(danmaku, pos, true);
         danmaku.shoot(shootVec.x, shootVec.y, shootVec.z, 0.7f, 0f);
@@ -204,7 +204,7 @@ public class FairyEntity extends RetreatableEntity implements IFlyingAnimal {
     private void oddAimedShot(LivingEntity target) {
         aimedShot(target);
         for (int i = 0; i < 2; i++) {
-            Vector3d shootVec = getAimedVec(target).rotateYaw((float) Math.PI / 10 * (i + 1));
+            Vec3 shootVec = getAimedVec(target).rotateYaw((float) Math.PI / 10 * (i + 1));
             oddAimedShot(this.getPositionVec().add(shootVec).add(0,1,0), shootVec);
             oddAimedShot(this.getPositionVec().add(shootVec).add(0,1,0), shootVec.inverse());
         }
@@ -212,7 +212,7 @@ public class FairyEntity extends RetreatableEntity implements IFlyingAnimal {
 
     private void spiralShot() {
         for (int i = 0; i < 4; i++) {
-            Vector3d shootVec = new Vector3d(Vector3f.XP).rotateYaw((float) Math.PI / 36 * ticksExisted)
+            Vec3 shootVec = new Vec3(Vector3f.XP).rotateYaw((float) Math.PI / 36 * ticksExisted)
                     .rotatePitch((float) Math.PI / 36 * ticksExisted).rotateYaw((float) Math.PI / 2 * i);
             AbstractDanmakuEntity danmaku = randomSelect();
             DanmakuUtil.initDanmaku(danmaku, this.getPositionVec().add(0,1,0), true);
@@ -223,7 +223,7 @@ public class FairyEntity extends RetreatableEntity implements IFlyingAnimal {
     }
 
     private void sphereShot() {
-        List<Vector3d> coordinates = DanmakuUtil.spheroidPos(1, 20);
+        List<Vec3> coordinates = DanmakuUtil.spheroidPos(1, 20);
 
         coordinates.forEach(vector3d -> {
             // SmallShotEntity danmaku = new SmallShotEntity(this.getOwner(), world, DanmakuType.LARGE_SHOT, DanmakuColor.RED);

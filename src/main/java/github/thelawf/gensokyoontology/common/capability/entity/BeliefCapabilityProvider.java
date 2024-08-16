@@ -3,7 +3,7 @@ package github.thelawf.gensokyoontology.common.capability.entity;
 import com.mojang.datafixers.util.Pair;
 import github.thelawf.gensokyoontology.common.capability.GSKOCapabilities;
 import github.thelawf.gensokyoontology.common.util.BeliefType;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Set;
 
-public class BeliefCapabilityProvider implements ICapabilitySerializable<CompoundNBT> {
+public class BeliefCapabilityProvider implements ICapabilitySerializable<CompoundTag> {
     private List<Pair<BeliefType, Integer>> pairSet;
     private BeliefCapability capability;
 
@@ -37,12 +37,12 @@ public class BeliefCapabilityProvider implements ICapabilitySerializable<Compoun
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
+    public CompoundTag serializeNBT() {
         return getOrCreate().serializeNBT();
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         getOrCreate().deserializeNBT(nbt);
     }
 }

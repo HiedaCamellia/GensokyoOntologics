@@ -9,22 +9,22 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import github.thelawf.gensokyoontology.GensokyoOntology;
 import github.thelawf.gensokyoontology.core.RecipeRegistry;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.IRecipeSerializer;
+import net.minecraft.world.item.crafting.IRecipeType;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Set;
 
 public class DanmakuRecipe extends ShapedRecipe {
-    public static final ResourceLocation RECIPE_ID = new ResourceLocation(GensokyoOntology.MODID, "danmaku_craft");
+    public static final ResourceLocation RECIPE_ID = ResourceLocation.parse(GensokyoOntology.MODID, "danmaku_craft");
     private final NonNullList<Ingredient> recipeItems;
     private final ItemStack recipeOutput;
 
@@ -49,7 +49,7 @@ public class DanmakuRecipe extends ShapedRecipe {
     }
 
     public static class Serializer extends net.minecraftforge.registries.ForgeRegistryEntry<IRecipeSerializer<?>>  implements IRecipeSerializer<DanmakuRecipe> {
-        private static final ResourceLocation NAME = new ResourceLocation("minecraft", "crafting_shaped");
+        private static final ResourceLocation NAME = ResourceLocation.parse("minecraft", "crafting_shaped");
         public @NotNull DanmakuRecipe read(ResourceLocation recipeId, @NotNull JsonObject json) {
             String s = JSONUtils.getString(json, "group", "");
             Map<String, Ingredient> map = DanmakuRecipe.deserializeKey(JSONUtils.getJsonObject(json, "key"));

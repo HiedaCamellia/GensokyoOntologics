@@ -2,10 +2,10 @@ package github.thelawf.gensokyoontology.client.gui.screen;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
+
 
 public class MemoryStoryPageGUI extends Screen {
 
@@ -15,17 +15,17 @@ public class MemoryStoryPageGUI extends Screen {
     @Override
     protected void init() {
         super.init();
-        nextPage = new Button(this.width, this.height, 140, 40, new TranslationTextComponent(
+        nextPage = new Button(this.width, this.height, 140, 40, Component.translatable(
                 "client.gensokyoontology.story_page.next"), onPress -> {
         });
-        prevPage = new Button(0, this.height, 140, 40, new TranslationTextComponent(
+        prevPage = new Button(0, this.height, 140, 40, Component.translatable(
                 "client.gensokyoontology.story_page.prev"), onPress -> {
         });
     }
 
     private final ItemStack storyPageItem;
 
-    protected MemoryStoryPageGUI(ITextComponent titleIn, ItemStack storyPageItem) {
+    protected MemoryStoryPageGUI(Component titleIn, ItemStack storyPageItem) {
         super(titleIn);
         this.storyPageItem = storyPageItem;
     }
@@ -43,7 +43,7 @@ public class MemoryStoryPageGUI extends Screen {
         int i = this.width - 3;
         int j = this.height - 3;
 
-        drawString(matrixStack, this.font, new TranslationTextComponent(
+        drawString(matrixStack, this.font, Component.translatable(
                 storyPageItem.getTag().getString("story")), 900, i, j);
     }
 

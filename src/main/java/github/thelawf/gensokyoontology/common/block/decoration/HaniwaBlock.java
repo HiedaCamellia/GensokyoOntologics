@@ -7,28 +7,28 @@ import github.thelawf.gensokyoontology.common.util.BeliefType;
 import github.thelawf.gensokyoontology.common.util.GSKOUtil;
 import github.thelawf.gensokyoontology.core.init.ItemRegistry;
 import github.thelawf.gensokyoontology.core.init.TileEntityRegistry;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+
+
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -65,11 +65,11 @@ public class HaniwaBlock extends Block {
     }
 
     @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
-        if (!worldIn.isRemote) {
-            ServerWorld serverWorld = (ServerWorld) worldIn;
-            if (serverWorld.getTileEntity(pos) instanceof HaniwaTileEntity) {
-                HaniwaTileEntity haniwaTile = (HaniwaTileEntity) serverWorld.getTileEntity(pos);
+    public void onBlockPlacedBy(Level worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
+        if (worldIn.isClientSide) {
+            ServerLevel serverLevel = (ServerLevel) worldIn;
+            if (serverLevel.getTileEntity(pos) instanceof HaniwaTileEntity) {
+                HaniwaTileEntity haniwaTile = (HaniwaTileEntity) serverLevel.getTileEntity(pos);
                 if (haniwaTile != null) {
                     haniwaTile.setCanAddCount(true);
                 }
@@ -81,12 +81,12 @@ public class HaniwaBlock extends Block {
     @Override
     @NotNull
     @SuppressWarnings("deprecation")
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
+    public ActionResultType onBlockActivated(BlockState state, Level worldIn, BlockPos pos, Player player, Hand handIn, BlockRayTraceResult hit) {
 
-        if (!worldIn.isRemote) {
-            ServerWorld serverWorld = (ServerWorld) worldIn;
-            if (serverWorld.getTileEntity(pos) instanceof HaniwaTileEntity) {
-                HaniwaTileEntity haniwaTile = (HaniwaTileEntity) serverWorld.getTileEntity(pos);
+        if (worldIn.isClientSide) {
+            ServerLevel serverLevel = (ServerLevel) worldIn;
+            if (serverLevel.getTileEntity(pos) instanceof HaniwaTileEntity) {
+                HaniwaTileEntity haniwaTile = (HaniwaTileEntity) serverLevel.getTileEntity(pos);
                 if (haniwaTile != null) {
                     if (!haniwaTile.canAddCount()) {
                         player.sendMessage(GensokyoOntology.withTranslation("msg.",".haniwa_block.in_cooldown"), player.getUniqueID());
@@ -106,12 +106,12 @@ public class HaniwaBlock extends Block {
     }
 
     @Override
-    public void onBlockExploded(BlockState state, World world, BlockPos pos, Explosion explosion) {
+    public void onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
         super.onBlockExploded(state, world, pos, explosion);
         if (!world.isRemote) {
-            ServerWorld serverWorld = (ServerWorld) world;
-            if (serverWorld.getTileEntity(pos) instanceof HaniwaTileEntity) {
-                HaniwaTileEntity haniwaTile = (HaniwaTileEntity) serverWorld.getTileEntity(pos);
+            ServerLevel serverLevel = (ServerLevel) world;
+            if (serverLevel.getTileEntity(pos) instanceof HaniwaTileEntity) {
+                HaniwaTileEntity haniwaTile = (HaniwaTileEntity) serverLevel.getTileEntity(pos);
                 if (haniwaTile != null) {
                     haniwaTile.setFaith(0);
                 }

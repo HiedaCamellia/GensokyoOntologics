@@ -8,15 +8,15 @@ import net.minecraft.client.multiplayer.PlayerController;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 @OnlyIn(Dist.CLIENT)
 public class FairyRenderer extends MobRenderer<FairyEntity, FairyModel> {
 
-    private static final ResourceLocation TEXTURE_FAIRY = new ResourceLocation(
+    private static final ResourceLocation TEXTURE_FAIRY = ResourceLocation.parse(
             GensokyoOntology.MODID, "textures/entity/fairy_texture_1.png");
 
     public FairyRenderer(EntityRendererManager renderManagerIn) {

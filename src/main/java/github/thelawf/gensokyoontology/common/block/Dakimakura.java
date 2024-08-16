@@ -1,10 +1,10 @@
 package github.thelawf.gensokyoontology.common.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.material.Material;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
@@ -13,10 +13,10 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 public class Dakimakura extends Block {
@@ -31,8 +31,8 @@ public class Dakimakura extends Block {
 
     @SuppressWarnings("deprecation")
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
-        if (!worldIn.isRemote && handIn == Hand.MAIN_HAND && state.get(BACK)) {
+    public ActionResultType onBlockActivated(BlockState state, Level worldIn, BlockPos pos, Player player, Hand handIn, BlockRayTraceResult hit) {
+        if (worldIn.isClientSide && handIn == Hand.MAIN_HAND && state.get(BACK)) {
             state.cycleValue(FRONT);
             worldIn.setBlockState(pos, state);
             return ActionResultType.func_233537_a_(worldIn.isRemote);
@@ -60,7 +60,7 @@ public class Dakimakura extends Block {
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
         Direction direction = context.getFace();
-        BlockState state = context.getWorld().getBlockState(context.getPos());
+        BlockState state = context.level().getBlockState(context.getPos());
         return state.matchesBlock(this) && state.get(FACING) == direction ? this.getDefaultState().with(
                 FACING, direction.getOpposite()) : this.getDefaultState().with(FACING, direction);
     }

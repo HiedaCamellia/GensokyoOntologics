@@ -7,12 +7,12 @@ import github.thelawf.gensokyoontology.common.entity.ai.goal.GSKOBossGoal;
 import github.thelawf.gensokyoontology.common.entity.ai.goal.LilyWhiteBossBattleGoal;
 import github.thelawf.gensokyoontology.common.entity.spellcard.FullCherryBlossomEntity;
 import github.thelawf.gensokyoontology.common.entity.spellcard.SpellCardEntity;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.IPacket;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.fml.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,7 +22,7 @@ import java.util.*;
 public class LilyWhiteEntity extends ConversationalEntity implements ISpellCardUser {
 
 
-    public LilyWhiteEntity(EntityType<LilyWhiteEntity> type, World worldIn) {
+    public LilyWhiteEntity(EntityType<LilyWhiteEntity> type, Level worldIn) {
         super(type, worldIn);
         this.setDialog(new DialogTreeNode("lily_white"));
     }
@@ -36,10 +36,10 @@ public class LilyWhiteEntity extends ConversationalEntity implements ISpellCardU
         this.goalSelector.addGoal(0, new SwimGoal(this));
         this.goalSelector.addGoal(1, new LilyWhiteBossBattleGoal(this, stage, 0.4f));
         this.goalSelector.addGoal(2, new MoveTowardsRestrictionGoal(this, 1.0));
-        this.goalSelector.addGoal(3, new LookAtGoal(this, PlayerEntity.class, 8.0f));
+        this.goalSelector.addGoal(3, new LookAtGoal(this, Player.class, 8.0f));
         this.goalSelector.addGoal(4, new LookRandomlyGoal(this));
 
-        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
+        this.targetSelector.addGoal(1, new NearestAttackableTargetGoal<>(this, Player.class, true));
     }
 
     @Override
@@ -54,7 +54,7 @@ public class LilyWhiteEntity extends ConversationalEntity implements ISpellCardU
 
     @Nullable
     @Override
-    public AgeableEntity createChild(@NotNull ServerWorld world, @NotNull AgeableEntity mate) {
+    public AgeableMob createChild(@NotNull ServerLevel world, @NotNull AgeableMob mate) {
         return null;
     }
 

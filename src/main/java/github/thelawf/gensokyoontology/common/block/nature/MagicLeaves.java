@@ -1,9 +1,9 @@
 package github.thelawf.gensokyoontology.common.block.nature;
 
-import net.minecraft.block.*;
-import net.minecraft.block.material.Material;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.material.Material;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 
 import java.util.Random;
 
@@ -13,7 +13,7 @@ public class MagicLeaves extends LeavesBlock {
     }
 
     @Override
-    public void randomTick(BlockState state, ServerWorld worldIn, BlockPos pos, Random random) {
+    public void randomTick(BlockState state, ServerLevel worldIn, BlockPos pos, Random random) {
 
     }
 }

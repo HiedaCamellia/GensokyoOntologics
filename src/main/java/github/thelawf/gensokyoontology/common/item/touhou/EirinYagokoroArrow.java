@@ -2,15 +2,15 @@ package github.thelawf.gensokyoontology.common.item.touhou;
 
 import github.thelawf.gensokyoontology.common.capability.GSKOCapabilities;
 import github.thelawf.gensokyoontology.common.world.GSKODimensions;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ArrowItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArrowItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.StringTextComponent;
+
 import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.NotNull;
 
 public class EirinYagokoroArrow extends ArrowItem {
@@ -20,20 +20,20 @@ public class EirinYagokoroArrow extends ArrowItem {
 
     @Override
     @NotNull
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, @NotNull PlayerEntity playerIn, @NotNull Hand handIn) {
+    public ActionResult<ItemStack> onItemRightClick(Level worldIn, @NotNull Player playerIn, @NotNull Hand handIn) {
         if (worldIn.isRemote) return super.onItemRightClick(worldIn, playerIn, handIn);
-        ServerWorld serverWorld = (ServerWorld) worldIn;
-        serverWorld.setDayTime(16000);
-        if (serverWorld.getDimensionKey() != GSKODimensions.GENSOKYO)
+        ServerLevel serverLevel = (ServerLevel) worldIn;
+        serverLevel.setDayTime(16000);
+        if (serverLevel.dimension() != GSKODimensions.GENSOKYO)
             return super.onItemRightClick(worldIn, playerIn, handIn);
 
-        serverWorld.getCapability(GSKOCapabilities.IMPERISHABLE_NIGHT).ifPresent(cap -> {
+        serverLevel.getCapability(GSKOCapabilities.IMPERISHABLE_NIGHT).ifPresent(cap -> {
             cap.setTriggered(true);
             cap.setDayTime(18000);
-            serverWorld.getGameRules().get(GameRules.DO_DAYLIGHT_CYCLE).set(cap.isTriggered(), serverWorld.getServer());
+            serverLevel.getGameRules().get(GameRules.DO_DAYLIGHT_CYCLE).set(cap.isTriggered(), serverLevel.getServer());
         });
-        playerIn.sendMessage(new StringTextComponent("Game rule doDayLightCycle is: " +
-                serverWorld.getGameRules().get(GameRules.DO_DAYLIGHT_CYCLE).get()), playerIn.getUniqueID());
+        playerIn.sendSystemMessage((Component.literal("Game rule doDayLightCycle is: " +
+                serverLevel.getGameRules().get(GameRules.DO_DAYLIGHT_CYCLE).get()), Component.literal(String.valueOf(playerIn.getUUID())));
         return super.onItemRightClick(worldIn, playerIn, handIn);
     }
 }

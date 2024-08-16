@@ -1,7 +1,7 @@
 package github.thelawf.gensokyoontology.common.nbt.script;
 
 import github.thelawf.gensokyoontology.GensokyoOntology;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 public enum LogicOperation {
     AND("And"),
@@ -12,7 +12,7 @@ public enum LogicOperation {
     LogicOperation(String key) {
         this.key = key;
     }
-    public ITextComponent toTextComponent() {
+    public Component toTextComponent() {
         return GensokyoOntology.withTranslation("gui.",".operation_builder.button.math." + getKey());
     }
 

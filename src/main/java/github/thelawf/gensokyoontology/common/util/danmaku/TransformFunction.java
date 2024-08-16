@@ -3,12 +3,12 @@ package github.thelawf.gensokyoontology.common.util.danmaku;
 import github.thelawf.gensokyoontology.common.util.math.GSKOMathUtil;
 import github.thelawf.gensokyoontology.common.util.math.LineSegment;
 import github.thelawf.gensokyoontology.common.util.math.LineSegment3D;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,9 +18,9 @@ import java.util.UUID;
 public class TransformFunction extends ITransform.AbstractTransform {
     public static final Logger LOGGER = LogManager.getLogger();
 
-    private World worldIn;
+    private Level worldIn;
 
-    private PlayerEntity playerIn;
+    private Player playerIn;
 
     // -------------Initialize Rotations and Locations--------------//
 
@@ -35,8 +35,8 @@ public class TransformFunction extends ITransform.AbstractTransform {
     public double yaw, pitch, roll = 0.D;
 
     public double x, y, z = 0.D;
-    public Vector3d initLocation = new Vector3d(0d, 0d, 0d);
-    public Vector3d shootVector = new Vector3d(0d, 0d, 0d);
+    public Vec3 initLocation = new Vec3(0d, 0d, 0d);
+    public Vec3 shootVector = new Vec3(0d, 0d, 0d);
 
     // --------------------Function settings---------------------//
 
@@ -70,9 +70,9 @@ public class TransformFunction extends ITransform.AbstractTransform {
     /**
      * 实体的瞬时矢量速度
      */
-    public Vector3d speedV3 = new Vector3d(0, 0, 0);
+    public Vec3 speedV3 = new Vec3(0, 0, 0);
 
-    public Vector3d nextShootVec = new Vector3d(0, 0, 0);
+    public Vec3 nextShootVec = new Vec3(0, 0, 0);
 
     /**
      * 实体的瞬时合成速度
@@ -93,12 +93,12 @@ public class TransformFunction extends ITransform.AbstractTransform {
      * 在弹幕实体发tick()方法里面将原有的速度向量使用向量相加的方式加上该速度向量，一般
      * 用于让弹幕在其生成之后的运动轨迹为一条弧线。
      */
-    public Vector3d acceleration = new Vector3d(0, 0, 0);
+    public Vec3 acceleration = new Vec3(0, 0, 0);
 
     /**
      * 用于将原有的速度向量使用向量相减的方式减去该参数的方式返回新的速度向量
      */
-    public Vector3d subtraction = new Vector3d(0, 0, 0);
+    public Vec3 subtraction = new Vec3(0, 0, 0);
 
     // ======================== Conditions and Predicate ========================= //
 
@@ -130,12 +130,12 @@ public class TransformFunction extends ITransform.AbstractTransform {
         return this;
     }
 
-    public TransformFunction setShootVector(Vector3d shootVector) {
+    public TransformFunction setShootVector(Vec3 shootVector) {
         this.shootVector = shootVector;
         return this;
     }
 
-    public TransformFunction setAcceleration(Vector3d acceleration) {
+    public TransformFunction setAcceleration(Vec3 acceleration) {
         this.acceleration = acceleration;
         return this;
     }
@@ -155,7 +155,7 @@ public class TransformFunction extends ITransform.AbstractTransform {
         return this;
     }
 
-    public TransformFunction setWorld(World worldIn) {
+    public TransformFunction setLevel(Level worldIn) {
         this.worldIn = worldIn;
         return this;
     }
@@ -185,39 +185,39 @@ public class TransformFunction extends ITransform.AbstractTransform {
         return this;
     }
 
-    public Vector3d increaseYaw(float yawIncrement) {
+    public Vec3 increaseYaw(float yawIncrement) {
         float f = MathHelper.cos(yawIncrement);
         float f1 = MathHelper.sin(yawIncrement);
         double d0 = this.x * (double) f + this.z * (double) f1;
         double d1 = this.y;
         double d2 = this.z * (double) f - this.x * (double) f1;
-        this.speedV3 = new Vector3d(this.speedV3.x + d0, this.speedV3.y, this.speedV3.z + d2);
-        return new Vector3d(d0, d1, d2);
+        this.speedV3 = new Vec3(this.speedV3.x + d0, this.speedV3.y, this.speedV3.z + d2);
+        return new Vec3(d0, d1, d2);
     }
 
-    public Vector3d increasePitch(float pitchIncrement) {
+    public Vec3 increasePitch(float pitchIncrement) {
         float f = MathHelper.cos(pitchIncrement);
         float f1 = MathHelper.sin(pitchIncrement);
         double d0 = this.x;
         double d1 = this.y * (double) f + this.z * (double) f1;
         double d2 = this.z * (double) f - this.y * (double) f1;
-        this.speedV3 = new Vector3d(this.speedV3.x, this.speedV3.y + d1, this.speedV3.z + d2);
-        return new Vector3d(d0, d1, d2);
+        this.speedV3 = new Vec3(this.speedV3.x, this.speedV3.y + d1, this.speedV3.z + d2);
+        return new Vec3(d0, d1, d2);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public Vector3d increaseRoll(float rollIncrement) {
+    public Vec3 increaseRoll(float rollIncrement) {
         float f = MathHelper.cos(rollIncrement);
         float f1 = MathHelper.sin(rollIncrement);
         double d0 = this.x * (double) f + this.y * (double) f1;
         double d1 = this.y * (double) f - this.x * (double) f1;
         double d2 = this.z;
-        this.speedV3 = new Vector3d(this.speedV3.x + d0, this.speedV3.y + d1, this.speedV3.z);
-        return new Vector3d(d0, d1, d2);
+        this.speedV3 = new Vec3(this.speedV3.x + d0, this.speedV3.y + d1, this.speedV3.z);
+        return new Vec3(d0, d1, d2);
     }
 
 
-    public TransformFunction setInitLocation(Vector3d initLocation) {
+    public TransformFunction setInitLocation(Vec3 initLocation) {
         this.initLocation = initLocation;
         this.x = initLocation.x;
         this.y = initLocation.y;
@@ -230,7 +230,7 @@ public class TransformFunction extends ITransform.AbstractTransform {
         return this;
     }
 
-    public TransformFunction setPlayer(PlayerEntity playerIn) {
+    public TransformFunction setPlayer(Player playerIn) {
         this.playerIn = playerIn;
         return this;
     }
@@ -246,11 +246,11 @@ public class TransformFunction extends ITransform.AbstractTransform {
         return this;
     }
 
-    public PlayerEntity getPlayer() {
+    public Player getPlayer() {
         return this.playerIn;
     }
 
-    public World getWorld() {
+    public Level level() {
         return worldIn;
     }
 
@@ -267,11 +267,11 @@ public class TransformFunction extends ITransform.AbstractTransform {
     }
 
 
-    public Vector3d getInitLocation() {
+    public Vec3 getInitLocation() {
         return initLocation;
     }
 
-    public Vector3d getShootVector() {
+    public Vec3 getShootVector() {
         return shootVector;
     }
 
@@ -282,14 +282,14 @@ public class TransformFunction extends ITransform.AbstractTransform {
      * @param incrementV3 三维向量增加量。vector内的三个参数分别对应roll，yaw和pitch，单位是角度值
      */
     @Override
-    public void rotate(Vector3d vecPrev, Vector3d incrementV3) {
+    public void rotate(Vec3 vecPrev, Vec3 incrementV3) {
         double incrementRoll = incrementV3.x;
         double incrementYaw = incrementV3.y;
         double incrementPitch = incrementV3.z;
     }
 
     @Deprecated
-    public Vector3d rotate(Vector3d prevPos, Vector3d pivotLocation, Vector3d rotationV3) {
+    public Vec3 rotate(Vec3 prevPos, Vec3 pivotLocation, Vec3 rotationV3) {
         double radius = GSKOMathUtil.distanceOf3D(prevPos.x, prevPos.y, prevPos.z,
                 pivotLocation.x, pivotLocation.y, pivotLocation.z);
         double incrementX = 0;
@@ -298,27 +298,27 @@ public class TransformFunction extends ITransform.AbstractTransform {
 
         if (rotationV3.x != 0) {
             LineSegment hypotenuse = new LineSegment3D(pivotLocation.x, pivotLocation.y, 0d, prevPos.x, prevPos.y, 0d);
-            Vector3d rc = GSKOMathUtil.toRollCoordinate(hypotenuse.getLength(), rotationV3.x);
+            Vec3 rc = GSKOMathUtil.toRollCoordinate(hypotenuse.getLength(), rotationV3.x);
             incrementX = rc.x;
             incrementY = rc.y;
         }
         if (rotationV3.y != 0) {
             LineSegment hypotenuse = new LineSegment3D(pivotLocation.x, 0d, pivotLocation.z, prevPos.x, 0d, prevPos.z);
-            Vector3d rc = GSKOMathUtil.toYawCoordinate(hypotenuse.getLength(), rotationV3.y);
+            Vec3 rc = GSKOMathUtil.toYawCoordinate(hypotenuse.getLength(), rotationV3.y);
             incrementX = rc.x;
             ;
             incrementZ = rc.z;
         }
         if (rotationV3.z != 0) {
             LineSegment hypotenuse = new LineSegment3D(0d, pivotLocation.y, pivotLocation.z, 0d, prevPos.y, prevPos.z);
-            Vector3d rc = GSKOMathUtil.toPitchCoordinate(hypotenuse.getLength(), rotationV3.z);
+            Vec3 rc = GSKOMathUtil.toPitchCoordinate(hypotenuse.getLength(), rotationV3.z);
             incrementY = rc.y;
             incrementZ = rc.z;
         }
         this.x += incrementX;
         this.y += incrementY;
         this.z += incrementZ;
-        return new Vector3d(prevPos.x + incrementX, prevPos.y + incrementY, prevPos.z + incrementZ);
+        return new Vec3(prevPos.x + incrementX, prevPos.y + incrementY, prevPos.z + incrementZ);
     }
 
     public void transform(double x, double y, double z, double yaw, double pitch, double roll) {
@@ -326,11 +326,11 @@ public class TransformFunction extends ITransform.AbstractTransform {
     }
 
     @Override
-    public Vector3d translate(double pivotX, double pivotY, double pivotZ) {
+    public Vec3 translate(double pivotX, double pivotY, double pivotZ) {
         this.pivotX = pivotX;
         this.pivotY = pivotY;
         this.pivotZ = pivotZ;
-        return new Vector3d(pivotX, pivotY, pivotZ);
+        return new Vec3(pivotX, pivotY, pivotZ);
     }
 
     /**
@@ -346,8 +346,8 @@ public class TransformFunction extends ITransform.AbstractTransform {
      * @return 返回一个三维向量(xSpeed, ySpeed, zSpeed)，注意x和z才是水平方向，而y是垂直方向。
      */
     @Deprecated
-    public Vector3d angleToVector(double incrementYawIn, double incrementPitchIn) {
-        return new Vector3d(this.resultantSpeed * Math.sin(90D - incrementYawIn),
+    public Vec3 angleToVector(double incrementYawIn, double incrementPitchIn) {
+        return new Vec3(this.resultantSpeed * Math.sin(90D - incrementYawIn),
                 this.resultantSpeed * Math.sin(incrementPitchIn) / Math.sin(90D - incrementPitchIn),
                 this.resultantSpeed * Math.sin(incrementYawIn) / Math.sin(90D));
     }
@@ -367,14 +367,14 @@ public class TransformFunction extends ITransform.AbstractTransform {
      * @deprecated 现在请使用 {@link GSKOMathUtil} 来将球坐标角度转为直角坐标向量
      */
     @Deprecated
-    public Vector3d angleToVector(double resultantSpeedIn, double incrementYawIn, double incrementPitchIn) {
-        return new Vector3d(resultantSpeedIn * Math.sin(90D - incrementYawIn),
+    public Vec3 angleToVector(double resultantSpeedIn, double incrementYawIn, double incrementPitchIn) {
+        return new Vec3(resultantSpeedIn * Math.sin(90D - incrementYawIn),
                 resultantSpeedIn * Math.sin(incrementPitchIn) / Math.sin(90D - incrementPitchIn),
                 resultantSpeedIn * Math.sin(incrementYawIn) / Math.sin(90D));
     }
 
     @Override
-    public Vector3d accelerate(Vector3d acceleration) {
+    public Vec3 accelerate(Vec3 acceleration) {
         return this.acceleration = acceleration;
     }
 

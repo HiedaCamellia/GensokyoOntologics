@@ -1,13 +1,13 @@
 package github.thelawf.gensokyoontology.common.world.feature;
 
 import github.thelawf.gensokyoontology.GensokyoOntology;
-import github.thelawf.gensokyoontology.common.events.GSKOWorldEvents;
+import github.thelawf.gensokyoontology.common.events.GSKOLevelEvents;
 import github.thelawf.gensokyoontology.common.world.GSKOOreType;
 import github.thelawf.gensokyoontology.common.world.dimension.biome.GSKOBiomes;
 import github.thelawf.gensokyoontology.common.world.dimension.biome.GSKOBiomesProvider;
 import github.thelawf.gensokyoontology.common.world.feature.config.GSKOWGConfigs;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
@@ -135,7 +135,7 @@ public class GSKOFeatureGenerator {
 
     public static void generateGSKOStructures(final BiomeLoadingEvent event) {
         RegistryKey<Biome> biomeKey = RegistryKey.getOrCreateKey(Registry.BIOME_KEY, event.getName());
-        ResourceLocation bambooForestOfLost = new ResourceLocation(GensokyoOntology.MODID, "bamboo_forest_of_lost");
+        ResourceLocation bambooForestOfLost = ResourceLocation.parse(GensokyoOntology.MODID, "bamboo_forest_of_lost");
 
         Set<BiomeDictionary.Type> types = BiomeDictionary.getTypes(biomeKey);
 
@@ -160,7 +160,7 @@ public class GSKOFeatureGenerator {
 
     public static void addWaterfall(final BiomeLoadingEvent event) {
         RegistryKey<Biome> biomeKey = RegistryKey.getOrCreateKey(Registry.BIOME_KEY, event.getName());
-        ResourceLocation bambooForestOfLost = new ResourceLocation(GensokyoOntology.MODID, "bamboo_forest_of_lost");
+        ResourceLocation bambooForestOfLost = ResourceLocation.parse(GensokyoOntology.MODID, "bamboo_forest_of_lost");
 
         Set<BiomeDictionary.Type> types = BiomeDictionary.getTypes(biomeKey);
 

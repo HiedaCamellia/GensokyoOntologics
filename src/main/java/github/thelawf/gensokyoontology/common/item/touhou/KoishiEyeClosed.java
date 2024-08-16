@@ -5,18 +5,18 @@ import github.thelawf.gensokyoontology.common.entity.projectile.AbstractDanmakuE
 import github.thelawf.gensokyoontology.common.util.math.GSKOMathUtil;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.UseAction;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.UseAction;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,24 +30,24 @@ public class KoishiEyeClosed extends Item {
 
     @Override
     @NotNull
-    public ActionResult<ItemStack> onItemRightClick(@NotNull World worldIn, PlayerEntity playerIn, @NotNull Hand handIn) {
+    public ActionResult<ItemStack> onItemRightClick(@NotNull Level worldIn, Player playerIn, @NotNull Hand handIn) {
 
         if (playerIn.getCooldownTracker().hasCooldown(this))
             return ActionResult.resultPass(playerIn.getHeldItem(handIn));
 
         // 获取绝对坐标
-        Vector3d playerPos = playerIn.getPositionVec();
+        Vec3 playerPos = playerIn.getPositionVec();
 
         List<AbstractDanmakuEntity> entities = new ArrayList<>();
-        if (!worldIn.isRemote) {
+        if (worldIn.isClientSide) {
             for (int i = 0; i < 50; i++) {
-                Vector3d lookVec = playerIn.getLookVec().scale(i);
+                Vec3 lookVec = playerIn.getLookVec().scale(i);
 
-                Vector3d posLine = new Vector3d(lookVec.x > 0 ? Vector3f.XP : Vector3f.XN);
-                Vector3d posColumn = new Vector3d(lookVec.z > 0 ? Vector3f.ZP : Vector3f.ZN);
-                Vector3d posVertical = new Vector3d(lookVec.y > 0 ? Vector3f.YP : Vector3f.YN);
+                Vec3 posLine = new Vec3(lookVec.x > 0 ? Vector3f.XP : Vector3f.XN);
+                Vec3 posColumn = new Vec3(lookVec.z > 0 ? Vector3f.ZP : Vector3f.ZN);
+                Vec3 posVertical = new Vec3(lookVec.y > 0 ? Vector3f.YP : Vector3f.YN);
 
-                Vector3d rayPos = playerPos.add(lookVec);
+                Vec3 rayPos = playerPos.add(lookVec);
 
                 AxisAlignedBB aabb = new AxisAlignedBB(GSKOMathUtil.vecFloor(rayPos),
                         GSKOMathUtil.vecCeil(rayPos));
@@ -76,7 +76,7 @@ public class KoishiEyeClosed extends Item {
     }
 
     @Override
-    public void addInformation(@NotNull ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, @NotNull ITooltipFlag flagIn) {
+    public void addInformation(@NotNull ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, @NotNull ITooltipFlag flagIn) {
         tooltip.add(GensokyoOntology.withTranslation("tooltip.", ".koishi_eye_closed"));
         if (Screen.hasShiftDown()) {
             tooltip.add(GensokyoOntology.withTranslation("tooltip.", ".koishi_eye_closed.comment"));

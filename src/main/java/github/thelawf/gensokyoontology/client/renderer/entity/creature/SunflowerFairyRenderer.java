@@ -5,7 +5,7 @@ import github.thelawf.gensokyoontology.client.model.SunflowerFairyModel;
 import github.thelawf.gensokyoontology.common.entity.monster.SunflowerFairyEntity;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 public class SunflowerFairyRenderer extends MobRenderer<SunflowerFairyEntity, SunflowerFairyModel> {

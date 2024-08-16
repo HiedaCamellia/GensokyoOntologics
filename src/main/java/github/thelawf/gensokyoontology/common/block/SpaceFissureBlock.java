@@ -2,21 +2,21 @@ package github.thelawf.gensokyoontology.common.block;
 
 import github.thelawf.gensokyoontology.common.world.GSKODimensions;
 import github.thelawf.gensokyoontology.common.tileentity.SpaceFissureTileEntity;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.material.Material;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -49,20 +49,20 @@ public class SpaceFissureBlock extends Block {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void onEntityCollision(BlockState state, @NotNull World worldIn, BlockPos pos, Entity entityIn) {
-        if (worldIn instanceof ServerWorld && !(entityIn instanceof PlayerEntity)) {
+    public void onEntityCollision(BlockState state, @NotNull Level worldIn, BlockPos pos, Entity entityIn) {
+        if (worldIn instanceof ServerLevel && !(entityIn instanceof Player)) {
             entityIn.attackEntityFrom(DamageSource.OUT_OF_WORLD, 12.0F);
-        } else if (worldIn instanceof ServerWorld && !entityIn.isPassenger() &&
+        } else if (worldIn instanceof ServerLevel && !entityIn.isPassenger() &&
                 !entityIn.isBeingRidden() && entityIn.canChangeDimension()) {
-            RegistryKey<World> dimensionKey = entityIn.world.getDimensionKey() == World.OVERWORLD ? GSKODimensions.GENSOKYO : World.OVERWORLD;
-            ServerWorld world = ((ServerWorld) worldIn).getServer().getWorld(dimensionKey);
+            RegistryKey<Level> dimensionKey = entityIn.world.dimension() == Level.OVERWORLD ? GSKODimensions.GENSOKYO : Level.OVERWORLD;
+            ServerLevel world = ((ServerLevel) worldIn).getServer().level(dimensionKey);
 
             if (world == null) {
                 LOGGER.warn("The Dimsion {} on this server does not exist!", dimensionKey.getRegistryName());
                 return;
             }
             entityIn.changeDimension(world);
-            LOGGER.info("Player {} has been to {}", ((PlayerEntity) entityIn).getGameProfile().getName(),
+            LOGGER.info("Player {} has been to {}", ((Player) entityIn).getGameProfile().getName(),
                     dimensionKey.getRegistryName());
         }
     }

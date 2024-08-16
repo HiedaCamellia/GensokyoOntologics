@@ -1,11 +1,11 @@
 package github.thelawf.gensokyoontology.common.container;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class WrapPlayerContainer extends Container {
     protected final IItemHandler playerInventory;
-    protected WrapPlayerContainer(@Nullable ContainerType<?> type, PlayerInventory playerInventory, int id) {
+    protected WrapPlayerContainer(@Nullable ContainerType<?> type, Inventory playerInventory, int id) {
         super(type, id);
         this.playerInventory = new InvWrapper(playerInventory);
     }
@@ -36,7 +36,7 @@ public abstract class WrapPlayerContainer extends Container {
         }
     }
 
-    protected void addPlayerInventorySlots(int xStart, int yStart) {
+    protected void addInventorySlots(int xStart, int yStart) {
         addSlotBox(this.playerInventory, 9, xStart, yStart, 9, 3, 18, 18);
         yStart += 58;
         addSlotRange(this.playerInventory, 0, xStart, yStart, 9, 18);
@@ -44,7 +44,7 @@ public abstract class WrapPlayerContainer extends Container {
 
     @Override
     @NotNull
-    public ItemStack transferStackInSlot(@NotNull PlayerEntity playerIn, int index) {
+    public ItemStack transferStackInSlot(@NotNull Player playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.inventorySlots.get(index);
         if (slot != null && slot.getHasStack()) {

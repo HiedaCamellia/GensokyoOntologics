@@ -9,8 +9,8 @@ import github.thelawf.gensokyoontology.common.entity.HakureiReimuEntity;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 
 public class HakureiReimuModel extends GSKOBipedModel<HakureiReimuEntity> {
 	private final ModelRenderer reimu;

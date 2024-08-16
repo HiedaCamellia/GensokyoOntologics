@@ -8,18 +8,18 @@ import github.thelawf.gensokyoontology.common.entity.spellcard.SpellCardEntity;
 import github.thelawf.gensokyoontology.common.entity.spellcard.boss.FlandreSpellAttack;
 import github.thelawf.gensokyoontology.common.util.GSKOUtil;
 import github.thelawf.gensokyoontology.core.init.EntityRegistry;
-import net.minecraft.entity.AgeableEntity;
-import net.minecraft.entity.CreatureEntity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.*;
-import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.CreatureEntity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.*;
+import net.minecraft.world.entity.passive.TameableEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.IPacket;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.fml.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,7 +30,7 @@ import java.util.function.Consumer;
 public class FlandreScarletEntity extends YoukaiEntity implements ISpellCardUser {
 
     // public final GSKOBossGoal.Stage stage;
-    public FlandreScarletEntity(EntityType<? extends TameableEntity> type, World worldIn) {
+    public FlandreScarletEntity(EntityType<? extends TameableEntity> type, Level worldIn) {
         super(type, worldIn);
         this.favorability = -10;
         // this.stage = new GSKOBossGoal.Stage(GSKOBossGoal.Type.SPELL_CARD_BREAKABLE,
@@ -40,7 +40,7 @@ public class FlandreScarletEntity extends YoukaiEntity implements ISpellCardUser
 
     @Nullable
     @Override
-    public AgeableEntity createChild(ServerWorld world, AgeableEntity mate) {
+    public AgeableMob createChild(ServerLevel world, AgeableMob mate) {
         return super.createChild(world, mate);
     }
 
@@ -57,18 +57,18 @@ public class FlandreScarletEntity extends YoukaiEntity implements ISpellCardUser
         this.goalSelector.addGoal(3, new SpellCardAttackGoal(this, flandreSpell.bossSpell));
         this.goalSelector.addGoal(4, new FollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
         this.goalSelector.addGoal(5, new WaterAvoidingRandomWalkingGoal(this, 0.4f));
-        this.goalSelector.addGoal(6, new LookAtGoal(this, PlayerEntity.class, 0.8f));
+        this.goalSelector.addGoal(6, new LookAtGoal(this, Player.class, 0.8f));
         this.goalSelector.addGoal(6, new LookRandomlyGoal(this));
 
         this.targetSelector.addGoal(1, (new HurtByTargetGoal(this, CreatureEntity.class)).setCallsForHelp());
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, TsumiBukuroEntity.class, true));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, PlayerEntity.class, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, true));
         this.targetSelector.addGoal(5, new ResetAngerGoal<>(this, true));
     }
 
     @Override
     @NotNull
-    public ActionResultType getEntityInteractionResult(@NotNull PlayerEntity playerIn, @NotNull Hand hand) {
+    public ActionResultType getEntityInteractionResult(@NotNull Player playerIn, @NotNull Hand hand) {
         return super.getEntityInteractionResult(playerIn, hand);
     }
 
@@ -143,7 +143,7 @@ public class FlandreScarletEntity extends YoukaiEntity implements ISpellCardUser
         // public final GSKOBossGoal.Stage stage = new GSKOBossGoal.Stage(GSKOBossGoal.Type.SPELL_CARD_BREAKABLE,
         //         SPELL_CARD, 1200, true);
 
-        public Doppelganger(EntityType<? extends TameableEntity> type, World worldIn) {
+        public Doppelganger(EntityType<? extends TameableEntity> type, Level worldIn) {
             super(EntityRegistry.FLANDRE_DOPPELDANGER.get(), worldIn);
         }
 
@@ -154,7 +154,7 @@ public class FlandreScarletEntity extends YoukaiEntity implements ISpellCardUser
             this.goalSelector.addGoal(3, new FlandreSpellAttackGoal(this, new GSKOBossGoal.Stage(GSKOBossGoal.Type.SPELL_BREAKABLE, 500, false)));
             this.goalSelector.addGoal(4, new FollowOwnerGoal(this, 1.0D, 10.0F, 2.0F, false));
             this.goalSelector.addGoal(5, new WaterAvoidingRandomWalkingGoal(this, 0.4F));
-            this.goalSelector.addGoal(8, new LookAtGoal(this, PlayerEntity.class, 0.8F));
+            this.goalSelector.addGoal(8, new LookAtGoal(this, Player.class, 0.8F));
             this.goalSelector.addGoal(8, new LookRandomlyGoal(this));
         }
 

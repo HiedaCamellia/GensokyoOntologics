@@ -1,15 +1,14 @@
 package github.thelawf.gensokyoontology.api.client;
 
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+
+import net.minecraft.network.chat.Component;
 
 public interface ITextBuilder {
-    default ITextComponent withTranslation(String prefix, String suffix){
-        return new TranslationTextComponent(prefix + "." + "." + suffix);
+    default Component withTranslation(String prefix, String suffix){
+        return Component.translatable(prefix + "." + "." + suffix);
     }
 
-    default ITextComponent withText(String text){
-        return new StringTextComponent(text);
+    default Component withText(String text){
+        return Component.literal(text);
     }
 }

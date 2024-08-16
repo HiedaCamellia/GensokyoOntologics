@@ -1,12 +1,12 @@
 package github.thelawf.gensokyoontology.common.nbt;
 
 import github.thelawf.gensokyoontology.common.item.script.ScriptBuilderItem;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.util.math.vector.Vector3i;
 
 import javax.annotation.Nonnull;
@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 
 public class GSKONBTUtil {
 
-    public static boolean hasItemStack(PlayerEntity player, Item item) {
+    public static boolean hasItemStack(Player player, Item item) {
         for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
             ItemStack stack = player.inventory.getStackInSlot(i);
             if (!stack.isEmpty() && stack.isItemEqual(new ItemStack(item))) {
@@ -30,7 +30,7 @@ public class GSKONBTUtil {
         return false;
     }
 
-    public static CompoundNBT wrap(Supplier<CompoundNBT> supplier) {
+    public static CompoundTag wrap(Supplier<CompoundTag> supplier) {
         return supplier.get();
     }
 
@@ -39,13 +39,13 @@ public class GSKONBTUtil {
     }
 
 
-    public static CompoundNBT getNonNullTag(ItemStack stack, String key) {
-        if (stack.getTag() == null) return new CompoundNBT();
+    public static CompoundTag getNonNullTag(ItemStack stack, String key) {
+        if (stack.getTag() == null) return new CompoundTag();
         return stack.getTag();
     }
 
-    public static CompoundNBT getNonNullTags(ItemStack stack, String... keys) {
-        if (!hasAndContainsTags(stack, keys)) return new CompoundNBT();
+    public static CompoundTag getNonNullTags(ItemStack stack, String... keys) {
+        if (!hasAndContainsTags(stack, keys)) return new CompoundTag();
         return stack.getTag();
     }
 
@@ -55,12 +55,12 @@ public class GSKONBTUtil {
     }
 
     public static boolean hasAndContainsTags(ItemStack stack, String... keys) {
-        CompoundNBT nbt = stack.getTag();
+        CompoundTag nbt = stack.getTag();
         if (nbt == null) return false;
         return Arrays.stream(keys).allMatch(nbt::contains);
     }
 
-    public static int getFirstItemIndex(PlayerEntity player, Item item) {
+    public static int getFirstItemIndex(Player player, Item item) {
         for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
             ItemStack stack = player.inventory.getStackInSlot(i);
             if (!stack.isEmpty() && stack.isItemEqual(new ItemStack(item))) {
@@ -75,13 +75,13 @@ public class GSKONBTUtil {
         if (stack.getTag() != null && stack.getTag().contains(nbtKey)) {
             int[] pos = stack.getTag().getIntArray(nbtKey);
             BlockPos blockPos = new BlockPos(pos[0], pos[1], pos[2]);
-            Vector3d posVec = blockPosToVec(blockPos);
+            Vec3 posVec = blockPosToVec(blockPos);
             return blockPos;
         }
         return BlockPos.ZERO;
     }
 
-    public static CompoundNBT removeAllChildNBT(CompoundNBT nbt) {
+    public static CompoundTag removeAllChildNBT(CompoundTag nbt) {
         if (nbt != null) {
             for (String key : nbt.keySet()) {
                 nbt.remove(key);
@@ -90,7 +90,7 @@ public class GSKONBTUtil {
         return nbt;
     }
 
-    public static CompoundNBT removeAllChildNBT(ItemStack stack, CompoundNBT nbt) {
+    public static CompoundTag removeAllChildNBT(ItemStack stack, CompoundTag nbt) {
         if (stack.getTag() == nbt && nbt != null) {
             for (String key : nbt.keySet()) {
                 nbt.remove(key);
@@ -98,35 +98,35 @@ public class GSKONBTUtil {
             }
             return nbt;
         }
-        return new CompoundNBT();
+        return new CompoundTag();
     }
 
-    public static CompoundNBT putStory() {
+    public static CompoundTag putStory() {
         String key = "story";
         String storyText = "";
-        CompoundNBT nbt = new CompoundNBT();
+        CompoundTag nbt = new CompoundTag();
         nbt.putString(key, storyText);
         return nbt;
     }
 
-    public static CompoundNBT putRandomStory(List<String> stories) {
+    public static CompoundTag putRandomStory(List<String> stories) {
         String key = "story";
-        CompoundNBT nbt = new CompoundNBT();
+        CompoundTag nbt = new CompoundTag();
         nbt.putString(key, stories.get(new Random().nextInt(stories.size())));
         return nbt;
     }
 
-    public static <T> CompoundNBT putStoryIf(Predicate<T> predicate, T t) {
+    public static <T> CompoundTag putStoryIf(Predicate<T> predicate, T t) {
         if (predicate.test(t)) {
             String key = "story";
-            CompoundNBT nbt = new CompoundNBT();
+            CompoundTag nbt = new CompoundTag();
             nbt.putString(key, predicate.toString());
             return nbt;
         }
-        return new CompoundNBT();
+        return new CompoundTag();
     }
 
-    public static ItemStack removeAllChildNBTFromStack(ItemStack stack, CompoundNBT nbt) {
+    public static ItemStack removeAllChildNBTFromStack(ItemStack stack, CompoundTag nbt) {
         if (stack.getTag() == nbt && nbt != null) {
             for (String key : nbt.keySet()) {
                 nbt.remove(key);
@@ -137,15 +137,15 @@ public class GSKONBTUtil {
         return new ItemStack(stack.getItem());
     }
 
-    public static Vector3d blockPosToVec(BlockPos blockPos) {
-        return new Vector3d(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+    public static Vec3 blockPosToVec(BlockPos blockPos) {
+        return new Vec3(blockPos.getX(), blockPos.getY(), blockPos.getZ());
     }
 
-    public static BlockPos vecToBlockPos(Vector3d vector3d) {
+    public static BlockPos vecToBlockPos(Vec3 vector3d) {
         return new BlockPos(new Vector3i(vector3d.x, vector3d.y, vector3d.z));
     }
 
-    public static boolean containsPrimitiveType(CompoundNBT nbt) {
+    public static boolean containsPrimitiveType(CompoundTag nbt) {
         if (!nbt.contains("type")) return false;
         switch (nbt.getString("type")) {
             case "int":
@@ -160,7 +160,7 @@ public class GSKONBTUtil {
         }
     }
 
-    public static INBT getFromValue(CompoundNBT nbt) {
+    public static INBT getFromValue(CompoundTag nbt) {
         if (nbt.get("value") instanceof NumberNBT) return getAsNumber(nbt);
         else if (nbt.get("value") instanceof StringNBT) return nbt.get("value");
         else if (nbt.get("value") instanceof ByteNBT) {
@@ -169,13 +169,13 @@ public class GSKONBTUtil {
                 return byteNBT.getInt() == 0 ? StringNBT.valueOf("false") : StringNBT.valueOf("true");
             }
         }
-        else if (nbt.get("value") instanceof CompoundNBT) {
+        else if (nbt.get("value") instanceof CompoundTag) {
             return nbt.get("value");
         }
-        return new CompoundNBT();
+        return new CompoundTag();
     }
 
-    public static NumberNBT getAsNumber(CompoundNBT nbt) {
+    public static NumberNBT getAsNumber(CompoundTag nbt) {
         if (nbt.get("value") instanceof IntNBT) {
             return (IntNBT) nbt.get("value");
         }
@@ -191,14 +191,14 @@ public class GSKONBTUtil {
         return IntNBT.valueOf(0);
     }
 
-    public static boolean isNumberType(CompoundNBT nbt) {
+    public static boolean isNumberType(CompoundTag nbt) {
         return nbt.getString("type").equals("int") ||
                 nbt.getString("type").equals("long") ||
                 nbt.getString("type").equals("float") ||
                 nbt.getString("type").equals("double");
     }
 
-    public static NumberNBT getNumberFromKey(CompoundNBT nbt, String key) {
+    public static NumberNBT getNumberFromKey(CompoundTag nbt, String key) {
         if (nbt.get(key) instanceof IntNBT) {
             return (IntNBT) nbt.get(key);
         }
@@ -214,29 +214,29 @@ public class GSKONBTUtil {
         return IntNBT.valueOf(0);
     }
 
-    public static INBT getFromKey(CompoundNBT nbt, String key) {
+    public static INBT getFromKey(CompoundTag nbt, String key) {
         if (nbt.get(key) instanceof NumberNBT) {
             return getNumberFromKey(nbt, key);
         }
         else if (nbt.get(key) instanceof StringNBT) {
             return nbt.get(key);
         }
-        else if (nbt.get(key) instanceof CompoundNBT) {
+        else if (nbt.get(key) instanceof CompoundTag) {
             return nbt.get(key);
         }
-        return new CompoundNBT();
+        return new CompoundTag();
     }
 
-    public static CompoundNBT castToCompound(INBT inbt) {
-        return inbt instanceof CompoundNBT ? (CompoundNBT) inbt : new CompoundNBT();
+    public static CompoundTag castToCompound(INBT inbt) {
+        return inbt instanceof CompoundTag ? (CompoundTag) inbt : new CompoundTag();
     }
 
-    public static String getType(CompoundNBT nbt) {
+    public static String getType(CompoundTag nbt) {
         if (containsPrimitiveType(nbt)) return nbt.getString("type");
         return "undefined";
     }
 
-    public static boolean containsAllowedType(CompoundNBT nbt) {
+    public static boolean containsAllowedType(CompoundTag nbt) {
         if (!nbt.contains("type")) return false;
         if (containsPrimitiveType(nbt)) return false;
         switch (nbt.getString("type")) {
@@ -251,15 +251,15 @@ public class GSKONBTUtil {
         }
     }
 
-    public static List<String> getMemberValues(CompoundNBT nbt) {
+    public static List<String> getMemberValues(CompoundTag nbt) {
         List<String> values = new ArrayList<>();
         if (containsAllowedType(nbt)) {
             switch (nbt.getString("type")) {
                 case "vector3d":
-                    return getVector3dValues(nbt);
+                    return getVec3Values(nbt);
                 case "world":
                 case "danmaku":
-                    CompoundNBT danmakuNBT = getCompoundValue(nbt);
+                    CompoundTag danmakuNBT = getCompoundValue(nbt);
                     values.add(String.valueOf(danmakuNBT.getInt("danmakuType")));
                     values.add(String.valueOf(danmakuNBT.getInt("danmakuColor")));
                 default:
@@ -269,9 +269,9 @@ public class GSKONBTUtil {
         return values;
     }
 
-    public static List<String> getVector3dValues(CompoundNBT nbt) {
+    public static List<String> getVec3Values(CompoundTag nbt) {
         List<String> values = new ArrayList<>();
-        CompoundNBT vectorNBT = getCompoundValue(nbt);
+        CompoundTag vectorNBT = getCompoundValue(nbt);
         values.add(ScriptBuilderItem.NAME_HIGHLIGHT + "X: " + ScriptBuilderItem.RESET_HIGHLIGHT +
                 ScriptBuilderItem.VALUE_HIGHLIGHT + getNumberFromKey(vectorNBT, "x").getDouble());
         values.add(ScriptBuilderItem.NAME_HIGHLIGHT + "Y: " + ScriptBuilderItem.RESET_HIGHLIGHT +
@@ -282,52 +282,52 @@ public class GSKONBTUtil {
         return values;
     }
 
-    public static CompoundNBT getCompoundValue(CompoundNBT nbt) {
-        if (!nbt.contains("value")) return new CompoundNBT();
-        if (containsAllowedType(nbt) && nbt.get("value") instanceof CompoundNBT) {
-            return (CompoundNBT) nbt.get("value");
+    public static CompoundTag getCompoundValue(CompoundTag nbt) {
+        if (!nbt.contains("value")) return new CompoundTag();
+        if (containsAllowedType(nbt) && nbt.get("value") instanceof CompoundTag) {
+            return (CompoundTag) nbt.get("value");
         }
-        else return new CompoundNBT();
+        else return new CompoundTag();
     }
 
-    public static String getMemberValueAsString(CompoundNBT objectNBT, String memberKey) {
-        if (!objectNBT.contains("value")) return new CompoundNBT().toString();
-        if (containsAllowedType(objectNBT) && objectNBT.get("value") instanceof CompoundNBT) {
-            CompoundNBT compound = (CompoundNBT) objectNBT.get("value");
+    public static String getMemberValueAsString(CompoundTag objectNBT, String memberKey) {
+        if (!objectNBT.contains("value")) return new CompoundTag().toString();
+        if (containsAllowedType(objectNBT) && objectNBT.get("value") instanceof CompoundTag) {
+            CompoundTag compound = (CompoundTag) objectNBT.get("value");
             if (compound != null) {
                 return getFromKey(compound, memberKey).toString();
             }
         }
-        else return new CompoundNBT().toString();
-        return new CompoundNBT().toString();
+        else return new CompoundTag().toString();
+        return new CompoundTag().toString();
     }
 
-    public static String getMemberValueWithKey(CompoundNBT objectNBT, String memberKey, String keyText) {
-        if (!objectNBT.contains("value")) return new CompoundNBT().toString();
-        if (containsAllowedType(objectNBT) && objectNBT.get("value") instanceof CompoundNBT) {
-            CompoundNBT compound = (CompoundNBT) objectNBT.get("value");
+    public static String getMemberValueWithKey(CompoundTag objectNBT, String memberKey, String keyText) {
+        if (!objectNBT.contains("value")) return new CompoundTag().toString();
+        if (containsAllowedType(objectNBT) && objectNBT.get("value") instanceof CompoundTag) {
+            CompoundTag compound = (CompoundTag) objectNBT.get("value");
             if (compound != null) {
                 return keyText + getFromKey(compound, memberKey).toString();
             }
         }
-        else return new CompoundNBT().toString();
-        return new CompoundNBT().toString();
+        else return new CompoundTag().toString();
+        return new CompoundTag().toString();
     }
 
-    public static String getMemberValueWithFormat(CompoundNBT nbt, String memberKey, String keyText) {
-        if (!nbt.contains("value")) return new CompoundNBT().toString();
-        if (containsAllowedType(nbt) && nbt.get("value") instanceof CompoundNBT) {
-            CompoundNBT compound = (CompoundNBT) nbt.get("value");
+    public static String getMemberValueWithFormat(CompoundTag nbt, String memberKey, String keyText) {
+        if (!nbt.contains("value")) return new CompoundTag().toString();
+        if (containsAllowedType(nbt) && nbt.get("value") instanceof CompoundTag) {
+            CompoundTag compound = (CompoundTag) nbt.get("value");
             if (compound != null) {
                 return ScriptBuilderItem.NAME_HIGHLIGHT + keyText + ScriptBuilderItem.RESET_HIGHLIGHT +
                         ScriptBuilderItem.VALUE_HIGHLIGHT + getFromKey(compound, memberKey).toString();
             }
         }
-        else return new CompoundNBT().toString();
-        return new CompoundNBT().toString();
+        else return new CompoundTag().toString();
+        return new CompoundTag().toString();
     }
 
-    public static ListNBT getListValue(CompoundNBT nbt) {
+    public static ListNBT getListValue(CompoundTag nbt) {
         if (nbt.contains("value")) return new ListNBT();
         if (containsAllowedType(nbt) && nbt.get("value") instanceof ListNBT) {
             return (ListNBT) nbt.get("value");
@@ -335,12 +335,12 @@ public class GSKONBTUtil {
         else return new ListNBT();
     }
 
-    public static List<CompoundNBT> getListCompound(ListNBT listNBT) {
-        List<CompoundNBT> nbtList = new ArrayList<>();
+    public static List<CompoundTag> getListCompound(ListNBT listNBT) {
+        List<CompoundTag> nbtList = new ArrayList<>();
         if (listNBT.isEmpty()) return nbtList;
         listNBT.forEach(inbt -> {
-            if (inbt instanceof CompoundNBT) {
-                nbtList.add((CompoundNBT) inbt);
+            if (inbt instanceof CompoundTag) {
+                nbtList.add((CompoundTag) inbt);
             }
         });
         return nbtList;

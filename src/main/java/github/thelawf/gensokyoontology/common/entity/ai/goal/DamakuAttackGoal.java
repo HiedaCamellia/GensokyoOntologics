@@ -2,12 +2,12 @@ package github.thelawf.gensokyoontology.common.entity.ai.goal;
 
 import github.thelawf.gensokyoontology.common.entity.monster.RetreatableEntity;
 import github.thelawf.gensokyoontology.common.util.GSKOUtil;
-import net.minecraft.block.BushBlock;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.level.block.BushBlock;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.pathfinding.Path;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.Difficulty;
 
 /**
@@ -54,7 +54,7 @@ public class DamakuAttackGoal extends Goal {
             this.entity.getNavigator().tryMoveToEntityLiving(target, this.speedIn);
         } else if (distance < minDistance) {
             this.entity.getNavigator().clearPath();
-            Vector3d motion = entity.getMotion();
+            Vec3 motion = entity.getMotion();
             entity.setMotion(motion.x, 0, motion.z);
             entity.setNoGravity(true);
             if (entity.ticksExisted % delay == 0) {
@@ -69,8 +69,8 @@ public class DamakuAttackGoal extends Goal {
         if (target == null || !target.isAlive() || target.world.getDifficulty() == Difficulty.PEACEFUL) {
             return false;
         } else {
-            boolean isPlayerAndCanNotBeAttacked = target instanceof PlayerEntity
-                    && (target.isSpectator() || ((PlayerEntity) target).isCreative());
+            boolean isPlayerAndCanNotBeAttacked = target instanceof Player
+                    && (target.isSpectator() || ((Player) target).isCreative());
             return !isPlayerAndCanNotBeAttacked;
         }
     }
@@ -78,8 +78,8 @@ public class DamakuAttackGoal extends Goal {
     @Override
     public void resetTask() {
         LivingEntity target = this.entity.getAttackTarget();
-        boolean isPlayerAndCanNotBeAttacked = target instanceof PlayerEntity
-                && (target.isSpectator() || ((PlayerEntity) target).isCreative());
+        boolean isPlayerAndCanNotBeAttacked = target instanceof Player
+                && (target.isSpectator() || ((Player) target).isCreative());
         if (isPlayerAndCanNotBeAttacked) {
             this.entity.setAttackTarget(null);
         }

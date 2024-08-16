@@ -1,18 +1,18 @@
 package github.thelawf.gensokyoontology.core.init;
 
-import net.minecraft.block.DispenserBlock;
+import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.dispenser.IBlockSource;
-import net.minecraft.item.BucketItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 public final class DispenserRegister {
     @SubscribeEvent
     public static void onDispenseRegister(FMLCommonSetupEvent event) {
@@ -30,7 +30,7 @@ public final class DispenserRegister {
                         BucketItem bucketItem = (BucketItem) stack.getItem();
                         BlockPos blockPos = source.getBlockPos().offset(source.getBlockState()
                                 .get(DispenserBlock.FACING));
-                        World world = source.getWorld();
+                        Level world = source.level();
                         if (bucketItem.tryPlaceContainedLiquid(null, world,
                                 blockPos, null)) {
                             bucketItem.onLiquidPlaced(world, stack, blockPos);
@@ -55,7 +55,7 @@ public final class DispenserRegister {
                         BucketItem bucketItem = (BucketItem) stack.getItem();
                         BlockPos blockPos = source.getBlockPos().offset(source.getBlockState()
                                 .get(DispenserBlock.FACING));
-                        World world = source.getWorld();
+                        Level world = source.level();
                         if (bucketItem.tryPlaceContainedLiquid(null, world,
                                 blockPos, null)) {
                             bucketItem.onLiquidPlaced(world, stack, blockPos);

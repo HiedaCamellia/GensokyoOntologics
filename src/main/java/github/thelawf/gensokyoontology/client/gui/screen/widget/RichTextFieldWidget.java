@@ -1,13 +1,13 @@
 package github.thelawf.gensokyoontology.client.gui.screen.widget;
 
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 
-public class RichTextFieldWidget extends TextFieldWidget {
+public class RichEditBox extends EditBox {
     private final ResourceLocation TEXT_FILED_TEXTURE;
-    public RichTextFieldWidget(FontRenderer fontRenderer, int x, int y, int width, int height, ITextComponent title, ResourceLocation texture, int u, int v) {
+    public RichEditBox(FontRenderer fontRenderer, int x, int y, int width, int height, Component title, ResourceLocation texture, int u, int v) {
         super(fontRenderer, x, y, width, height, title);
         this.TEXT_FILED_TEXTURE = texture;
     }

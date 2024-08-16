@@ -7,18 +7,18 @@ import github.thelawf.gensokyoontology.common.util.math.logos.GSKOMathUtil;
 import github.thelawf.gensokyoontology.common.util.world.ConnectionUtil;
 import github.thelawf.gensokyoontology.common.nbt.GSKONBTUtil;
 import github.thelawf.gensokyoontology.core.register.BlockRegistry;
-import net.minecraft.block.BlockState;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.entity.player.ClientPlayer;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RenderLevelLastEvent;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,10 +26,10 @@ import org.apache.logging.log4j.Logger;
 import java.util.Objects;
 
 @OnlyIn(Dist.CLIENT)
-public class InWorldRenderer {
+public class InLevelRenderer {
     public static final Logger LOGGER = LogManager.getLogger();
 
-    // IWorldRenderer <- ConnectionUtil <- BezierUtil, RailWrench.onItemUseFinish()
+    // ILevelRenderer <- ConnectionUtil <- BezierUtil, RailWrench.onItemUseFinish()
 
     /** 在Forge事件总线上添加了这个方法之后会持续监听玩家是否持有存在着"start_pos"和"end_pos"标签的物品
      * 而这两个标签只有在玩家按合法顺序点击轨道方块的时候才能被添加至RailWrench.<br>
@@ -40,23 +40,23 @@ public class InWorldRenderer {
      * 3. new Quaternion()<br>
      * <br>
      * · 渲染的思路大概是：<br>
-     * 1. 获取NBT数据标签里面储存的方块位置数组，将其转为Vector3d。<br>
+     * 1. 获取NBT数据标签里面储存的方块位置数组，将其转为Vec3。<br>
      * 2. 大致计算需要多少个单独的轨道节点才能连接，然后将个数作为迭代次数，开始计算离散贝塞尔曲线<br>
      * 3. 每次迭代返回一对数据，分别为方块的坐标和欧拉角，以三维向量的形式存储，使用matrix矩阵变换至这些位置并渲染。<br>
      * @param event 渲染世界事件
 
     @OnlyIn(value = Dist.CLIENT)
-    public static void renderBezierRail(RenderWorldLastEvent event) {
+    public static void renderBezierRail(RenderLevelLastEvent event) {
 
-        ClientPlayerEntity player = Minecraft.getInstance().player;
+        ClientPlayer player = Minecraft.getInstance().player;
         ItemStack stack = Objects.requireNonNull(player).getHeldItemMainhand();
         IRenderTypeBuffer.Impl buffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
 
         BlockPos startPos = GSKONBTUtil.readPosFromStack(stack, "start_pos");
         BlockPos endPos = GSKONBTUtil.readPosFromStack(stack, "end_pos");
 
-        Vector3d startVec = GSKONBTUtil.blockPosToVec(startPos);
-        Vector3d endVec = GSKONBTUtil.blockPosToVec(endPos);
+        Vec3 startVec = GSKONBTUtil.blockPosToVec(startPos);
+        Vec3 endVec = GSKONBTUtil.blockPosToVec(endPos);
 
         // 如果不满足ConnectionUtil里面的条件则不予渲染轨道
         // 机械动力之中判断segment个数的方式是用segment之间的距离除以总长度
@@ -70,10 +70,10 @@ public class InWorldRenderer {
                 startPos.getX() + 1, startPos.getY() + 1, startPos.getZ() + 1);
         LineSegment3D lineB = new LineSegment3D(endPos.getX(), endPos.getY(), endPos.getZ(),
                 endPos.getX() + 1, endPos.getY() + 1, endPos.getZ() + 1);
-        Vector3d intersection = GSKOMathUtil.intersection3D(lineA, lineB);
+        Vec3 intersection = GSKOMathUtil.intersection3D(lineA, lineB);
 
         for (int i = 0; i < 1 / count; i ++) {
-            Pair<Vector3d, Vector3d> pose = ConnectionUtil.getPosAndRot(startVec, intersection, endVec, i);
+            Pair<Vec3, Vec3> pose = ConnectionUtil.getPosAndRot(startVec, intersection, endVec, i);
             matrix.push();
             matrix.translate(pose.getFirst().getX(), pose.getFirst().getY(), pose.getFirst().getZ());
             matrix.rotate(new Quaternion(

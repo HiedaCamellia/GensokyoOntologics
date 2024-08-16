@@ -4,21 +4,21 @@ import github.thelawf.gensokyoontology.common.capability.GSKOCapabilities;
 import github.thelawf.gensokyoontology.common.capability.world.ImperishableNightCapability;
 import github.thelawf.gensokyoontology.common.util.GSKODamageSource;
 import github.thelawf.gensokyoontology.core.register.ItemRegistry;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrowEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.world.phys.Vec3;
+
 import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +28,7 @@ public class EirinYagokoroArrowEntity extends AbstractArrowEntity {
     public static final DataParameter<Integer> DATA_CAUSING_TICKS = EntityDataManager.createKey(
             EirinYagokoroArrowEntity.class, DataSerializers.VARINT);
 
-    protected EirinYagokoroArrowEntity(EntityType<? extends AbstractArrowEntity> type, World worldIn) {
+    protected EirinYagokoroArrowEntity(EntityType<? extends AbstractArrowEntity> type, Level worldIn) {
         super(type, worldIn);
     }
 
@@ -39,12 +39,12 @@ public class EirinYagokoroArrowEntity extends AbstractArrowEntity {
     }
 
     @Override
-    public void writeAdditional(@NotNull CompoundNBT compound) {
+    public void writeAdditional(@NotNull CompoundTag compound) {
         super.writeAdditional(compound);
     }
 
     @Override
-    public void readAdditional(@NotNull CompoundNBT compound) {
+    public void readAdditional(@NotNull CompoundTag compound) {
         super.readAdditional(compound);
     }
 
@@ -60,21 +60,21 @@ public class EirinYagokoroArrowEntity extends AbstractArrowEntity {
             return;
 
         if (!this.world.isRemote && isTickSuccess(this.world.getDayTime())) {
-            ServerWorld serverWorld = (ServerWorld) this.world;
-            this.getShooter().sendMessage(new StringTextComponent("你发动了永夜异变"), this.getShooter().getUniqueID());
-            LazyOptional<ImperishableNightCapability> capability = serverWorld.getCapability(GSKOCapabilities.IMPERISHABLE_NIGHT);
+            ServerLevel serverLevel = (ServerLevel) this.world;
+            this.getShooter().sendMessage(Component.literal("你发动了永夜异变"), this.getShooter().getUniqueID());
+            LazyOptional<ImperishableNightCapability> capability = serverLevel.getCapability(GSKOCapabilities.IMPERISHABLE_NIGHT);
             capability.ifPresent(cap -> {
                 cap.setTriggered(true);
                 cap.setDayTime(18000);
-                serverWorld.setDayTime(cap.getDayTime());
-                serverWorld.getGameRules().get(GameRules.DO_DAYLIGHT_CYCLE).set(cap.isTriggered(), serverWorld.getServer());
+                serverLevel.setDayTime(cap.getDayTime());
+                serverLevel.getGameRules().get(GameRules.DO_DAYLIGHT_CYCLE).set(cap.isTriggered(), serverLevel.getServer());
             });
         }
     }
 
     private boolean isTickSuccess(long time) {
         double moonAngle = Math.PI / 12000 * (this.world.getDayTime() - 12000);
-        Vector3d lookVec = this.getLookVec();
+        Vec3 lookVec = this.getLookVec();
         return time > 12000 && this.ticksExisted >= TICKS_TO_CAUSE_INCIDENT &&
                 isWithinRange(lookVec.y, moonAngle - Math.PI / 10, moonAngle + Math.PI / 10) &&
                 isWithinRange(lookVec.z, -0.1, 0.1);
@@ -94,7 +94,7 @@ public class EirinYagokoroArrowEntity extends AbstractArrowEntity {
     protected void onEntityHit(EntityRayTraceResult result) {
         super.onEntityHit(result);
         LivingEntity entityHit = (LivingEntity) result.getEntity();
-        if (!(entityHit instanceof PlayerEntity)) {
+        if (!(entityHit instanceof Player)) {
             entityHit.attackEntityFrom(GSKODamageSource.IMPERISHABLE_NIGHT, (float) this.getDamage());
             this.remove();
         }

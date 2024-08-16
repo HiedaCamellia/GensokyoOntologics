@@ -1,17 +1,17 @@
 package github.thelawf.gensokyoontology.common.entity;
 
 import github.thelawf.gensokyoontology.core.init.EntityRegistry;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.fml.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,11 +24,11 @@ public abstract class AffiliatedEntity extends Entity {
     private UUID ownerId;
     public static final DataParameter<Optional<UUID>> DATA_OWNER = EntityDataManager.createKey(AffiliatedEntity.class, DataSerializers.OPTIONAL_UNIQUE_ID);
 
-    public AffiliatedEntity(EntityType<?> entityTypeIn, World worldIn) {
+    public AffiliatedEntity(EntityType<?> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
     }
 
-    public AffiliatedEntity(EntityType<?> entityTypeIn, Entity owner, World worldIn) {
+    public AffiliatedEntity(EntityType<?> entityTypeIn, Entity owner, Level worldIn) {
         super(entityTypeIn, worldIn);
         this.ownerId = owner.getUniqueID();
         this.setOwnerId(this.ownerId);
@@ -39,7 +39,7 @@ public abstract class AffiliatedEntity extends Entity {
         this.dataManager.register(DATA_OWNER, Optional.empty());
     }
 
-    protected void readAdditional(@NotNull CompoundNBT compound) {
+    protected void readAdditional(@NotNull CompoundTag compound) {
         UUID uuid = null;
         if (compound.hasUniqueId("Owner")) {
             uuid = compound.getUniqueId("Owner");
@@ -50,7 +50,7 @@ public abstract class AffiliatedEntity extends Entity {
         }
     }
 
-    protected void writeAdditional(@NotNull CompoundNBT compound) {
+    protected void writeAdditional(@NotNull CompoundTag compound) {
         if (this.ownerId != null) {
             compound.putUniqueId("Owner", this.ownerId);
         }
@@ -67,14 +67,14 @@ public abstract class AffiliatedEntity extends Entity {
     }
 
     public void setDataOwner() {
-        if (this.world instanceof ServerWorld) {
+        if (this.world instanceof ServerLevel) {
             Optional<UUID> optionalUUID = this.getDataManager().get(DATA_OWNER);
             optionalUUID.ifPresent(this::setOwnerId);
         }
     }
 
     public Optional<UUID> getOwnerId() {
-        if (this.world instanceof ServerWorld) {
+        if (this.world instanceof ServerLevel) {
             Optional<UUID> optionalUUID = this.getDataManager().get(DATA_OWNER);
             if (optionalUUID.isPresent()) {
                 return optionalUUID;
@@ -83,8 +83,8 @@ public abstract class AffiliatedEntity extends Entity {
         return Optional.empty();
     }
 
-    public Vector3d getAimedVec(LivingEntity target) {
-        return new Vector3d(target.getPosX() - this.getPosX(), target.getPosY() - this.getPosY(), target.getPosZ() - this.getPosZ());
+    public Vec3 getAimedVec(LivingEntity target) {
+        return new Vec3(target.getPosX() - this.getPosX(), target.getPosY() - this.getPosY(), target.getPosZ() - this.getPosZ());
     }
 
     @Override

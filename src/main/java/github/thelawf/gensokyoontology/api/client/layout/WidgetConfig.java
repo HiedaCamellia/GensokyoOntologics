@@ -1,14 +1,11 @@
 package github.thelawf.gensokyoontology.api.client.layout;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import github.thelawf.gensokyoontology.client.gui.screen.widget.BlankWidget;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import org.jline.reader.Widget;
 
 import java.util.List;
 
@@ -23,10 +20,10 @@ public class WidgetConfig {
     public int leftInterval;
     public int rightInterval;
     public Widget widget;
-    public ResourceLocation texture = new ResourceLocation("");
+    public ResourceLocation texture = ResourceLocation.parse("");
     public FontRenderer fontRenderer = Minecraft.getInstance().fontRenderer;
-    public ITextComponent text = new StringTextComponent("");
-    public Button.IPressable action;
+    public Component text = Component.literal("");
+    public Button action;
     public boolean isText;
 
     public static final WidgetConfig DEFAULT = new WidgetConfig(BlankWidget.INSTANCE, 0,0);
@@ -51,12 +48,12 @@ public class WidgetConfig {
         return this;
     }
 
-    public WidgetConfig withAction(Button.IPressable actionIn) {
+    public WidgetConfig withAction(Button actionIn) {
         this.action = actionIn;
         return this;
     }
 
-    public WidgetConfig withText(ITextComponent titleIn) {
+    public WidgetConfig withText(Component titleIn) {
         this.text = titleIn;
         return this;
     }

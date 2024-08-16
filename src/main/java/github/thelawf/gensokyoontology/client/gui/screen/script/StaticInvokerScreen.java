@@ -10,11 +10,11 @@ import github.thelawf.gensokyoontology.common.nbt.script.StaticFunc;
 import github.thelawf.gensokyoontology.common.network.GSKONetworking;
 import github.thelawf.gensokyoontology.common.network.packet.CInvokeFunctionPacket;
 import github.thelawf.gensokyoontology.common.util.EnumUtil;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -23,10 +23,10 @@ import java.util.List;
 public class StaticInvokerScreen extends InvokerContainerScreen<StaticInvokerContainer> {
     private StaticFunc func;
     public static final String TYPE = "static_invoker";
-    private CompoundNBT funcData = new CompoundNBT();
+    private CompoundTag funcData = new CompoundTag();
     private final List<WidgetConfig> CONFIGS;
     public static final ResourceLocation TEXTURE = GensokyoOntology.withRL("textures/gui/static_invoker_screen.png");
-    public StaticInvokerScreen(StaticInvokerContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
+    public StaticInvokerScreen(StaticInvokerContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         this.func = StaticFunc.SHOOT;
         this.xSize = 223;

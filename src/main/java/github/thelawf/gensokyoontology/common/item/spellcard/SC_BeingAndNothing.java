@@ -1,7 +1,7 @@
 package github.thelawf.gensokyoontology.common.item.spellcard;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
 /**
  * 八云紫的：「存在与虚无的境界」
@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 public class SC_BeingAndNothing extends SpellCardItem {
 
     @Override
-    protected void applySpell(World worldIn, PlayerEntity playerIn) {
+    protected void applySpell(Level worldIn, Player playerIn) {
 
     }
 }

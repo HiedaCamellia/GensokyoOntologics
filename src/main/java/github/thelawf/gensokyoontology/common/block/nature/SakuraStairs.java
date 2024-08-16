@@ -1,8 +1,8 @@
 package github.thelawf.gensokyoontology.common.block.nature;
 
 import github.thelawf.gensokyoontology.core.init.BlockRegistry;
-import net.minecraft.block.*;
-import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.item.BlockItemUseContext;
 
 import java.util.function.Supplier;
 

@@ -12,12 +12,12 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.entity.projectile.FishingBobberEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.projectile.FishingBobberEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.util.math.vector.Vector3f;
 import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
@@ -68,7 +68,7 @@ public class DestructiveEyeRenderer extends EntityRenderer<DestructiveEyeEntity>
         matrixStackIn.pop();
     }
 
-    public Vector3f toVec3f(Vector3d vector3d) {
+    public Vector3f toVec3f(Vec3 vector3d) {
         return new Vector3f((float) vector3d.x, (float) vector3d.y, (float) vector3d.z);
     }
 }

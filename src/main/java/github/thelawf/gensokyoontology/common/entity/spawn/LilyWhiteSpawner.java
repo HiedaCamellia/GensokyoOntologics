@@ -2,18 +2,18 @@ package github.thelawf.gensokyoontology.common.entity.spawn;
 
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuUtil;
 import github.thelawf.gensokyoontology.common.util.math.GSKOMathUtil;
-import github.thelawf.gensokyoontology.common.util.world.GSKOWorldUtil;
+import github.thelawf.gensokyoontology.common.util.world.GSKOLevelUtil;
 import github.thelawf.gensokyoontology.common.world.dimension.biome.GSKOBiomes;
 import github.thelawf.gensokyoontology.core.init.EntityRegistry;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.entity.SpawnReason;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.server.ServerWorld;
+
+import net.minecraft.server.level.ServerLevel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,23 +25,23 @@ import java.util.Random;
  */
 public class LilyWhiteSpawner {
 
-    public static void spawn(ServerWorld serverWorld, PlayerEntity player, BlockPos pos, int ticks, float chance) {
+    public static void spawn(ServerLevel serverLevel, Player player, BlockPos pos, int ticks, float chance) {
         Random random = new Random();
 
-        if (validateCondition(serverWorld, ticks, random, chance) && validateSpawnPos(player, serverWorld)) {
-            EntityRegistry.LILY_WHITE_ENTITY.get().spawn(serverWorld, null, null, pos, SpawnReason.NATURAL, false, false);
+        if (validateCondition(serverLevel, ticks, random, chance) && validateSpawnPos(player, serverLevel)) {
+            EntityRegistry.LILY_WHITE_ENTITY.get().spawn(serverLevel, null, null, pos, SpawnReason.NATURAL, false, false);
         }
     }
 
-    public static boolean validateCondition(ServerWorld serverWorld, int ticks, Random random, float chance) {
+    public static boolean validateCondition(ServerLevel serverLevel, int ticks, Random random, float chance) {
         return GSKOMathUtil.isBetween(ticks % 20000, 0, 10) && random.nextFloat() <= chance &&
-                serverWorld.getEntities().noneMatch(entity -> entity.getType() == EntityRegistry.LILY_WHITE_ENTITY.get());
+                serverLevel.getEntities().noneMatch(entity -> entity.getType() == EntityRegistry.LILY_WHITE_ENTITY.get());
     }
 
-    public static boolean validateSpawnPos(PlayerEntity player, ServerWorld world) {
+    public static boolean validateSpawnPos(Player player, ServerLevel world) {
         Random random = new Random();
 
-        Vector3d lowerPos = DanmakuUtil.getRandomPos(player.getPositionVec(), new Vector3f(3f, 3f, 3f));
+        Vec3 lowerPos = DanmakuUtil.getRandomPos(player.getPositionVec(), new Vector3f(3f, 3f, 3f));
 
         boolean flag = false;
 
@@ -62,8 +62,8 @@ public class LilyWhiteSpawner {
                 }
             }
         }
-        //player.sendMessage(new StringTextComponent("Flag is " + flag), player.getUniqueID());
+        //player.sendMessage(Component.literal("Flag is " + flag), player.getUniqueID());
 
-        return flag && GSKOWorldUtil.isEntityInBiome(player, GSKOBiomes.HAKUREI_SHRINE_PRECINCTS_KEY);
+        return flag && GSKOLevelUtil.isEntityInBiome(player, GSKOBiomes.HAKUREI_SHRINE_PRECINCTS_KEY);
     }
 }

@@ -3,7 +3,7 @@ package github.thelawf.gensokyoontology.common.nbt.script;
 import com.google.common.collect.Lists;
 import github.thelawf.gensokyoontology.GensokyoOntology;
 import github.thelawf.gensokyoontology.core.init.EntityRegistry;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public enum StaticFunc {
         this.returnType = returnType;
     }
 
-    public ITextComponent toTextComponent() {
+    public Component toTextComponent() {
         return GensokyoOntology.withTranslation("gui.", ".static_func." + this.methodName);
     }
 }

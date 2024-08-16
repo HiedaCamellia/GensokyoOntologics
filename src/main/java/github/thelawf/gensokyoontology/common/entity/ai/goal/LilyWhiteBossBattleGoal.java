@@ -4,8 +4,8 @@ import github.thelawf.gensokyoontology.api.entity.ISpellCardUser;
 import github.thelawf.gensokyoontology.common.entity.monster.LilyWhiteEntity;
 import github.thelawf.gensokyoontology.common.entity.spellcard.HanaShigureSpellEntity;
 import github.thelawf.gensokyoontology.common.entity.spellcard.SpellCardEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.pathfinding.Path;
 
 import java.util.function.Predicate;
@@ -73,8 +73,8 @@ public class LilyWhiteBossBattleGoal extends GSKOBossGoal {
             return false;
         }
         else {
-            boolean isPlayerAndCanNotBeAttacked = target instanceof PlayerEntity
-                    && (target.isSpectator() || ((PlayerEntity) target).isCreative());
+            boolean isPlayerAndCanNotBeAttacked = target instanceof Player
+                    && (target.isSpectator() || ((Player) target).isCreative());
             return !isPlayerAndCanNotBeAttacked;
         }
     }
@@ -82,8 +82,8 @@ public class LilyWhiteBossBattleGoal extends GSKOBossGoal {
     @Override
     public void resetTask() {
         LivingEntity target = this.lilyWhite.getAttackTarget();
-        boolean isPlayerAndCanNotBeAttacked = target instanceof PlayerEntity
-                && (target.isSpectator() || ((PlayerEntity) target).isCreative());
+        boolean isPlayerAndCanNotBeAttacked = target instanceof Player
+                && (target.isSpectator() || ((Player) target).isCreative());
         if (isPlayerAndCanNotBeAttacked) {
             this.lilyWhite.setAttackTarget(null);
         }

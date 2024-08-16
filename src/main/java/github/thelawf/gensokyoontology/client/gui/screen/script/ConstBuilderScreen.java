@@ -14,15 +14,15 @@ import github.thelawf.gensokyoontology.common.nbt.script.ConstPreset;
 import github.thelawf.gensokyoontology.common.nbt.script.ConstType;
 import github.thelawf.gensokyoontology.common.util.GSKOUtil;
 import github.thelawf.gensokyoontology.core.init.ContainerRegistry;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.nbt.*;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -40,22 +40,22 @@ public class ConstBuilderScreen extends OneSlotContainerScreen {
     private Button presetBtn;
     private ConstPreset constPreset;
     private ConstType constType;
-    private TextFieldWidget nameInput;
-    private TextFieldWidget valueInput;
-    private final CompoundNBT constData = new CompoundNBT();
+    private EditBox nameInput;
+    private EditBox valueInput;
+    private final CompoundTag constData = new CompoundTag();
     public static final ResourceLocation TEXTURE = GensokyoOntology.withRL("textures/gui/one_slot_screen_const.png");
     private final WidgetConfig NAME_LABEL = WidgetConfig.of(new BlankWidget(0,0,0,0, withText("null")),0,0).isText(true);
     private final WidgetConfig VALUE_LABEL = WidgetConfig.of(new BlankWidget(0,0,0,0, withText("null")),0,0).isText(true);
-    private final ITextComponent defaultName = GensokyoOntology.withTranslation("gui.",".default.set_name");
-    private final ITextComponent defaultValue = GensokyoOntology.withTranslation("gui.",".default.set_value");
-    private final ITextComponent presetDefault = GensokyoOntology.withTranslation("gui.",".const_builder.button.preset.none");
-    private final ITextComponent intTypeText = GensokyoOntology.withTranslation("gui.",".const_builder.button.constType.int");
-    private final ITextComponent valueText = GensokyoOntology.withTranslation("gui.", ".const_builder.tip.valueInput");
+    private final Component defaultName = GensokyoOntology.withTranslation("gui.",".default.set_name");
+    private final Component defaultValue = GensokyoOntology.withTranslation("gui.",".default.set_value");
+    private final Component presetDefault = GensokyoOntology.withTranslation("gui.",".const_builder.button.preset.none");
+    private final Component intTypeText = GensokyoOntology.withTranslation("gui.",".const_builder.button.constType.int");
+    private final Component valueText = GensokyoOntology.withTranslation("gui.", ".const_builder.tip.valueInput");
 
     public List<WidgetConfig> WIDGETS;
 
     // GensokyoOntology.withTranslation("screen.",".const_builder.title")
-    public ConstBuilderScreen(OneSlotContainer container, PlayerInventory playerInventory, ITextComponent titleIn) {
+    public ConstBuilderScreen(OneSlotContainer container, Inventory playerInventory, Component titleIn) {
         super(container, playerInventory, titleIn);
         this.titleX = 6;
         this.titleY = 6;
@@ -92,8 +92,8 @@ public class ConstBuilderScreen extends OneSlotContainerScreen {
             this.children.remove(this.constTypeBtn);
         });
 
-        this.nameInput = new TextFieldWidget(this.minecraft.fontRenderer, 30, 30, 100, 20, this.defaultName);
-        this.valueInput = new TextFieldWidget(this.minecraft.fontRenderer, 160, 30, 100, 20, this.defaultValue);
+        this.nameInput = new EditBox(this.minecraft.fontRenderer, 30, 30, 100, 20, this.defaultName);
+        this.valueInput = new EditBox(this.minecraft.fontRenderer, 160, 30, 100, 20, this.defaultValue);
         this.saveBtn = new Button(0, 200, 20, 20, this.saveText, this::saveBtnAction);
 
         WIDGETS = Lists.newArrayList(
@@ -132,7 +132,7 @@ public class ConstBuilderScreen extends OneSlotContainerScreen {
 
             this.nameInput.setText(this.stack.getTag().getString("name"));
             String type = this.stack.getTag().getString("type");
-            CompoundNBT nbt = this.stack.getTag();
+            CompoundTag nbt = this.stack.getTag();
             switch (type) {
                 case "none":
                 default:

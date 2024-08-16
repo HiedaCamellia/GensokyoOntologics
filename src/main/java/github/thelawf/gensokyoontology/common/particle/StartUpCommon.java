@@ -1,10 +1,10 @@
 package github.thelawf.gensokyoontology.common.particle;
 /*
 import net.minecraft.client.particle.SweepAttackParticle;
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 import net.minecraft.particles.ParticleType;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 
 public class StartUpCommon {
     public static Item canTearSpaceSword;

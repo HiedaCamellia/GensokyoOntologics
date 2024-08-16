@@ -7,18 +7,18 @@ import github.thelawf.gensokyoontology.common.entity.projectile.SmallShotEntity;
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuColor;
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuType;
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuUtil;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.EntityClassification;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
@@ -33,11 +33,11 @@ public class FourOfAKindEntity extends SpellCardEntity {
             EntityType.Builder.<FourOfAKindEntity>create(FourOfAKindEntity::new, EntityClassification.MISC)
                     .size(1F, 1F).trackingRange(4).updateInterval(2).build("four_of_a_kind");
 
-    public FourOfAKindEntity(EntityType<? extends SpellCardEntity> entityTypeIn, World worldIn) {
+    public FourOfAKindEntity(EntityType<? extends SpellCardEntity> entityTypeIn, Level worldIn) {
         super(FOUR_OF_A_KIND, worldIn);
     }
 
-    public FourOfAKindEntity(World worldIn, LivingEntity living, int index) {
+    public FourOfAKindEntity(Level worldIn, LivingEntity living, int index) {
         super(FOUR_OF_A_KIND, worldIn, living);
     }
 
@@ -47,7 +47,7 @@ public class FourOfAKindEntity extends SpellCardEntity {
         this.dataManager.register(DATA_INDEX, this.userIndex);
     }
 
-    public void onTick(World world, LivingEntity user, int ticksIn) {
+    public void onTick(Level world, LivingEntity user, int ticksIn) {
 
         switch (this.dataManager.get(DATA_INDEX)) {
             case 0:
@@ -64,7 +64,7 @@ public class FourOfAKindEntity extends SpellCardEntity {
     }
 
     private <D extends AbstractDanmakuEntity> void shootSpherical(D danmaku, LivingEntity user) {
-        Vector3d vector3d = new Vector3d(Vector3f.ZP).scale(2);
+        Vec3 vector3d = new Vec3(Vector3f.ZP).scale(2);
         for (int i = 0; i < 12; i++) {
             for (int j = 0; j < 12; j++) {
 

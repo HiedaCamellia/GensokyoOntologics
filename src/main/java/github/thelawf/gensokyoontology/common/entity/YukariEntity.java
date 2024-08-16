@@ -1,12 +1,12 @@
 package github.thelawf.gensokyoontology.common.entity;
 
-import net.minecraft.entity.AgeableEntity;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IAngerable;
-import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.EntityClassification;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.IAngerable;
+import net.minecraft.world.entity.passive.TameableEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -19,13 +19,13 @@ public class YukariEntity extends TameableEntity implements IAngerable {
                     YukariEntity::new, EntityClassification.CREATURE).updateInterval(2)
             .size(0.6f, 1.5f).trackingRange(10).build("yukari");
 
-    protected YukariEntity(EntityType<? extends TameableEntity> type, World worldIn) {
+    protected YukariEntity(EntityType<? extends TameableEntity> type, Level worldIn) {
         super(type, worldIn);
     }
 
     @Nullable
     @Override
-    public AgeableEntity createChild(ServerWorld world, AgeableEntity mate) {
+    public AgeableMob createChild(ServerLevel world, AgeableMob mate) {
         return null;
     }
 

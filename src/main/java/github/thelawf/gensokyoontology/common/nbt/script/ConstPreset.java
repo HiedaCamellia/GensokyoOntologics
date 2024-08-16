@@ -2,40 +2,40 @@ package github.thelawf.gensokyoontology.common.nbt.script;
 
 import github.thelawf.gensokyoontology.GensokyoOntology;
 import github.thelawf.gensokyoontology.common.nbt.GSKONBTUtil;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 
 import java.util.concurrent.atomic.AtomicReference;
 
 public enum ConstPreset {
     NONE(GSKONBTUtil.wrap(() -> {
-        CompoundNBT compoundNBT = new CompoundNBT();
+        CompoundTag compoundNBT = new CompoundTag();
         compoundNBT.putString("none", "None");
         return compoundNBT;
     })),
     PI(GSKONBTUtil.wrap(() -> {
-        CompoundNBT compound = new CompoundNBT();
+        CompoundTag compound = new CompoundTag();
         compound.putDouble("pi", Math.PI);
         return compound;
     })),
     TWO_PI(GSKONBTUtil.wrap(() -> {
-        CompoundNBT compound = new CompoundNBT();
+        CompoundTag compound = new CompoundTag();
         compound.putDouble("two_pi", Math.PI * 2);
         return compound;
     })),
     E(GSKONBTUtil.wrap(() -> {
-        CompoundNBT compound = new CompoundNBT();
+        CompoundTag compound = new CompoundTag();
         compound.putDouble("e", Math.E);
         return compound;
     }));
 
-    public final CompoundNBT nbt;
+    public final CompoundTag nbt;
 
-    ConstPreset(CompoundNBT nbt) {
+    ConstPreset(CompoundTag nbt) {
         this.nbt = nbt;
     }
 
-    public CompoundNBT get() {
+    public CompoundTag get() {
         return this.nbt;
     }
 
@@ -45,7 +45,7 @@ public enum ConstPreset {
         return str.get();
     }
 
-    public ITextComponent toTextComponent() {
+    public Component toTextComponent() {
         return GensokyoOntology.withTranslation("gui.",".const_builder.button.preset." + getKey());
     }
 }

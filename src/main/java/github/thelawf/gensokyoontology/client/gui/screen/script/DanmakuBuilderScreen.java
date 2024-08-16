@@ -11,13 +11,13 @@ import github.thelawf.gensokyoontology.common.network.packet.CMergeScriptPacket;
 import github.thelawf.gensokyoontology.common.util.EnumUtil;
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuColor;
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuType;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -27,21 +27,21 @@ public class DanmakuBuilderScreen extends OneSlotContainerScreen {
     public static final String TYPE = "danmaku";
     private Button danTypeButton;
     private Button colorButton;
-    private TextFieldWidget nameInput;
+    private EditBox nameInput;
     private DanmakuType danmakuType;
     private DanmakuColor danmakuColor;
     private final ItemStack stack;
     private List<WidgetConfig> CONFIGS;
-    private final CompoundNBT danmakuData = new CompoundNBT();
+    private final CompoundTag danmakuData = new CompoundTag();
     public static final ResourceLocation TEXTURE = GensokyoOntology.withRL("textures/gui/one_slot_screen.png");
     private final WidgetConfig NAME_LABEL = WidgetConfig.of(new BlankWidget(0,0,0,0, withText("null")),0,0).isText(true);
     private final WidgetConfig TYPE_LABEL = WidgetConfig.of(new BlankWidget(0,0,0,0, withText("null")),0,0).isText(true);
     private final WidgetConfig COLOR_LABEL = WidgetConfig.of(new BlankWidget(0,0,0,0, withText("null")),0,0).isText(true);
-    public static final ITextComponent DAN_TYPE_TEXT = GensokyoOntology.withTranslation("gui.", ".danmaku_builder.button.type");
-    public static final ITextComponent COLOR_TEXT = GensokyoOntology.withTranslation("gui.", ".danmaku_builder.button.color");
-    public static final ITextComponent NAME_TEXT = GensokyoOntology.withTranslation("gui.", ".danmaku_builder.button.name");
+    public static final Component DAN_TYPE_TEXT = GensokyoOntology.withTranslation("gui.", ".danmaku_builder.button.type");
+    public static final Component COLOR_TEXT = GensokyoOntology.withTranslation("gui.", ".danmaku_builder.button.color");
+    public static final Component NAME_TEXT = GensokyoOntology.withTranslation("gui.", ".danmaku_builder.button.name");
 
-    public DanmakuBuilderScreen(OneSlotContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
+    public DanmakuBuilderScreen(OneSlotContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         this.playerInventoryTitleX = 30;
         this.playerInventoryTitleY = 114;
@@ -60,7 +60,7 @@ public class DanmakuBuilderScreen extends OneSlotContainerScreen {
     @Override
     protected void init() {
         super.init();
-        this.nameInput = new TextFieldWidget(this.font, 0,0,0,0, withText(""));
+        this.nameInput = new EditBox(this.font, 0,0,0,0, withText(""));
         this.danTypeButton = new Button(0, 0, 0, 0, withText(""), b -> {});
         this.colorButton = new Button(0, 0, 0, 0, withText(""), b -> {});
         this.saveBtn = new Button(0,0,0,0, withText(""), b -> {});
@@ -82,7 +82,7 @@ public class DanmakuBuilderScreen extends OneSlotContainerScreen {
         this.setRelativeToParent(CONFIGS, this.guiLeft, this.guiTop);
 
         if (this.stack.getTag() != null) {
-            CompoundNBT tag = this.stack.getTag();
+            CompoundTag tag = this.stack.getTag();
             for (DanmakuType dt : DanmakuType.values()) {
                 if (dt.name.equals(tag.getString("danmakuType"))) {
                     this.danmakuType = dt;

@@ -5,10 +5,10 @@ import github.thelawf.gensokyoontology.client.gui.screen.script.V3dInvokerScreen
 import github.thelawf.gensokyoontology.common.container.script.StaticInvokerContainer;
 import github.thelawf.gensokyoontology.common.container.script.V3dInvokerContainer;
 import github.thelawf.gensokyoontology.core.init.ItemRegistry;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.world.entity.player.ServerPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -16,9 +16,9 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public class CInvokeFunctionPacket {
-    private final CompoundNBT invokerData;
+    private final CompoundTag invokerData;
 
-    public CInvokeFunctionPacket(CompoundNBT invokerData) {
+    public CInvokeFunctionPacket(CompoundTag invokerData) {
         this.invokerData = invokerData;
     }
 
@@ -32,7 +32,7 @@ public class CInvokeFunctionPacket {
 
     public static void handle(CInvokeFunctionPacket packet, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            ServerPlayerEntity serverPlayer = ctx.get().getSender();
+            ServerPlayer serverPlayer = ctx.get().getSender();
             if (serverPlayer == null) return;
 
             switch (packet.invokerData.getString("type")) {
@@ -50,14 +50,14 @@ public class CInvokeFunctionPacket {
         ctx.get().setPacketHandled(true);
     }
 
-    private static void saveV3dFuncData(CInvokeFunctionPacket packet, ServerPlayerEntity serverPlayer) {
+    private static void saveV3dFuncData(CInvokeFunctionPacket packet, ServerPlayer serverPlayer) {
         if (!(serverPlayer.openContainer instanceof V3dInvokerContainer)) return;
         V3dInvokerContainer container = (V3dInvokerContainer) serverPlayer.openContainer;
 
         ListNBT paramsNBT = new ListNBT();
         if (checkNotEmpty(container.inventory)) paramsNBT.add(container.inventory.getStackInSlot(1).getTag());
         // if (container.inventory.getStackInSlot(0).getItem() == ItemRegistry.V3D_BUILDER.get()) {
-        //     CompoundNBT reference = container.inventory.getStackInSlot(0).getTag();
+        //     CompoundTag reference = container.inventory.getStackInSlot(0).getTag();
         //     if (reference != null) packet.invokerData.put("ref", reference);
         // }
 //
@@ -67,14 +67,14 @@ public class CInvokeFunctionPacket {
         // }
     }
 
-    private static void saveStaticFuncData(CInvokeFunctionPacket packet, ServerPlayerEntity serverPlayer) {
+    private static void saveStaticFuncData(CInvokeFunctionPacket packet, ServerPlayer serverPlayer) {
         if (!(serverPlayer.openContainer instanceof StaticInvokerContainer)) return;
         StaticInvokerContainer container = (StaticInvokerContainer) serverPlayer.openContainer;
 
         ListNBT paramsNBT = new ListNBT();
         for (int i = 0; i < container.paramSlots.getSizeInventory(); i++) {
             if (container.paramSlots.getStackInSlot(i) != ItemStack.EMPTY) {
-                CompoundNBT nbt = container.paramSlots.getStackInSlot(i).getTag();
+                CompoundTag nbt = container.paramSlots.getStackInSlot(i).getTag();
                 if (nbt != null) paramsNBT.add(nbt);
             }
         }

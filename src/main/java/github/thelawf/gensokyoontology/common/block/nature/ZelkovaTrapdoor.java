@@ -1,8 +1,8 @@
 package github.thelawf.gensokyoontology.common.block.nature;
 
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.TrapDoorBlock;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.TrapDoorBlock;
 
 public class ZelkovaTrapdoor extends TrapDoorBlock {
     public ZelkovaTrapdoor() {

@@ -2,15 +2,15 @@ package github.thelawf.gensokyoontology.common.util.world;
 
 import github.thelawf.gensokyoontology.GensokyoOntology;
 import github.thelawf.gensokyoontology.common.util.math.GSKOMathUtil;
-import net.minecraft.block.*;
+import net.minecraft.world.level.block.*;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.ISeedReader;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.gen.IWorldGenerationBaseReader;
-import net.minecraft.world.gen.IWorldGenerationReader;
+import net.minecraft.world.gen.ILevelGenerationBaseReader;
+import net.minecraft.world.gen.ILevelGenerationReader;
 import net.minecraft.world.gen.blockstateprovider.BlockStateProvider;
 import net.minecraft.world.gen.feature.TreeFeature;
 
@@ -22,7 +22,7 @@ public class FeatureUtil {
     /**
      * Modified from Twilight Forest.
      */
-    public static void fillEllipse(IWorldGenerationReader reader, BlockPos center, Random random, BlockStateProvider state, int radiusX, int radiusZ) {
+    public static void fillEllipse(ILevelGenerationReader reader, BlockPos center, Random random, BlockStateProvider state, int radiusX, int radiusZ) {
         // 遍历圆的每个坐标位置，计算当前位置到圆心的距离，判断位置是否在圆内。加0.5是为了使树叶圆形效果更好
         for (int x = center.getX() - radiusX; x <= center.getX() + radiusX; x++) {
             for (int z = center.getZ() - radiusX; z <= center.getZ() + radiusX; z++) {
@@ -34,7 +34,7 @@ public class FeatureUtil {
         }
     }
 
-    public static void fillEllipse(IWorldGenerationReader reader, BlockPos center, Random random, BlockStateProvider state, int radius, boolean ignoreTrunk) {
+    public static void fillEllipse(ILevelGenerationReader reader, BlockPos center, Random random, BlockStateProvider state, int radius, boolean ignoreTrunk) {
         // 遍历圆的每个坐标位置，计算当前位置到圆心的距离，判断位置是否在圆内。加0.5是为了使树叶圆形效果更好
         for (int x = center.getX() - radius; x <= center.getX() + radius; x++) {
             for (int z = center.getZ() - radius; z <= center.getZ() + radius; z++) {
@@ -76,24 +76,24 @@ public class FeatureUtil {
         );
     }
 
-    private static void placeTrunk(IWorldGenerationReader reader, BlockPos pos, Random random, BlockStateProvider state) {
+    private static void placeTrunk(ILevelGenerationReader reader, BlockPos pos, Random random, BlockStateProvider state) {
         BlockState trunkState = state.getBlockState(random, pos);
         reader.setBlockState(pos, trunkState, 3);
     }
 
-    private static void placeBlock(IWorldGenerationReader reader, BlockPos pos, Random random, BlockStateProvider state) {
+    private static void placeBlock(ILevelGenerationReader reader, BlockPos pos, Random random, BlockStateProvider state) {
         reader.setBlockState(pos, state.getBlockState(random, pos), 3);
     }
 
-    private static void placeFoliage(IWorldGenerationReader reader, BlockPos pos, Random random, BlockStateProvider state) {
+    private static void placeFoliage(ILevelGenerationReader reader, BlockPos pos, Random random, BlockStateProvider state) {
         if (!isTrunkBlockAt(reader, pos) && !TreeFeature.isReplaceableAt(reader, pos)) return;
         reader.setBlockState(pos, state.getBlockState(random, pos), 3);
     }
-    public static boolean isTrunkBlockAt(IWorldGenerationBaseReader reader, BlockPos pos) {
+    public static boolean isTrunkBlockAt(ILevelGenerationBaseReader reader, BlockPos pos) {
         return reader.hasBlockState(pos, (state) -> state.isIn(BlockTags.LOGS));
     }
 
-    public static void placeDiagonalTrunks(IWorldGenerationReader reader, Random random, BlockPos start, BlockStateProvider state, int width, int height) {
+    public static void placeDiagonalTrunks(ILevelGenerationReader reader, Random random, BlockPos start, BlockStateProvider state, int width, int height) {
         BlockPos end = new BlockPos(start.getX() + width, start.getY() + height, 0);
         float distance = start.manhattanDistance(end);
         for (int i = 0; i < (int) distance; i++) {
@@ -166,14 +166,14 @@ public class FeatureUtil {
         placeBlock(reader, start.toMutable().south(1), random, state);
     }
 
-    public static void placeStraightBlocks(IWorldGenerationReader reader, Random random, BlockPos start, BlockStateProvider state, int height) {
+    public static void placeStraightBlocks(ILevelGenerationReader reader, Random random, BlockPos start, BlockStateProvider state, int height) {
         for (int i = 0; i < height; i++) {
             placeBlock(reader, new BlockPos(start.getX(), start.getY() + i, start.getZ()), random, state);
         }
     }
 
     // Copy from Twilight Forest
-    public static void makeLeafSpheroid(IWorldGenerationReader world, Random random, BlockPos centerPos, float xzRadius, float yRadius, float verticalBias, BlockStateProvider state, Set<BlockPos> leaves) {
+    public static void makeLeafSpheroid(ILevelGenerationReader world, Random random, BlockPos centerPos, float xzRadius, float yRadius, float verticalBias, BlockStateProvider state, Set<BlockPos> leaves) {
         float xzRadiusSquared = xzRadius * xzRadius;
         float yRadiusSquared = yRadius * yRadius;
         float superRadiusSquared = xzRadiusSquared * yRadiusSquared;
@@ -224,7 +224,7 @@ public class FeatureUtil {
     }
 
     // Copy from Twilight Forest
-    public static void makeLeafSpheroid(IWorldGenerationReader world, Random random, BlockPos centerPos, float xzRadius, float yRadius, float verticalBias, BlockStateProvider state) {
+    public static void makeLeafSpheroid(ILevelGenerationReader world, Random random, BlockPos centerPos, float xzRadius, float yRadius, float verticalBias, BlockStateProvider state) {
         float xzRadiusSquared = xzRadius * xzRadius;
         float yRadiusSquared = yRadius * yRadius;
         float superRadiusSquared = xzRadiusSquared * yRadiusSquared;
@@ -274,7 +274,7 @@ public class FeatureUtil {
         }
     }
 
-    public static void placeLeafBlock(IWorldGenerationReader world, Random random, BlockPos pos, BlockStateProvider state, Set<BlockPos> leavesPos) {
+    public static void placeLeafBlock(ILevelGenerationReader world, Random random, BlockPos pos, BlockStateProvider state, Set<BlockPos> leavesPos) {
         if (/*leavesPos.contains(pos) ||*/ !TreeFeature.isReplaceableAt(world, pos))
             return;
 
@@ -282,7 +282,7 @@ public class FeatureUtil {
         leavesPos.add(pos.toImmutable());
     }
 
-    public static void placeLeafBlock(IWorldGenerationReader world, Random random, BlockPos pos, BlockStateProvider state) {
+    public static void placeLeafBlock(ILevelGenerationReader world, Random random, BlockPos pos, BlockStateProvider state) {
         if (!TreeFeature.isReplaceableAt(world, pos))
             return;
         world.setBlockState(pos, state.getBlockState(random, pos), 3);
@@ -293,7 +293,7 @@ public class FeatureUtil {
         // 这里以生物群系分类不同为例
         return centerBiome.getRegistryName() == null && surroundBiome.getRegistryName() == null &&
                 centerBiome.getRegistryName().equals(surroundBiome.getRegistryName()) &&
-                centerBiome.getRegistryName().equals(new ResourceLocation(GensokyoOntology.MODID, "youkai_mountain"));
+                centerBiome.getRegistryName().equals(ResourceLocation.parse(GensokyoOntology.MODID, "youkai_mountain"));
     }
 
     public static Direction getValidDirection(ISeedReader reader, BlockPos blockPos, Set<Block> blocks) {

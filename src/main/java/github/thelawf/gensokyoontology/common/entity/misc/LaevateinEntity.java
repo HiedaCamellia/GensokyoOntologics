@@ -1,15 +1,15 @@
 package github.thelawf.gensokyoontology.common.entity.misc;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.IRendersAsItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.IRendersAsItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.IPacket;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 public class LaevateinEntity extends Entity implements IRendersAsItem {
-    public LaevateinEntity(EntityType<?> entityTypeIn, World worldIn) {
+    public LaevateinEntity(EntityType<?> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
     }
 
@@ -19,12 +19,12 @@ public class LaevateinEntity extends Entity implements IRendersAsItem {
     }
 
     @Override
-    protected void readAdditional(CompoundNBT compound) {
+    protected void readAdditional(CompoundTag compound) {
 
     }
 
     @Override
-    protected void writeAdditional(CompoundNBT compound) {
+    protected void writeAdditional(CompoundTag compound) {
 
     }
 

@@ -1,11 +1,10 @@
 package github.thelawf.gensokyoontology.common.util.danmaku;
 
 import github.thelawf.gensokyoontology.common.entity.projectile.AbstractDanmakuEntity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.vector.Vector2f;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Deque;
 import java.util.LinkedList;
@@ -18,7 +17,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class DanmakuPool<D extends AbstractDanmakuEntity> extends LinkedList<D> {
     // public DanmakuPool
 
-    public D acquire(Vector3d positionVec, Vector2f rotationVec, boolean noGravity) {
+    public D acquire(Vec3 positionVec, Vec2 rotationVec, boolean noGravity) {
 
         if (removeFirst() != null) {
             D danmaku = removeFirst();

@@ -12,13 +12,13 @@ import github.thelawf.gensokyoontology.common.world.feature.tree.GSKOTrees;
 import github.thelawf.gensokyoontology.core.init.BlockRegistry;
 import github.thelawf.gensokyoontology.core.init.FeatureRegistry;
 import github.thelawf.gensokyoontology.core.init.StructureRegistry;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.HugeMushroomBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.HugeMushroomBlock;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.WorldGenRegistries;
+import net.minecraft.util.registry.LevelGenRegistries;
 import net.minecraft.world.gen.FlatGenerationSettings;
 import net.minecraft.world.gen.blockplacer.SimpleBlockPlacer;
 import net.minecraft.world.gen.blockstateprovider.SimpleBlockStateProvider;
@@ -122,7 +122,7 @@ public class GSKOFeatures {
             .withPlacement(Placement.COUNT_EXTRA.configure(new AtSurfaceWithExtraConfig(2, 0.4f, 2)));
 
 
-    // public static final ConfiguredFeature<BaseTreeFeatureConfig, ?> SHINBOKU = register(new ResourceLocation(GensokyoOntology.MODID, "shinboku"),
+    // public static final ConfiguredFeature<BaseTreeFeatureConfig, ?> SHINBOKU = register(ResourceLocation.parse(GensokyoOntology.MODID, "shinboku"),
     //         Feature.TREE.withConfiguration());
 
     //-------------------------------------------花草生成------------------------------------------//
@@ -205,49 +205,49 @@ public class GSKOFeatures {
     //         .withConfiguration(IFeatureConfig.NO_FEATURE_CONFIG);
 
     public static void registerFeature() {
-        Registry<ConfiguredFeature<?, ?>> registry = WorldGenRegistries.CONFIGURED_FEATURE;
+        Registry<ConfiguredFeature<?, ?>> registry = LevelGenRegistries.CONFIGURED_FEATURE;
 
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "higan_lycoris"), HIGAN_LYCORIS);
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "wasabi"), WASABI);
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "bamboo"), BAMBOO);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "higan_lycoris"), HIGAN_LYCORIS);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "wasabi"), WASABI);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "bamboo"), BAMBOO);
 
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "magic_forest_feature"), MAGIC_FOREST_FEATURE);
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "magic_forest_vegetation"), MAGIC_FOREST_VEGETATION);
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "magic_trees"), MAGIC_TREES);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "magic_forest_feature"), MAGIC_FOREST_FEATURE);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "magic_forest_vegetation"), MAGIC_FOREST_VEGETATION);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "magic_trees"), MAGIC_TREES);
 
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "patch_ginkgo_leaves"), PATCH_GINKGO_LEAVES);
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "patch_maple_leaves"), PATCH_MAPLE_LEAVES);
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "patch_zelkova_leaves"), PATCH_ZELKOVA_LEAVES);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "patch_ginkgo_leaves"), PATCH_GINKGO_LEAVES);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "patch_maple_leaves"), PATCH_MAPLE_LEAVES);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "patch_zelkova_leaves"), PATCH_ZELKOVA_LEAVES);
 
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "maple_tree_vegetation"), MAPLE_TREE_VEGETATION);
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "maple_tree_mountain"), MAPLE_TREE_MOUNTAIN);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "maple_tree_vegetation"), MAPLE_TREE_VEGETATION);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "maple_tree_mountain"), MAPLE_TREE_MOUNTAIN);
 
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "sakura_tree"), SAKURA_TREE);
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "sakura_tree_hakurei_shrine"), SAKURA_TREE_HAKUREI_SHRINE);
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "shinboku_tree"), SHINBOKU_TREE);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "sakura_tree"), SAKURA_TREE);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "sakura_tree_hakurei_shrine"), SAKURA_TREE_HAKUREI_SHRINE);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "shinboku_tree"), SHINBOKU_TREE);
 
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "zelkova_trees"), ZELKOVA_TREES);
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "beast_path_vegetation"), BEAST_PATH_VEGETATION);
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "untrodden_valley_vegetation"), UNTRODDEN_VALLEY_VEGETATION);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "zelkova_trees"), ZELKOVA_TREES);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "beast_path_vegetation"), BEAST_PATH_VEGETATION);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "untrodden_valley_vegetation"), UNTRODDEN_VALLEY_VEGETATION);
 
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "huge_blue_mushroom"), HUGE_BLUE_MUSHROOM);
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "huge_purple_mushroom"), HUGE_PURPLE_MUSHROOM);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "huge_blue_mushroom"), HUGE_BLUE_MUSHROOM);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "huge_purple_mushroom"), HUGE_PURPLE_MUSHROOM);
 
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "waterfall"), WATERFALL);
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "gsko_stone_cluster"), GSKO_STONE_PILE);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "waterfall"), WATERFALL);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "gsko_stone_cluster"), GSKO_STONE_PILE);
     }
 
     public static void registerStructure() {
-        Registry<StructureFeature<?, ?>> registry = WorldGenRegistries.CONFIGURED_STRUCTURE_FEATURE;
+        Registry<StructureFeature<?, ?>> registry = LevelGenRegistries.CONFIGURED_STRUCTURE_FEATURE;
         // 可以继续添加多个
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "alice_house"), ALICE_HOUSE_STRUCTURE);
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "scarlet_devil_mansion"), SCARLET_MANSION_STRUCTURE);
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "mystia_izakaya"), MYSTIA_STRUCTURE);
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "hakurei_shrine"), HAKUREI_STRUCTURE);
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "cirno_ice_house"), CIRNO_ICE_HOUSE);
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "chireiden"), CHIREIDEN);
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "beast_pathway"), BEAST_PATHWAY);
-        Registry.register(registry, new ResourceLocation(GensokyoOntology.MODID, "human_village"), HUMAN_VILLAGE);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "alice_house"), ALICE_HOUSE_STRUCTURE);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "scarlet_devil_mansion"), SCARLET_MANSION_STRUCTURE);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "mystia_izakaya"), MYSTIA_STRUCTURE);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "hakurei_shrine"), HAKUREI_STRUCTURE);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "cirno_ice_house"), CIRNO_ICE_HOUSE);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "chireiden"), CHIREIDEN);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "beast_pathway"), BEAST_PATHWAY);
+        Registry.register(registry, ResourceLocation.parse(GensokyoOntology.MODID, "human_village"), HUMAN_VILLAGE);
 
         FlatGenerationSettings.STRUCTURES.put(StructureRegistry.ALICE_HOUSE.get(), ALICE_HOUSE_STRUCTURE);
         FlatGenerationSettings.STRUCTURES.put(StructureRegistry.SCARLET_DEVIL_MANSION.get(), SCARLET_MANSION_STRUCTURE);
@@ -261,7 +261,7 @@ public class GSKOFeatures {
 
     public static ConfiguredFeature<?, ?> makeOreFeature(GSKOOreType oreType, Feature<OreFeatureConfig> oreFeature,
                                                          OreFeatureConfig config, ConfiguredPlacement<?> placement) {
-        return Registry.register(WorldGenRegistries.CONFIGURED_FEATURE, oreType.getLazyBlock().get().getRegistryName(),
+        return Registry.register(LevelGenRegistries.CONFIGURED_FEATURE, oreType.getLazyBlock().get().getRegistryName(),
                 oreFeature.withConfiguration(config).withPlacement(placement).square().count(oreType.getMaxVeinSize()));
     }
 
@@ -271,7 +271,7 @@ public class GSKOFeatures {
     }
 
     public static void registerOre() {
-        Registry<ConfiguredFeature<?, ?>> registry = WorldGenRegistries.CONFIGURED_FEATURE;
+        Registry<ConfiguredFeature<?, ?>> registry = LevelGenRegistries.CONFIGURED_FEATURE;
 
         Registry.register(registry, GSKOOreType.IMMEMORIAL_ALLOY.getLazyBlock().get().getRegistryName(),
                 withOreFeature(Feature.NO_SURFACE_ORE, GSKOWGConfigs.CRIMSON_ALLOY_CONFIG, GSKOWGConfigs.IMMEMORIAL_ALLOY_PLACEMENT));

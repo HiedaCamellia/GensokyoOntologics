@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.entity.BipedRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class RemiliaScarletRenderer extends BipedRenderer<RemiliaScarletEntity, RemiliaScarletModel> {
     public static final ResourceLocation REMILIA_TEX = GensokyoOntology.withRL("textures/entity/remilia_scarlet.png");

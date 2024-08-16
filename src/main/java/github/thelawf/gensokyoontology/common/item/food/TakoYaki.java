@@ -1,9 +1,9 @@
 package github.thelawf.gensokyoontology.common.item.food;
 
 import github.thelawf.gensokyoontology.core.init.itemtab.GSKOItemTab;
-import net.minecraft.item.Food;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
+import net.minecraft.world.item.Food;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemGroup;
 
 public class TakoYaki extends Item {
     private static final Food food = (new Food.Builder())
@@ -13,6 +13,6 @@ public class TakoYaki extends Item {
             .build();
 
     public TakoYaki() {
-        super(new Properties().group(GSKOItemTab.GSKO_ITEM_TAB).food(food));
+        super(new Properties().food(food));
     }
 }

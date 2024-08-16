@@ -1,6 +1,6 @@
 package github.thelawf.gensokyoontology.common.capability.world;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 public class EternalSummerCapability implements IIncidentCapability{
     private boolean isTriggered;
@@ -19,14 +19,14 @@ public class EternalSummerCapability implements IIncidentCapability{
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT nbt = new CompoundNBT();
+    public CompoundTag serializeNBT() {
+        CompoundTag nbt = new CompoundTag();
         nbt.putBoolean("is_triggered", this.isTriggered);
         return nbt;
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         this.isTriggered = nbt.getBoolean("is_triggered");
     }
 }

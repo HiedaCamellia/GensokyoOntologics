@@ -6,29 +6,29 @@ import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuType;
 import github.thelawf.gensokyoontology.common.util.danmaku.SpellData;
 import github.thelawf.gensokyoontology.core.init.EntityRegistry;
 import github.thelawf.gensokyoontology.core.init.ItemRegistry;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.ThrowableEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ThrowableEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 public class FakeLunarEntity extends AbstractDanmakuEntity {
 
-    public FakeLunarEntity(EntityType<? extends ThrowableEntity> type, World worldIn) {
+    public FakeLunarEntity(EntityType<? extends ThrowableEntity> type, Level worldIn) {
         super(type, worldIn);
     }
 
-    public FakeLunarEntity(LivingEntity throwerIn, World world, SpellData spellData) {
+    public FakeLunarEntity(LivingEntity throwerIn, Level world, SpellData spellData) {
         super(EntityRegistry.FAKE_LUNAR_ENTITY.get(), throwerIn, world, spellData);
     }
 
-    public FakeLunarEntity(LivingEntity throwerIn, World worldIn, DanmakuType danmakuTypeIn, DanmakuColor danmakuColorIn) {
+    public FakeLunarEntity(LivingEntity throwerIn, Level worldIn, DanmakuType danmakuTypeIn, DanmakuColor danmakuColorIn) {
         super(EntityRegistry.FAKE_LUNAR_ENTITY.get(), throwerIn, worldIn, danmakuTypeIn, danmakuColorIn);
     }
 
@@ -39,7 +39,7 @@ public class FakeLunarEntity extends AbstractDanmakuEntity {
         if (result.getEntity() instanceof AbstractDanmakuEntity) {
             AbstractDanmakuEntity danmaku = (AbstractDanmakuEntity) result.getEntity();
             danmaku.remove();
-        } else if (!(result.getEntity() instanceof PlayerEntity)) {
+        } else if (!(result.getEntity() instanceof Player)) {
             // entityHit.addPotionEffect(new EffectInstance(EffectRegistry.LOVE_EFFECT.get(), 5 * 40));
             result.getEntity().attackEntityFrom(GSKODamageSource.DANMAKU, 12F);
             this.remove();

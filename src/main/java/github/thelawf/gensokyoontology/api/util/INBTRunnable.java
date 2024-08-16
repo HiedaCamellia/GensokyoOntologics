@@ -1,7 +1,7 @@
 package github.thelawf.gensokyoontology.api.util;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 
 import java.util.function.Predicate;
 

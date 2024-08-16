@@ -1,7 +1,7 @@
 package github.thelawf.gensokyoontology.common.capability.entity;
 
 import github.thelawf.gensokyoontology.common.capability.GSKOCapabilities;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -10,7 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class GSKOPowerProvider implements ICapabilitySerializable<CompoundNBT> {
+public class GSKOPowerProvider implements ICapabilitySerializable<CompoundTag> {
 
     private float count;
     private GSKOPowerCapability capability;
@@ -33,12 +33,12 @@ public class GSKOPowerProvider implements ICapabilitySerializable<CompoundNBT> {
     }
 
     @Override
-    public CompoundNBT serializeNBT() {
-        return (CompoundNBT) GSKOCapabilities.POWER.writeNBT(getOrCreate(), null);
+    public CompoundTag serializeNBT() {
+        return (CompoundTag) GSKOCapabilities.POWER.writeNBT(getOrCreate(), null);
     }
 
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         GSKOCapabilities.POWER.readNBT(getOrCreate(), null, nbt);
     }
 }

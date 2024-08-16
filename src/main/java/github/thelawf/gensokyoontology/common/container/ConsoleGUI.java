@@ -5,27 +5,27 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import github.thelawf.gensokyoontology.GensokyoOntology;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
+
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
 
 public class ConsoleGUI extends Screen {
-    TextFieldWidget codeField;
+    EditBox codeField;
     Button compileButton;
     Button runButton;
-    TranslationTextComponent titleText = new TranslationTextComponent("client." +
+    Component titleText = Component.translatable("client." +
             GensokyoOntology.MODID + ".title");
 
-    final ResourceLocation CONSOLE_TEX = new ResourceLocation(GensokyoOntology.MODID,
+    final ResourceLocation CONSOLE_TEX = ResourceLocation.parse(GensokyoOntology.MODID,
             "textures/client/console.png");
 
     public ConsoleGUI() {
-        super(new TranslationTextComponent("client." + GensokyoOntology.MODID +
+        super(Component.translatable("client." + GensokyoOntology.MODID +
                 "console_gui.title"));
     }
 
@@ -35,14 +35,14 @@ public class ConsoleGUI extends Screen {
         MainWindow window = getMinecraft().getMainWindow();
         Objects.requireNonNull(this.minecraft).keyboardListener.enableRepeatEvents(true);
 
-        this.codeField = new TextFieldWidget(this.font, (window.getWidth() - this.width) / 2
-                , (window.getHeight() - this.height) / 2, 200, 136, new TranslationTextComponent(
+        this.codeField = new EditBox(this.font, (window.getWidth() - this.width) / 2
+                , (window.getHeight() - this.height) / 2, 200, 136, Component.translatable(
                 "client." + GensokyoOntology.MODID + ".code_field.content"));
         this.children.add(codeField);
 
         this.compileButton = new Button((window.getWidth() - this.width) / 2 + this.width / 2,
                 (window.getHeight() - this.height) / 2 + this.height / 2, 80, 20,
-                new TranslationTextComponent("client." + GensokyoOntology.MODID + ".compile"), (button) -> {
+                Component.translatable("client." + GensokyoOntology.MODID + ".compile"), (button) -> {
             String code = codeField.getText();
         });
 

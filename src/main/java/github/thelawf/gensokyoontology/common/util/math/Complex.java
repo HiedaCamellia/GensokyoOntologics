@@ -1,7 +1,7 @@
 package github.thelawf.gensokyoontology.common.util.math;
 
 
-import net.minecraft.util.math.vector.Vector2f;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.util.math.vector.Vector3i;
 
 public class Complex {
@@ -67,16 +67,16 @@ public class Complex {
         return new Complex(this.real * factor, this.imaginary * factor);
     }
 
-    public Vector2f toVector2f() {
-        return new Vector2f((float) this.real, (float) this.imaginary);
+    public Vec2 toVec2() {
+        return new Vec2((float) this.real, (float) this.imaginary);
     }
 
     public static Complex fromPolarCoordinates(double magnitude, double phase) {
         return new Complex(magnitude * Math.cos(phase), magnitude * Math.sin(phase));
     }
 
-    public static Vector2f toPolarCoordinates(Complex complex) {
-        return new Vector2f((float) complex.getMagnitude(), (float) complex.getMagnitude());
+    public static Vec2 toPolarCoordinates(Complex complex) {
+        return new Vec2((float) complex.getMagnitude(), (float) complex.getMagnitude());
     }
 
     public static Complex of(double real, double imaginary) {

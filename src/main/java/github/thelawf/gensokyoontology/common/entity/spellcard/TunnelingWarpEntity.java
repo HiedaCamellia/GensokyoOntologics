@@ -7,14 +7,14 @@ import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuColor;
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuType;
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuUtil;
 import github.thelawf.gensokyoontology.core.init.ItemRegistry;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.NearestAttackableTargetGoal;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -24,11 +24,11 @@ import java.util.List;
  * 跃迁「超时空隧道折跃」
  */
 public class TunnelingWarpEntity extends SpellCardEntity {
-    public TunnelingWarpEntity(EntityType<? extends SpellCardEntity> entityTypeIn, World worldIn, PlayerEntity player) {
+    public TunnelingWarpEntity(EntityType<? extends SpellCardEntity> entityTypeIn, Level worldIn, Player player) {
         super(entityTypeIn, worldIn, player);
     }
 
-    public TunnelingWarpEntity(EntityType<? extends SpellCardEntity> entityTypeIn, World worldIn) {
+    public TunnelingWarpEntity(EntityType<? extends SpellCardEntity> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
     }
 
@@ -37,10 +37,10 @@ public class TunnelingWarpEntity extends SpellCardEntity {
         LivingEntity shooter = (LivingEntity) this.getOwner();
         if (shooter == null) return;
 
-        Vector3d starInitPos = new Vector3d(Vector3f.XP).scale(1.8);
-        Vector3d starRadialShootVec = new Vector3d(Vector3f.ZP).scale(3);
+        Vec3 starInitPos = new Vec3(Vector3f.XP).scale(1.8);
+        Vec3 starRadialShootVec = new Vec3(Vector3f.ZP).scale(3);
 
-        Vector3d tunnelPos = new Vector3d(Vector3f.XP).scale(3.4);
+        Vec3 tunnelPos = new Vec3(Vector3f.XP).scale(3.4);
 
         List<DanmakuColor> colors = DanmakuUtil.getRainbowColoredDanmaku();
 
@@ -58,7 +58,7 @@ public class TunnelingWarpEntity extends SpellCardEntity {
         for (int i = 0; i < 3; i++) {
             SmallStarShotEntity smallStar = new SmallStarShotEntity(shooter, world, DanmakuType.STAR_SHOT_SMALL, DanmakuColor.BLUE);
 
-            setDanmakuInit(smallStar, starInitPos.add(new Vector3d(0, shooter.getPosY() + 15, 0)),
+            setDanmakuInit(smallStar, starInitPos.add(new Vec3(0, shooter.getPosY() + 15, 0)),
                     (float) starInitPos.x, (float) starInitPos.z, true);
             smallStar.shoot(starRadialShootVec.getX(), starRadialShootVec.getY(), starRadialShootVec.getZ(),
                     5.2f, 0f);

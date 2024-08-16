@@ -7,16 +7,16 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 @OnlyIn(Dist.CLIENT)
 public class HumanResidentRenderer extends LivingRenderer<HumanResidentEntity, BipedModel<HumanResidentEntity>> {
 
-    public static final ResourceLocation HUMAN_RESIDENT_TEXTURE = new ResourceLocation(
+    public static final ResourceLocation HUMAN_RESIDENT_TEXTURE = ResourceLocation.parse(
             GensokyoOntology.MODID, "textures/entity/human_resident.png");
 
     public HumanResidentRenderer(EntityRendererManager rendererManager) {
@@ -29,7 +29,7 @@ public class HumanResidentRenderer extends LivingRenderer<HumanResidentEntity, B
     }
 
     @Override
-    protected void renderName(HumanResidentEntity entityIn, ITextComponent displayNameIn, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+    protected void renderName(HumanResidentEntity entityIn, Component displayNameIn, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
 
     }
 

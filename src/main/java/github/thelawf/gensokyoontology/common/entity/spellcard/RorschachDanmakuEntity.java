@@ -6,19 +6,19 @@ import github.thelawf.gensokyoontology.common.util.GSKOUtil;
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuColor;
 import github.thelawf.gensokyoontology.common.util.danmaku.DanmakuUtil;
 import github.thelawf.gensokyoontology.core.init.EntityRegistry;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.math.vector.Vector2f;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -27,13 +27,13 @@ import java.util.List;
 // 7799399517919454945
 public class RorschachDanmakuEntity extends SpellCardEntity{
 
-    public RorschachDanmakuEntity(World worldIn, LivingEntity living) {
+    public RorschachDanmakuEntity(Level worldIn, LivingEntity living) {
         super(EntityRegistry.RORSCHACH_DANMAKU_ENTITY.get(), worldIn, living);
         this.lifeSpan = 1000;
         this.dataManager.set(DATA_LIFESPAN, 1000);
     }
 
-    public RorschachDanmakuEntity(EntityType<RorschachDanmakuEntity> type, World world) {
+    public RorschachDanmakuEntity(EntityType<RorschachDanmakuEntity> type, Level world) {
         super(type, world);
         this.lifeSpan = 1000;
         this.dataManager.set(DATA_LIFESPAN, 1000);
@@ -42,22 +42,22 @@ public class RorschachDanmakuEntity extends SpellCardEntity{
     @Override
     public void tick() {
         super.tick();
-        Vector2f vector2f = Vector2f.ZERO;
-        Vector3d initPos = this.getPositionVec();
+        Vec2 vector2f = Vec2.ZERO;
+        Vec3 initPos = this.getPositionVec();
         for (int i = 0; i < 4; i++) {
-            List<Vector3d> bluePos1 = DanmakuUtil.ellipticPos(vector2f, 3 * i, 60);
-            List<Vector3d> bluePos2 = DanmakuUtil.ellipticPos(vector2f, 3 * i, 60);
-            List<Vector3d> greenPos1 = DanmakuUtil.ellipticPos(vector2f, 3 * i, 60);
-            List<Vector3d> greenPos2 = DanmakuUtil.ellipticPos(vector2f, 3 * i, 60);
-            List<Vector3d> magentaPos1 = DanmakuUtil.ellipticPos(vector2f, 3 * i, 60);
-            List<Vector3d> magentaPos2 = DanmakuUtil.ellipticPos(vector2f, 3 * i, 60);
+            List<Vec3> bluePos1 = DanmakuUtil.ellipticPos(vector2f, 3 * i, 60);
+            List<Vec3> bluePos2 = DanmakuUtil.ellipticPos(vector2f, 3 * i, 60);
+            List<Vec3> greenPos1 = DanmakuUtil.ellipticPos(vector2f, 3 * i, 60);
+            List<Vec3> greenPos2 = DanmakuUtil.ellipticPos(vector2f, 3 * i, 60);
+            List<Vec3> magentaPos1 = DanmakuUtil.ellipticPos(vector2f, 3 * i, 60);
+            List<Vec3> magentaPos2 = DanmakuUtil.ellipticPos(vector2f, 3 * i, 60);
 //
-            List<Vector3d> blueShootPos1 = deepCopy(bluePos1);
-            List<Vector3d> blueShootPos2 = deepCopy(bluePos2);
-            List<Vector3d> greenShootPos1 = deepCopy(greenPos1);
-            List<Vector3d> greenShootPos2 = deepCopy(greenPos2);
-            List<Vector3d> magentaShootPos1 = deepCopy(magentaPos1);
-            List<Vector3d> magentaShootPos2 = deepCopy(magentaPos2);
+            List<Vec3> blueShootPos1 = deepCopy(bluePos1);
+            List<Vec3> blueShootPos2 = deepCopy(bluePos2);
+            List<Vec3> greenShootPos1 = deepCopy(greenPos1);
+            List<Vec3> greenShootPos2 = deepCopy(greenPos2);
+            List<Vec3> magentaShootPos1 = deepCopy(magentaPos1);
+            List<Vec3> magentaShootPos2 = deepCopy(magentaPos2);
 //
             bluePos1.replaceAll(vector3d -> initPos.add(vector3d.rotatePitch((float) Math.PI / 4)));
             bluePos2.replaceAll(vector3d -> initPos.add(vector3d.rotatePitch((float) -Math.PI / 4)));
@@ -79,18 +79,18 @@ public class RorschachDanmakuEntity extends SpellCardEntity{
             magentaShootPos1.replaceAll(vector3d -> vector3d.rotatePitch(magentaAngle1));
             magentaShootPos2.replaceAll(vector3d -> vector3d.rotatePitch(magentaAngle2));
 //
-            CompoundNBT scriptBlue = new CompoundNBT();
+            CompoundTag scriptBlue = new CompoundTag();
             scriptBlue.putInt("color", DanmakuColor.BLUE.ordinal());
-            CompoundNBT scriptGreen = new CompoundNBT();
+            CompoundTag scriptGreen = new CompoundTag();
             scriptGreen.putInt("color", DanmakuColor.GREEN.ordinal());
-            CompoundNBT scriptMagenta = new CompoundNBT();
+            CompoundTag scriptMagenta = new CompoundTag();
             scriptMagenta.putInt("color", DanmakuColor.MAGENTA.ordinal());
 //
-            CompoundNBT scriptBlueCounter = new CompoundNBT();
+            CompoundTag scriptBlueCounter = new CompoundTag();
             scriptBlue.putInt("color", DanmakuColor.BLUE.ordinal());
-            CompoundNBT scriptGreenCounter = new CompoundNBT();
+            CompoundTag scriptGreenCounter = new CompoundTag();
             scriptGreen.putInt("color", DanmakuColor.GREEN.ordinal());
-            CompoundNBT scriptMagentaCounter = new CompoundNBT();
+            CompoundTag scriptMagentaCounter = new CompoundTag();
             scriptGreen.putInt("color", DanmakuColor.MAGENTA.ordinal());
 //
             // GSKOUtil.log(this.getClass(), ticksExisted % (bluePos1.size()));
@@ -110,16 +110,16 @@ public class RorschachDanmakuEntity extends SpellCardEntity{
         }
     }
 
-    private List<Vector3d> deepCopy(List<Vector3d> prevVec) {
-        List<Vector3d> list = new ArrayList<>();
-        prevVec.forEach(vec -> list.add(new Vector3d(vec.x, vec.y, vec.z)));
+    private List<Vec3> deepCopy(List<Vec3> prevVec) {
+        List<Vec3> list = new ArrayList<>();
+        prevVec.forEach(vec -> list.add(new Vec3(vec.x, vec.y, vec.z)));
         return list;
     }
 
-    private void applyScript(CompoundNBT script, Vector3d initPos, String funcName, List<Object> params) {
+    private void applyScript(CompoundTag script, Vec3 initPos, String funcName, List<Object> params) {
         ListNBT list = new ListNBT();
 //
-        CompoundNBT behavior = new CompoundNBT();
+        CompoundTag behavior = new CompoundTag();
         behavior.putInt("keyTick", 100);
         behavior.put(funcName, (INBT) params);
 //
@@ -131,7 +131,7 @@ public class RorschachDanmakuEntity extends SpellCardEntity{
         world.addEntity(danmaku);
     }
 
-    private void applyScript(Vector3d initPos, Vector3d vector3d, CompoundNBT script) {
+    private void applyScript(Vec3 initPos, Vec3 vector3d, CompoundTag script) {
         ListNBT list = new ListNBT();
         ListNBT motion = new ListNBT();
 
@@ -139,7 +139,7 @@ public class RorschachDanmakuEntity extends SpellCardEntity{
         motion.add(DoubleNBT.valueOf(vector3d.y));
         motion.add(DoubleNBT.valueOf(vector3d.z));
 
-        CompoundNBT behavior = new CompoundNBT();
+        CompoundTag behavior = new CompoundTag();
         behavior.putInt("keyTick", 100);
         behavior.put("setMotion", motion);
 

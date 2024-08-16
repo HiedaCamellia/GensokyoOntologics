@@ -15,39 +15,39 @@ import github.thelawf.gensokyoontology.common.item.touhou.HakureiGohei;
 import github.thelawf.gensokyoontology.common.world.GSKODimensions;
 import github.thelawf.gensokyoontology.core.init.ItemRegistry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.entity.player.ClientPlayer;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.chat.NarratorChatListener;
 import net.minecraft.client.gui.screen.DownloadTerrainScreen;
 import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.util.InputMappings;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.server.level.ServerLevel;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
 
 @OnlyIn(Dist.CLIENT)
-@Mod.EventBusSubscriber(modid = GensokyoOntology.MODID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = GensokyoOntology.MODID, value = Dist.CLIENT)
 public class GSKOMiscClientEvent {
     private static int TIMER = 0;
     private final Minecraft mc = Minecraft.getInstance();
-    public static final ITextComponent GOHEI_TITLE = GensokyoOntology.withTranslation("gui.", ".hakurei_gohei.title");
+    public static final Component GOHEI_TITLE = GensokyoOntology.withTranslation("gui.", ".hakurei_gohei.title");
 
     @SubscribeEvent
     public void onTerrainGUIOpen(GuiOpenEvent event) {
         if (event.getGui() instanceof DownloadTerrainScreen && this.mc.player != null) {
-            if (this.mc.player.getEntityWorld().getDimensionKey() == GSKODimensions.GENSOKYO) {
+            if (this.mc.player.level().dimension() == GSKODimensions.GENSOKYO) {
                 GensokyoLoadingScreen guiLoading = new GensokyoLoadingScreen(NarratorChatListener.EMPTY);
                 event.setGui(guiLoading);
             }
@@ -61,7 +61,7 @@ public class GSKOMiscClientEvent {
 
             // only fire if we're in the twilight forest
             if (minecraft.world != null && GSKODimensions.GENSOKYO.getRegistryName().equals(
-                    minecraft.world.getDimensionKey().getLocation())) {
+                    minecraft.world.dimension().getLocation())) {
                 if (minecraft.ingameGUI != null) {
                     minecraft.ingameGUI.prevVignetteBrightness = 0.0F;
                 }
@@ -84,15 +84,15 @@ public class GSKOMiscClientEvent {
         Minecraft mc = Minecraft.getInstance();
         float partial = mc.getRenderPartialTicks();
 
-        // DimensionRenderInfo info = DimensionRenderInfo.field_239208_a_.get(new ResourceLocation(GensokyoOntology.MODID, "render"));
+        // DimensionRenderInfo info = DimensionRenderInfo.field_239208_a_.get(ResourceLocation.parse(GensokyoOntology.MODID, "render"));
     }
 
     public static void renderBloodyMistColor(EntityViewRenderEvent.FogColors event) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.world != null && mc.world.getServer() != null) {
-            ServerWorld serverWorld = mc.world.getServer().getWorld(GSKODimensions.GENSOKYO);
-            if (serverWorld != null) {
-                LazyOptional<BloodyMistCapability> capability = serverWorld.getCapability(GSKOCapabilities.BLOODY_MIST);
+            ServerLevel serverLevel = mc.world.getServer().level(GSKODimensions.GENSOKYO);
+            if (serverLevel != null) {
+                LazyOptional<BloodyMistCapability> capability = serverLevel.getCapability(GSKOCapabilities.BLOODY_MIST);
                 capability.ifPresent(cap -> {
                     if (cap.isTriggered()) {
                         applyBloodyMistRender();
@@ -117,7 +117,7 @@ public class GSKOMiscClientEvent {
     @SubscribeEvent
     public static void onRenderPowerDisplay(RenderGameOverlayEvent event) {
         if (event.getType() == RenderGameOverlayEvent.ElementType.HOTBAR) {
-            ClientPlayerEntity player = Minecraft.getInstance().player;
+            ClientPlayer player = Minecraft.getInstance().player;
             if (player == null) {
                 return;
             }
@@ -153,7 +153,7 @@ public class GSKOMiscClientEvent {
     @SubscribeEvent
     public static void onGuiKeyDown(GuiScreenEvent.KeyboardKeyPressedEvent event) {
         Minecraft minecraft = Minecraft.getInstance();
-        PlayerEntity player = minecraft.player;
+        Player player = minecraft.player;
 
         if (player != null && player.openContainer instanceof OneSlotContainer) {
             event.setCanceled(event.getKeyCode() == 69);
@@ -163,7 +163,7 @@ public class GSKOMiscClientEvent {
     @SubscribeEvent
     public static void onGuiKeyReleased(GuiScreenEvent.KeyboardKeyReleasedEvent event) {
         Minecraft minecraft = Minecraft.getInstance();
-        PlayerEntity player = minecraft.player;
+        Player player = minecraft.player;
 
         if (player != null && minecraft.currentScreen instanceof GoheiModeSelectScreen) {
             minecraft.currentScreen.closeScreen();
@@ -173,7 +173,7 @@ public class GSKOMiscClientEvent {
     @SubscribeEvent
     public static void onKeyDown(InputEvent.KeyInputEvent event) {
         Minecraft minecraft = Minecraft.getInstance();
-        PlayerEntity player = minecraft.player;
+        Player player = minecraft.player;
 
         if (player != null && player.getHeldItemMainhand().getItem() == ItemRegistry.HAKUREI_GOHEI.get()) {
             ItemStack stack = player.getHeldItemMainhand();
@@ -188,7 +188,7 @@ public class GSKOMiscClientEvent {
     @SubscribeEvent
     public static void onModeScroll(GuiScreenEvent.MouseScrollEvent event) {
         Minecraft minecraft = Minecraft.getInstance();
-        PlayerEntity player = minecraft.player;
+        Player player = minecraft.player;
 
         if (player != null && player.getHeldItem(Hand.MAIN_HAND).getItem() == ItemRegistry.HAKUREI_GOHEI.get()) {
             // alt+鼠标滚轮切换模式

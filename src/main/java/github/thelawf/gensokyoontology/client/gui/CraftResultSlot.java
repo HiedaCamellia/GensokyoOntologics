@@ -1,25 +1,25 @@
 package github.thelawf.gensokyoontology.client.gui;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.CraftingResultSlot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.IRecipeType;
 import net.minecraft.util.NonNullList;
 
 public class CraftResultSlot extends CraftingResultSlot {
     private final CraftingInventory craftMatrix;
-    private final PlayerEntity player;
+    private final Player player;
     private int amountCrafted;
-    public CraftResultSlot(PlayerEntity player, CraftingInventory craftingInventory, IInventory inventoryIn, int slotIndex, int xPosition, int yPosition) {
+    public CraftResultSlot(Player player, CraftingInventory craftingInventory, IInventory inventoryIn, int slotIndex, int xPosition, int yPosition) {
         super(player, craftingInventory, inventoryIn, slotIndex, xPosition, yPosition);
         this.craftMatrix = craftingInventory;
         this.player = player;
     }
 
     @Override
-    public ItemStack onTake(PlayerEntity thePlayer, ItemStack stack) {
+    public ItemStack onTake(Player thePlayer, ItemStack stack) {
         this.onCrafting(stack);
         net.minecraftforge.common.ForgeHooks.setCraftingPlayer(thePlayer);
         NonNullList<ItemStack> nonnulllist = thePlayer.world.getRecipeManager().getRecipeNonNull(IRecipeType.CRAFTING, this.craftMatrix, thePlayer.world);

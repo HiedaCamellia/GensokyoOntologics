@@ -1,14 +1,14 @@
 package github.thelawf.gensokyoontology.common.nbt;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 
 public class GensokyoOntologyNBT implements IGensokyoOntologyNBT {
-    public static CompoundNBT nbtYattsume = new CompoundNBT();
-    public static CompoundNBT nbtKoishiMousse = new CompoundNBT();
-    public static CompoundNBT nbtWhiteSnow = new CompoundNBT();
-    public static CompoundNBT lovePotionMasterName = new CompoundNBT();
+    public static CompoundTag nbtYattsume = new CompoundTag();
+    public static CompoundTag nbtKoishiMousse = new CompoundTag();
+    public static CompoundTag nbtWhiteSnow = new CompoundTag();
+    public static CompoundTag lovePotionMasterName = new CompoundTag();
 
-    public static CompoundNBT nbtCanPlaceIn = new CompoundNBT();
+    public static CompoundTag nbtCanPlaceIn = new CompoundTag();
 
     int[] tagIntArrayYattsume = {CHEAP, SEAFOOD, FRESH};
     int[] tagIntArrayKoishiMousse = {HIGH_STANDARD, WESTERN, SWEET, PICTURALBE, FASCINATING};
@@ -27,7 +27,7 @@ public class GensokyoOntologyNBT implements IGensokyoOntologyNBT {
         lovePotionMasterName.putString("love_potion", playerNameIn);
     }
 
-    public static CompoundNBT getLovePotionMasterName() {
+    public static CompoundTag getLovePotionMasterName() {
         return lovePotionMasterName;
     }
 }

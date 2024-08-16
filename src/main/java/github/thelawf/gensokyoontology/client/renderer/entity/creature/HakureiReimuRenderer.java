@@ -6,7 +6,7 @@ import github.thelawf.gensokyoontology.common.entity.HakureiReimuEntity;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class HakureiReimuRenderer extends MobRenderer<HakureiReimuEntity, EntityModel<HakureiReimuEntity>> {
     public static final ResourceLocation REIMU_TEX = GensokyoOntology.withRL("textures/entity/hakurei_reimu.png");

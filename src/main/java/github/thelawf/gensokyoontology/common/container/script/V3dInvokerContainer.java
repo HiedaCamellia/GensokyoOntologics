@@ -6,27 +6,27 @@ import github.thelawf.gensokyoontology.common.item.script.ScriptBuilderItem;
 import github.thelawf.gensokyoontology.common.item.script.ScriptReadOnlyItem;
 import github.thelawf.gensokyoontology.core.init.ContainerRegistry;
 import github.thelawf.gensokyoontology.core.init.ItemRegistry;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.network.chat.Component;
+
 import org.jetbrains.annotations.NotNull;
 
 // 31, 21
 // 140, 21
 public class V3dInvokerContainer extends FunctionInvokerContainer {
     public final IInventory inventory = new Inventory(3);
-    public static final ITextComponent NAME = new TranslationTextComponent("container." +
+    public static final Component NAME = Component.translatable("container." +
             GensokyoOntology.MODID + ".v3d_invoker.title");
-    public V3dInvokerContainer(int id, PlayerInventory playerInventory) {
+    public V3dInvokerContainer(int id, Inventory playerInventory) {
         super(ContainerRegistry.V3D_INVOKER_CONTAINER.get(), playerInventory, id);
-        this.addPlayerInventorySlots(13, 81);
+        this.addInventorySlots(13, 81);
         this.addSlots(this.inventory, 0, 21, 21);
         this.addSlots(this.inventory, 1, 39, 21);
         this.addSlots(this.inventory, 2, 148, 21);
@@ -46,7 +46,7 @@ public class V3dInvokerContainer extends FunctionInvokerContainer {
     }
 
     @Override
-    public void onContainerClosed(@NotNull PlayerEntity playerIn) {
+    public void onContainerClosed(@NotNull Player playerIn) {
         super.onContainerClosed(playerIn);
         this.clearContainer(playerIn, playerIn.world, this.inventory);
     }
@@ -55,12 +55,12 @@ public class V3dInvokerContainer extends FunctionInvokerContainer {
         return new INamedContainerProvider() {
             @Override
             @NotNull
-            public ITextComponent getDisplayName() {
+            public Component getDisplayName() {
                 return NAME;
             }
             @NotNull
             @Override
-            public Container createMenu(int windowId, @NotNull PlayerInventory playerInventory, @NotNull PlayerEntity p_createMenu_3_) {
+            public Container createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player p_createMenu_3_) {
                 return new V3dInvokerContainer(windowId, playerInventory);
             }
         };

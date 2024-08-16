@@ -1,6 +1,6 @@
 package github.thelawf.gensokyoontology.common.entity.ai.goal;
 
-import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.Goal;
 
 public class HiredByPlayerGoal extends Goal {
     @Override

@@ -3,8 +3,8 @@ package github.thelawf.gensokyoontology.client.settings;
 
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.client.util.InputMappings;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 
 @OnlyIn(Dist.CLIENT)

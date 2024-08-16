@@ -5,20 +5,20 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import github.thelawf.gensokyoontology.GensokyoOntology;
 import github.thelawf.gensokyoontology.common.container.SorceryExtractorContainer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 @OnlyIn(Dist.CLIENT)
 public class SorceryExtractorScreen extends ContainerScreen<SorceryExtractorContainer> {
-    public static final ResourceLocation SORCERY_GUI_TEXTURE = new ResourceLocation(
+    public static final ResourceLocation SORCERY_GUI_TEXTURE = ResourceLocation.parse(
             GensokyoOntology.MODID, "textures/gui/sorcery_extractor.png"
     );
 
-    public SorceryExtractorScreen(SorceryExtractorContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
+    public SorceryExtractorScreen(SorceryExtractorContainer screenContainer, Inventory inv, Component titleIn) {
         super(screenContainer, inv, titleIn);
         this.xSize = 217;
         this.ySize = 211;

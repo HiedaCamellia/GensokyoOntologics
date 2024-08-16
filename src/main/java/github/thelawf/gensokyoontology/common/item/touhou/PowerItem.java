@@ -6,12 +6,12 @@ import github.thelawf.gensokyoontology.common.network.GSKONetworking;
 import github.thelawf.gensokyoontology.common.network.packet.CPowerChangedPacket;
 import github.thelawf.gensokyoontology.common.util.GSKOUtil;
 import github.thelawf.gensokyoontology.common.util.math.GSKOMathUtil;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class PowerItem extends Item {
@@ -21,11 +21,11 @@ public class PowerItem extends Item {
 
     @NotNull
     @Override
-    public ActionResult<ItemStack> onItemRightClick(@NotNull World worldIn, @NotNull PlayerEntity playerIn, @NotNull Hand handIn) {
+    public ActionResult<ItemStack> onItemRightClick(@NotNull Level worldIn, @NotNull Player playerIn, @NotNull Hand handIn) {
         if (worldIn.isRemote) {
             GSKOUtil.showChatMsg(playerIn, "[Client] Power: " + GSKOPowerCapability.INSTANCE.getCount(), 1);
         }
-        if (!worldIn.isRemote) {
+        if (worldIn.isClientSide) {
             GSKOUtil.showChatMsg(playerIn, "[Server] Power: " + GSKOPowerCapability.INSTANCE.getCount(), 1);
         }
 

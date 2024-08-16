@@ -1,16 +1,15 @@
 package github.thelawf.gensokyoontology.api.client.layout;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
-public abstract class LineralBoxScreen extends Screen{
+public abstract class LineralBoxScreen extends Screen {
 
     public List<List<WidgetConfig>> configs;
 
-    public LineralBoxScreen(ITextComponent title, List<List<WidgetConfig>> configs) {
+    public LineralBoxScreen(Component title, List<List<WidgetConfig>> configs) {
         super(title);
         this.configs = configs;
     }

@@ -1,41 +1,41 @@
 package github.thelawf.gensokyoontology.data.world;
 
 import github.thelawf.gensokyoontology.GensokyoOntology;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.INBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.nbt.StringNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.storage.DimensionSavedDataManager;
-import net.minecraft.world.storage.WorldSavedData;
+import net.minecraft.world.storage.LevelSavedData;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Stack;
 
-public class GSKOWorldSavedData extends WorldSavedData {
-    private static final String NAME = "GSKOWorldSavedData";
+public class GSKOLevelSavedData extends LevelSavedData {
+    private static final String NAME = "GSKOLevelSavedData";
     private GensokyoSeason season = GensokyoSeason.SPRING;
     private final Stack<ResourceLocation> incidents = new Stack<>();
-    public GSKOWorldSavedData() {
+    public GSKOLevelSavedData() {
         super(NAME);
     }
-    public GSKOWorldSavedData(String name) {
+    public GSKOLevelSavedData(String name) {
         super(name);
     }
 
-    public static GSKOWorldSavedData getInstance(World worldIn) {
-        if (!(worldIn instanceof ServerWorld)) {
+    public static GSKOLevelSavedData getInstance(Level worldIn) {
+        if (!(worldIn instanceof ServerLevel)) {
             throw new RuntimeException("Attempted to get the data from a client world. This is wrong.");
         }
-        ServerWorld serverWorld = (ServerWorld) worldIn;
-        DimensionSavedDataManager storage = serverWorld.getSavedData();
-        return storage.getOrCreate(GSKOWorldSavedData::new, NAME);
+        ServerLevel serverLevel = (ServerLevel) worldIn;
+        DimensionSavedDataManager storage = serverLevel.getSavedData();
+        return storage.getOrCreate(GSKOLevelSavedData::new, NAME);
     }
 
     @Override
-    public void read(CompoundNBT nbt) {
+    public void read(CompoundTag nbt) {
         this.season = GensokyoSeason.valueOf(nbt.getString("season"));
         ListNBT listNBT = (ListNBT) nbt.get("incidents");
         if (listNBT != null) {
@@ -50,7 +50,7 @@ public class GSKOWorldSavedData extends WorldSavedData {
 
     @Override
     @NotNull
-    public CompoundNBT write(CompoundNBT compound) {
+    public CompoundTag write(CompoundTag compound) {
         ListNBT listNBT = new ListNBT();
         incidents.forEach((location) -> {
             StringNBT stringNBT = StringNBT.valueOf(location.toString());
